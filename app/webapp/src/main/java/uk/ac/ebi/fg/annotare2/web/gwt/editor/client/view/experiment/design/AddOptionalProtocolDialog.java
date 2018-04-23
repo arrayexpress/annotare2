@@ -52,7 +52,7 @@ public class AddOptionalProtocolDialog extends DialogBox {
 
         setModal(true);
         setGlassEnabled(true);
-        setText("New Optional Protocol");
+        setText("New Additional Protocol");
 
         setWidget(AddOptionalProtocolDialog.Binder.BINDER.createAndBindUi(this));
 

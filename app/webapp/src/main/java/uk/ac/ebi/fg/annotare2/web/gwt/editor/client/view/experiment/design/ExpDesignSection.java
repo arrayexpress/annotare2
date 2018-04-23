@@ -20,12 +20,12 @@ import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.LeftNavigationView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
 import static java.util.EnumSet.*;
-import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.SEQUENCING;
-import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.TWO_COLOR_MICROARRAY;
+import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.*;
 
 /**
  * @author Olga Melnichuk
@@ -35,14 +35,14 @@ public enum ExpDesignSection implements LeftNavigationView.Section {
     CONTACTS("Contacts", allOf(ExperimentProfileType.class), "Enter the details of all persons that should appear as contacts for this experiment. There must be at least one 'submitter'."),
     PUBLICATIONS("Publications", allOf(ExperimentProfileType.class), "Enter the publication(s) using this experiment"),
     SAMPLES("Create samples, add attributes and experimental variables", allOf(ExperimentProfileType.class)),
-    EXTRACTS_LIBRARY_INFO("Assign ENA library information", of(SEQUENCING), "Provide technical details of your sequencing libraries as required by the Sequence Read Archive (SRA)"),
-    LABELED_EXTRACTS("Create labeled extracts and assign labels", of(TWO_COLOR_MICROARRAY), "Assign the label to each sample by removing the one thatdoes not apply. For dye-swap designs both labels can be kept."),
+    EXTRACTS_LIBRARY_INFO("Assign ENA library information","Provide technical details of your sequencing libraries as required by the Sequence Read Archive (SRA)", SEQUENCING, PLANT_SEQUENCING ),
+    LABELED_EXTRACTS("Create labeled extracts and assign labels", "Assign the label to each sample by removing the one thatdoes not apply. For dye-swap designs both labels can be kept.", TWO_COLOR_MICROARRAY, PLANT_TWO_COLOR_MICROARRAY),
     PROTOCOLS("Describe protocols", allOf(ExperimentProfileType.class)),
     FILES("Assign data files", allOf(ExperimentProfileType.class)),
     NONE("None", noneOf(ExperimentProfileType.class));
 
     private final String title;
-    private final EnumSet applyTo;
+    private EnumSet applyTo;
     private final String helpText;
 
     ExpDesignSection(String title, EnumSet<ExperimentProfileType> applyTo) {
@@ -54,6 +54,13 @@ public enum ExpDesignSection implements LeftNavigationView.Section {
     ExpDesignSection(String title, EnumSet<ExperimentProfileType> applyTo, String helpText) {
         this.title = title;
         this.applyTo = applyTo;
+        this.helpText = helpText;
+    }
+
+    ExpDesignSection(String title, String helpText, ExperimentProfileType... applyTo) {
+        this.title = title;
+        this.applyTo = EnumSet.noneOf(ExperimentProfileType.class);
+        this.applyTo.addAll(Arrays.asList(applyTo));
         this.helpText = helpText;
     }
 

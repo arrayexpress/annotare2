@@ -1,11 +1,20 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+
+import static java.util.Arrays.asList;
+
 /**
  * Created by haideri on 17/05/2017.
  */
 public enum OptionalProtocols {
 
-    GROWTH_PROTOCOL("growth protocol"),
+    GROWTH_PROTOCOL("growth protocol",ExperimentProfileType.PLANT_ONE_COLOR_MICROARRAY,ExperimentProfileType.PLANT_TWO_COLOR_MICROARRAY,ExperimentProfileType.PLANT_SEQUENCING),
     TREATMENT_PROTOCOL("treatment protocol"),
     NORMALIZATION_DATA_TRANSFORMATION_PROTOCOL("normalization data transformation protocol"),
     CONVERSION_PROTOCOL("conversion protocol"),
@@ -14,11 +23,19 @@ public enum OptionalProtocols {
 
     private final String name;
 
-    OptionalProtocols(String name) {
+    private final List<ExperimentProfileType> experimentProfileTypes;
+
+    OptionalProtocols(String name, ExperimentProfileType... experimentProfileTypes) {
+
         this.name = name;
+        this.experimentProfileTypes = asList(experimentProfileTypes);
     }
 
     public String getName() {
         return name;
+    }
+    public List<ExperimentProfileType> getExperimentProfileTypes()
+    {
+        return new ArrayList<>(this.experimentProfileTypes);
     }
 }

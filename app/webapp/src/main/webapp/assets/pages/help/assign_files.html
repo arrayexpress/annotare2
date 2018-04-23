@@ -63,9 +63,19 @@ When you have tested each sample twice (once with each label), you don't need to
 
 <br>
 <h3 id="AssignTechReps">Technical Replicates</h3>
-<p>For technical replicates it is advisable to create separate samples in the sample attributes section in Annotare. Name your replicate samples with the same prefix and then add e.g. "_1"/"_2" because duplicate sample names are not allowed.</p>
-<p>For sequencing experiments it is also possible to create two columns of the same type to assign two files per sample.</p>
 <p><img src="../assets/images/files_technical_replicates.png" alt="File assignment for technical replicates" style="border:2px solid #385930; max-width:784.8px"></p>
+<h4 id="tech_seq">Sequencing experiment</h4>
+<p>There are two different types of technical replicates:</p>
+<ol>
+  <li><strong>Multiple libraries prepared from the same sample material (RNA/DNA extract)</strong><br>
+In this case, please create multiple sample rows and clearly name them with a suffix like "_library1", "_library2". This way you can also assign different <a href="seq_lib_spec.html">library specifications</a> to each library. </li><br>
+  <li><strong>The same sequencing library run on multiple lanes of a flow cell </strong>(this also includes multiple sequencing runs of the same library e.g. at different time points)<br>
+In this case, create as many "Raw Data File" columns as you have files per sample/library, to be able to assign all files to the same sample/library. </li>
+</ol>
+
+<h4 id="tech_array">Microarray experiment</h4>
+<p>If the same biological sample was tested on two different arrays, please create separate sample rows and assign one file to each of these technical replicates. Name your replicate samples with the same prefix and then add e.g. "_techrep1"/"_techrep2".</p>
+
 <br>
 
 </section>
@@ -78,20 +88,21 @@ When you have tested each sample twice (once with each label), you don't need to
                 <li><a href="getting_started.html#register">Register for submission account</a></li>
                 <li><a href="getting_started.html#start_new_sub">Start a new submission</a></li>
                 <li><a href="getting_started.html#sub_status">Understand submission status</a></li>
+<li><a href="getting_started.html#delete_sub">Delete a submission</a></li>
             </ul>
         </li>
         <li><h4>Describe experiment</h4>
             <ul>
-                <li><a href="describe_exp.html#expt_bg">Explain experiment background</a></li>
-                <li><a href="describe_exp.html#release_date">Set reasonable release date</a></li>
+                <li><a href="describe_exp.html#expt_bg">General Information</a></li>
                 <li><a href="describe_exp.html#remain_anonymous">Enable anonymity</a></li>
                 <li><a href="describe_exp.html#contact_citation">Provide contact details</a></li>
+	              <li><a href="describe_exp.html#publications">Add publications</a></li>
             </ul>
         </li>
         <li><h4>Time-saving features</h4>
             <ul>
                 <li><a href="time_saving_features.html#fill_down_import">Fill-down and import values</a></li>
-                <li><a href="time_saving_features.html#upload_multiple_files">Upload multiple files in one go</a></li>
+                <li><a href="time_saving_features.html#upload_multiple_files">Upload and assign multiple files in one go</a></li>
             </ul>
         </li>
         <li><h4>Sample attributes</h4>
@@ -119,15 +130,15 @@ When you have tested each sample twice (once with each label), you don't need to
         <li><h4>Upload files and assign to samples</h4>
             <ul>
                 <li><a href="file_upload.html#direct">Direct upload</a></li>
-                <li><a href="file_upload.html#ftp">FTP upload</a></li>
+                <li><a href="file_upload.html#ftp">FTP/Aspera upload</a></li>
                 <li class="active"><a href="assign_files.html">Assign files</a></li>
             </ul>
         </li>
         <li><h4>Validate and submit</h4>
             <ul>
                 <li><a href="validate_exp.html#validate">What is validation?</a></li>
-                <li><a href="validate_exp.html#fix_errors">How to fix validation errors?</a></li>
                 <li><a href="submit_exp.html">Submit, and what happens next?</a></li>
+		            <li><a href="submit_exp.html#save_sub">Saving a copy of your submission</a></li>
             </ul>
         </li>
     </ol>

@@ -1,10 +1,11 @@
 <section id="annotare-help" class="grid_18 alpha">
     <h2>Submit, and what happens next?</h2>
-    <p>To submit to ArrayExpress click <code>Submit to ArrayExpress</code>:<br/>
+    <p>When you are ready with filling all forms and validation was successful, click <code>Submit to ArrayExpress</code> to send your submission to ArrayExpress:<br/>
         <img src="../assets/images/validate_wborder.png" alt="validate" style="border:2px solid #385930"/>
     </p>
-    <p>&nbsp;</p>
-    <h3>Getting accession number</h3>
+    <p>Note that you will not be able to make any more changes after that.</p>
+    <br>
+    <h3>Getting an accession number</h3>
     <p>
         Once you submit, you will receive an immediate confirmation email
         (containing the experiment accession number) from the ArrayExpress curation team,
@@ -14,14 +15,16 @@
         which can cause delay in generating accession numbers, so please bear with us.
         The accession number will NOT change throughout data
         curation and processing, so you can quote it in your manuscript.</p>
+    <p>For sequencing experiments, all raw data files (usually fastq.gz files) are checked for file integrity before issuing an accession number. In case we find any errors, we will report them back to you and re-open the Annotare submission form for editing.</p>
+    <br>
     <h3>Review by ArrayExpress curators</h3>
     <p> After you clicked <code>Submit</code>, your submission's status will automatically change to <code>In Curation</code>,
         meaning that it's locked for curation so that you cannot edit it further. The curation team will review your submission.
-        If we have any questions, we will email you and may re-open the	submission for further editing. Likewise,
+        If we have any questions, we will email you and may re-open the submission for further editing. Likewise,
         if you need to edit the submission while it is locked, please email us at <a
                 href="mailto:annotare@ebi.ac.uk">annotare@ebi.ac.uk</a> with your submission login
-        email address and title of your experiment, so we can "re-open" the submission for you to make changes.</p>
-
+        email address and title of your experiment, so we can re-open the submission for you to make changes.</p>
+    <br>
     <h3>Loading into ArrayExpress and keeping data private until publication</h3>
     <p>Once fully curated, the experiment will be loaded into a private instance
         of ArrayExpress and we will provide you with login accounts (one for yourself and one for
@@ -32,6 +35,10 @@
             the public release date of the experiment</a> at any time to match the peer review progress of your
         paper. You can <a href="/arrayexpress/help/FAQ.html#add_publication">add or edit publication details</a> too.
     </p>
+    <br>
+    <h3 id="save_sub">Saving a copy of your submission</h3>
+    <p>You can download the content of the submission form anytime using the <code>Save as Spreadsheets</code> button. Like in ArrayExpress, the experimental metadata is represented in MAGE-TAB format. You will get two spreadsheets, the "IDF" (Investigation Description Format) and the "SDRF" (Sample and Data Relationship Format). <a  href="https://www.ebi.ac.uk/training/online/course/arrayexpress-discover-functional-genomics-data-qui/how-are-datasets-submitted-and-stored-ar-0">Read a summary about the MAGE-TAB format</a> or <a href="/arrayexpress/help/magetab_spec.html">learn the detailed MAGE-TAB specifications.</a></p>
+    <p><img src="../assets/images/save_submission.png" alt="save_submission" style="width:70%;height:70%;border:2px solid #385930" /></p>
 </section>
 <aside class="grid_6 omega">
     <h3>Annotare Guide</h3>
@@ -41,20 +48,22 @@
                 <li><a href="getting_started.html#register">Register for submission account</a></li>
                 <li><a href="getting_started.html#start_new_sub">Start a new submission</a></li>
                 <li><a href="getting_started.html#sub_status">Understand submission status</a></li>
+<li><a href="getting_started.html#delete_sub">Delete a submission</a></li>
             </ul>
         </li>
         <li><h4>Describe experiment</h4>
             <ul>
-                <li><a href="describe_exp.html#expt_bg">Explain experiment background</a></li>
-                <li><a href="describe_exp.html#release_date">Set reasonable release date</a></li>
+                <li><a href="describe_exp.html#expt_bg">General Information</a></li>
+
                 <li><a href="describe_exp.html#remain_anonymous">Enable anonymity</a></li>
                 <li><a href="describe_exp.html#contact_citation">Provide contact details</a></li>
+	<li><a href="describe_exp.html#publications">Add publications</a></li>
             </ul>
         </li>
         <li><h4>Time-saving features</h4>
             <ul>
                 <li><a href="time_saving_features.html#fill_down_import">Fill-down and import values</a></li>
-                <li><a href="time_saving_features.html#upload_multiple_files">Upload multiple files in one go</a></li>
+                <li><a href="time_saving_features.html#upload_multiple_files">Upload and assign multiple files in one go</a></li>
             </ul>
         </li>
         <li><h4>Sample attributes</h4>
@@ -82,15 +91,15 @@
         <li><h4>Upload files and assign to samples</h4>
             <ul>
                 <li><a href="file_upload.html#direct">Direct upload</a></li>
-                <li><a href="file_upload.html#ftp">FTP upload</a></li>
+                <li><a href="file_upload.html#ftp">FTP/Aspera upload</a></li>
                 <li><a href="assign_files.html">Assign files</a></li>
             </ul>
         </li>
         <li><h4>Validate and submit</h4>
             <ul>
                 <li><a href="validate_exp.html#validate">What is validation?</a></li>
-                <li><a href="validate_exp.html#fix_errors">How to fix validation errors?</a></li>
                 <li class="active"><a href="submit_exp.html">Submit, and what happens next?</a></li>
+                <li class="active"><a href="submit_exp.html#save_sub">Saving a copy of your submission</a></li>
             </ul>
         </li>
     </ol>

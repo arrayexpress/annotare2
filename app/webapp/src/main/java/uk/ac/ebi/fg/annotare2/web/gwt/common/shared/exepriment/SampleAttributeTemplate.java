@@ -162,6 +162,7 @@ public enum SampleAttributeTemplate {
     }
 
     public void setIsMandatory(boolean isMandatory) { this.isMandatory = isMandatory; }
+
     public void setIsVisible(boolean isVisible) { this.isVisible = isVisible; }
 
     public Collection<SampleAttributeType> getTypes() {

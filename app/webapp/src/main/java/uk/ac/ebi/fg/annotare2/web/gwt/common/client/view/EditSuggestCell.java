@@ -452,16 +452,17 @@ public class EditSuggestCell extends
             }
         } else if (BLUR.equals(type)) {
             if (null == display || !display.isSuggestionListShowing()) {
-                // cancel the change
-                EventTarget eventTarget = event.getEventTarget();
-                if (Element.is(eventTarget)) {
-                    Element target = Element.as(eventTarget);
-                    if ("input".equals(target.getTagName().toLowerCase())) {
-                        // Cancel edit mode.
-                        cancel(context, parent, viewData);
-                    }
-                }
-            }
+              // cancel the change
+              EventTarget eventTarget = event.getEventTarget();
+              if (Element.is(eventTarget)) {
+                  Element target = Element.as(eventTarget);
+                  if ("input".equals(target.getTagName().toLowerCase())) {
+                      // Commit changes.
+                      commit(context, parent, viewData, valueUpdater);
+                  }
+              }
+          }
+
         }
     }
 

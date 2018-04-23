@@ -11,7 +11,7 @@ package uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ExperimentsRecord extends org.jooq.impl.UpdatableRecordImpl<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.ExperimentsRecord> {
 
-	private static final long serialVersionUID = 1170504577;
+	private static final long serialVersionUID = 1597946984;
 
 	/**
 	 * Setter for <code>ae_autosubs.experiments.id</code>. 
@@ -571,6 +571,20 @@ public class ExperimentsRecord extends org.jooq.impl.UpdatableRecordImpl<uk.ac.e
 	 */
 	public java.lang.String getAtlasFailScore() {
 		return (java.lang.String) getValue(39);
+	}
+
+	/**
+	 * Setter for <code>ae_autosubs.experiments.annotare_submission_id</code>. 
+	 */
+	public void setAnnotareSubmissionId(java.lang.Integer value) {
+		setValue(40, value);
+	}
+
+	/**
+	 * Getter for <code>ae_autosubs.experiments.annotare_submission_id</code>. 
+	 */
+	public java.lang.Integer getAnnotareSubmissionId() {
+		return (java.lang.Integer) getValue(40);
 	}
 
 	// -------------------------------------------------------------------------

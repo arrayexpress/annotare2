@@ -29,7 +29,7 @@ public enum ExperimentProfileType {
 
     private final String title;
 
-    private ExperimentProfileType(String title) {
+    ExperimentProfileType(String title) {
         this.title = title;
     }
 

@@ -2,7 +2,7 @@
     {
         "label": "sample collection protocol",
         "id": "EFO_0005518",
-        "usage": "ANY",
+        "usage": ["ANY"],
         "subject": "SAMPLE",
         "precedence": "1",
         "definition": "A protocol that describes the procedure whereby biological samples for an experiment are sourced. Examples of this are: collection of clinical samples from patients, collection of plant materials in a forest, collection of larvae from lab-grown Drosophila flies."
@@ -10,7 +10,7 @@
     {
         "label": "dissection protocol",
         "id": "EFO_0005519",
-        "usage": "ANY",
+        "usage": ["ANY"],
         "subject": "SAMPLE",
         "precedence": "2",
         "definition": "A protocol that describes the procedure which dissects biological materials into anatomical sub-components, e.g. specific organs or tissues."
@@ -18,7 +18,7 @@
     {
         "label": "growth protocol",
         "id": "EFO_0003789",
-        "usage": "ANY",
+        "usage": ["ANY"],
         "subject": "SAMPLE",
         "precedence": "3",
         "definition": "A protocol that provides instructions on the growth of a biological sample. E.g. the growth of a specific cell line or Drosophila culture."
@@ -26,7 +26,7 @@
     {
         "label": "treatment protocol",
         "id": "EFO_0003969",
-        "usage": "ANY",
+        "usage": ["ANY"],
         "subject": "SAMPLE",
         "precedence": "4",
         "definition": "A protocol in which the aim is to treat a sample, collection of samples, organism or group of organisms for some experimental analysis of outcome."
@@ -34,7 +34,7 @@
     {
         "label": "conversion protocol",
         "id": "EFO_0005520",
-        "usage": "ANY",
+        "usage": ["ANY"],
         "subject": "SAMPLE",
         "precedence": "5",
         "definition": "A protocol that describes the conversion of samples (e.g. RNA samples) to another form (e.g. complementary DNA) with no prior dedicated extraction step of the former form, and no labeling of the converted product with chemical tags or dyes during the process. Other examples of such conversions are bisulphite conversion for DNA methylation analysis, various RNA modifications prior to immunoprecipitation."
@@ -42,7 +42,7 @@
     {
         "label": "nucleic acid extraction protocol",
         "id": "EFO_0002944",
-        "usage": "ANY",
+        "usage": ["ANY"],
         "subject": "SAMPLE",
         "precedence": "6",
         "definition": "A protocol that describes in which a material separation to recover the nucleic acid fraction of an input material is performed."
@@ -50,7 +50,7 @@
     {
         "label": "nucleic acid library construction protocol",
         "id": "EFO_0004184",
-        "usage": "SEQUENCING",
+        "usage": ["SEQUENCING","PLANT_SEQUENCING"],
         "subject": "SAMPLE",
         "precedence": "7",
         "definition": "A protocol that describes the processes performed and equipment used to prepare nucleic acid sequencing library."
@@ -58,7 +58,7 @@
     {
         "label": "nucleic acid labeling protocol",
         "id": "EFO_0003813",
-        "usage": "MICRO_ARRAY",
+        "usage": ["MICRO_ARRAY","PLANT_MICRO_ARRAY"],
         "subject": "EXTRACT",
         "precedence": "10",
         "definition": "A protocol description in which input nucleic acid material is labeled."
@@ -66,7 +66,7 @@
     {
         "label": "nucleic acid sequencing protocol",
         "id": "EFO_0004170",
-        "usage": "SEQUENCING",
+        "usage": ["SEQUENCING","PLANT_SEQUENCING"],
         "subject": "EXTRACT",
         "precedence": "11",
         "definition": "A protocol that describes the processes performed and equipment used to determine the order of nucleotide bases in a nucleic acid sample."
@@ -74,7 +74,7 @@
     {
         "label": "nucleic acid hybridization to array protocol",
         "id": "EFO_0003815",
-        "usage": "MICRO_ARRAY",
+        "usage": ["MICRO_ARRAY","PLANT_MICRO_ARRAY"],
         "subject": "LABELED_EXTRACT",
         "precedence": "20",
         "definition": "A protocol that describes the hybridization of the target nucleic acid sample to a fixed probe on the array."
@@ -82,7 +82,7 @@
     {
         "label": "array scanning and feature extraction protocol",
         "id": "EFO_0003814",
-        "usage": "MICRO_ARRAY",
+        "usage": ["MICRO_ARRAY","PLANT_MICRO_ARRAY"],
         "subject": "FILE",
         "precedence": "30",
         "definition": "A protocol that describes an image acquisition process that generates an image and features extracted in numerical form from an array."
@@ -90,7 +90,7 @@
     {
         "label": "high throughput sequence alignment protocol",
         "id": "EFO_0004917",
-        "usage": "SEQUENCING",
+        "usage": ["SEQUENCING","PLANT_SEQUENCING"],
         "subject": "PROCESSED_FILE",
         "precedence": "40",
         "definition": "A protocol that provides instructions on the alignment of sequencing reads to reference genome."
@@ -98,7 +98,7 @@
     {
         "label": "normalization data transformation protocol",
         "id": "EFO_0003816",
-        "usage": "ANY",
+        "usage": ["ANY"],
         "subject": "PROCESSED_FILE",
         "precedence": "41",
         "definition": "A protocol that describes data transformation where the result is the objective normalization."

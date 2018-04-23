@@ -25,6 +25,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.Label;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.Protocol;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
@@ -62,10 +63,9 @@ public class AddProtocolDialog extends DialogBox {
     private List<Protocol> selectedProtocolTypes;
     private DialogCallback<List<Protocol>> callback;
     private HashMap<String,TextArea> protocolDescriptions;
-    private String sequencingHardware = "454 GS, 454 GS 20, 454 GS FLX, 454 GS FLX+, 454 GS FLX Titanium, 454 GS Junior, Illumina Genome Analyzer, Illumina Genome Analyzer II, Illumina Genome Analyzer IIx, Illumina HiSeq 1000, Illumina HiSeq 1500, Illumina HiSeq 2000, Illumina HiSeq 2500, Illumina HiSeq 3000, Illumina HiSeq 4000, Illumina MiSeq, Illumina HiScanSQ, HiSeq X Five, HiSeq X Ten, NextSeq 500, NextSeq 550, Helicos HeliScope, AB SOLiD System, AB SOLiD System 2.0, AB SOLiD System 3.0, AB SOLiD 3 Plus System, AB SOLiD 4 System, AB SOLiD 4hq System, AB SOLiD PI System, AB 5500 Genetic Analyzer, AB 5500xl Genetic Analyzer, AB 5500xl-W Genetic Analysis System, Complete Genomics, BGISEQ-500, PacBio RS, PacBio RS II, Sequel, Ion Torrent PGM, Ion Torrent Proton, MinION, GridION, AB 3730xL Genetic Analyzer, AB 3730 Genetic Analyzer, AB 3500xL Genetic Analyzer, AB 3500 Genetic Analyzer, AB 3130xL Genetic Analyzer, AB 3130 Genetic Analyzer, AB 310 Genetic Analyzer, unspecified";
-    private List<String> sequencingHardwareList;
+    private ExperimentProfileType experimentProfileType;
 
-    public AddProtocolDialog(Presenter presenter, DialogCallback<List<Protocol>> callback) {
+    public AddProtocolDialog(Presenter presenter, ExperimentProfileType experimentProfileType, DialogCallback<List<Protocol>> callback) {
         this.presenter = presenter;
         this.callback = callback;
 
@@ -82,8 +82,7 @@ public class AddProtocolDialog extends DialogBox {
         optionalProtocols = new ArrayList<>();
         protocolDescriptions = new HashMap<>();
 
-        sequencingHardwareList = new ArrayList<>();
-        sequencingHardwareList = asList(sequencingHardware.split("\\s*,\\s*"));
+        this.experimentProfileType = experimentProfileType;
 
         center();
     }
@@ -196,12 +195,20 @@ public class AddProtocolDialog extends DialogBox {
         for (OptionalProtocols protocol:
                 OptionalProtocols.values()) {
             if(protocolTypesName.contains(protocol.getName()))
-                optionalProtocols.add(protocol.getName());
+            {
+                if(protocol.getExperimentProfileTypes().contains(experimentProfileType))
+                {
+                    mandatoryProtocols.add(protocol.getName());
+                }
+                else {
+                    optionalProtocols.add(protocol.getName());
+                }
+            }
         }
 
         addProtocolsToPanel(mandatoryProtocols, protocolsPanel, protocolDescriptions);
 
-        Label optionalProtocolsLabel = new Label("Optional Protocols");
+        Label optionalProtocolsLabel = new Label("Additional Protocols");
         optionalProtocolsLabel.addStyleName("optionalProtocolHeaderLabel");
         optionalProtocolsLabel.addStyleName("optionalProtocolHeader");
 

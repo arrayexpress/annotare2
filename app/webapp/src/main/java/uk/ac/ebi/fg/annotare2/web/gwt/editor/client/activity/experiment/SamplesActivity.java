@@ -57,7 +57,9 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     private final SampleAttributeEfoSuggest efoTerms;
 
     private HandlerRegistration criticalUpdateHandler;
-    Collection<OntologyTerm> expDesigns = new ArrayList<>();
+    private Collection<OntologyTerm> expDesigns = new ArrayList<>();
+
+    private ExperimentProfileType expProfileType;
 
     @Inject
     public SamplesActivity(SamplesView view,
@@ -117,6 +119,23 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
             }
         });
         return expDesigns;
+    }
+
+    @Override
+    public ExperimentProfileType getExperimentProfileType()
+    {
+        expDataProxy.getExperimentProfileTypeAsync(new AsyncCallbackWrapper<ExperimentProfileType>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfileType experimentProfileType) {
+                expProfileType = experimentProfileType;
+            }
+        });
+        return expProfileType;
     }
 
     @Override

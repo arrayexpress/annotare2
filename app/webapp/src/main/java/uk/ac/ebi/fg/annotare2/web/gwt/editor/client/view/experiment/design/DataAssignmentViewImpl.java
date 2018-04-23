@@ -55,7 +55,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
         gridView = new GridView<>();
         gridView.setRowSelectionEnabled(false);
 
-        Button button = new Button("Assign Files...");
+        Button button = new Button("Add File Assignment Column *");
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -70,7 +70,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
         });
         gridView.addTool(button);
 
-        button = new Button("Delete Column(s)...");
+        button = new Button("Delete Column(s)");
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -167,12 +167,15 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     private List<EnumWithHelpText> getAllowedColumnTypes() {
         List<EnumWithHelpText> types = new ArrayList<>();
         for (FileType type : FileType.values()) {
-            if (ExperimentProfileType.SEQUENCING == experimentType) {
-                if (!type.isFGEM() || type.isProcessed() && (0 == countColumnsByType(type))) {
+            if(!((ExperimentProfileType.TWO_COLOR_MICROARRAY == experimentType || ExperimentProfileType.PLANT_TWO_COLOR_MICROARRAY == experimentType) && (type.isRawMatix())))
+            {
+                if (ExperimentProfileType.SEQUENCING == experimentType || ExperimentProfileType.PLANT_SEQUENCING == experimentType) {
+                    if (!type.isFGEM() || type.isProcessed() && (0 == countColumnsByType(type))) {
+                        types.add(type);
+                    }
+                } else if (0 == countColumnsByType(type)) {
                     types.add(type);
                 }
-            } else if (0 == countColumnsByType(type)) {
-                types.add(type);
             }
         }
         return types;

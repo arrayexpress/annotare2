@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.Protocol;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 
@@ -40,6 +41,8 @@ public interface ProtocolsView extends IsWidget {
         void createProtocol(List<Protocol> protocols);
 
         void updateProtocol(ProtocolRow row);
+
+        ExperimentProfileType getExperimentProfileType();
 
         void removeProtocols(ArrayList<ProtocolRow> protocolRows);
 

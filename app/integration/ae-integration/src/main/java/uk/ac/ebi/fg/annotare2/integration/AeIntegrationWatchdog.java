@@ -63,18 +63,20 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.*;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static uk.ac.ebi.fg.annotare2.ae.AEConnection.SubmissionState.*;
 
 public class AeIntegrationWatchdog {
 
     private static final Logger logger = LoggerFactory.getLogger(AeIntegrationWatchdog.class);
 
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private static final int THREAD_COUNT = 3;
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(THREAD_COUNT);
+    final BlockingQueue<Long> submissionsBeingProcessed = new ArrayBlockingQueue<>(THREAD_COUNT);
     private final HibernateSessionFactory sessionFactory;
     private final SubsTracking subsTracking;
     private final AEConnection aeConnection;
@@ -93,7 +95,6 @@ public class AeIntegrationWatchdog {
         REPEAT_SUBMISSION_OK,
         SUBMISSION_FAILED
     }
-
 
 
     @Inject
@@ -129,7 +130,7 @@ public class AeIntegrationWatchdog {
             public void run() {
                 Session session = sessionFactory.openSession();
                 try {
-                    periodicRun();
+                    processSubmissions();
                 } catch (Throwable x) {
                     logger.error("Submission watchdog process caught an exception:", x);
                     messenger.send("Error in submission watchdog process:", x);
@@ -137,11 +138,13 @@ public class AeIntegrationWatchdog {
                     session.close();
                 }
             }
-
         };
 
+
         if (properties.isSubsTrackingEnabled()) {
-            scheduler.scheduleAtFixedRate(periodicProcess, 0, 1, MINUTES);
+            for (int i = 0; i < THREAD_COUNT; i++) {
+                scheduler.scheduleAtFixedRate(periodicProcess, i * 20, 60, SECONDS);
+            }
         }
     }
 
@@ -153,8 +156,8 @@ public class AeIntegrationWatchdog {
         }
     }
 
-    private void periodicRun() throws Exception {
-        Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(
+    private void processSubmissions() throws Exception {
+        final Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(
                 SubmissionStatus.SUBMITTED
                 , SubmissionStatus.RESUBMITTED
                 , SubmissionStatus.AWAITING_FILE_VALIDATION
@@ -164,40 +167,75 @@ public class AeIntegrationWatchdog {
                 , SubmissionStatus.PUBLIC_IN_AE
         );
 
-        // funny hack to submit only one submission per run (to make gaps between submits)
-        // this only applies to processSubmitted() case
-        boolean hasProcessedOneSubmission = false;
-        boolean hasValidatedOneSubmission = false;
-
         for (Submission submission : submissions) {
-            switch (submission.getStatus()) {
-                case SUBMITTED:
-                case RESUBMITTED:
-                    if (!hasProcessedOneSubmission) {
-                        processSubmitted(submission);
-                        hasProcessedOneSubmission = true;
-                    }
-                    break;
+            if (!submissionsBeingProcessed.contains(submission.getId())) {
+                submissionsBeingProcessed.add(submission.getId());
+                for (Long submissionId:
+                     submissionsBeingProcessed) {
+                    logger.debug("Submissions being processed: " + submissionId);
+                }
+                switch (submission.getStatus()) {
+                    case SUBMITTED:
+                    case RESUBMITTED:
+                        try {
+                            processSubmitted(submission);
+                            submissionsBeingProcessed.remove(submission.getId());
+                            logger.debug("Submission being removed from current processing submission set: " + submission.getId());
+                            break;
+                        } catch (Exception e) {
+                            logger.error("There was an error during experiment submission (SUBMITTED/RESUBMITTED) state", e);
+                        }
 
-                case IN_CURATION:
-                    processInCuration(submission);
-                    break;
+                    case IN_CURATION:
+                        try {
+                            processInCuration(submission);
+                            submissionsBeingProcessed.remove(submission.getId());
+                            logger.debug("Submission being removed from current processing submission set: " + submission.getId());
+                            break;
+                        } catch (Exception e) {
+                            logger.error("There was an error in submission (IN_CURATION) state", e);
+                        }
 
-                case PRIVATE_IN_AE:
-                    processPrivateInAE(submission);
-                    break;
+                    case PRIVATE_IN_AE:
+                        try {
+                            processPrivateInAE(submission);
+                            submissionsBeingProcessed.remove(submission.getId());
+                            logger.debug("Submission being removed from current processing submission set: " + submission.getId());
+                            break;
+                        } catch (Exception e) {
+                            logger.error("There was an error in submission (PRIVATE_IN_AE) state", e);
+                        }
 
-                case PUBLIC_IN_AE:
-                    processPublicInAE(submission);
-                    break;
+                    case PUBLIC_IN_AE:
+                        try {
+                            processPublicInAE(submission);
+                            submissionsBeingProcessed.remove(submission.getId());
+                            logger.debug("Submission being removed from current processing submission set: " + submission.getId());
+                            break;
+                        } catch (Exception e) {
+                            logger.error("There was an error in submission (PUBLIC_IN_AE) state", e);
+                        }
 
-                case AWAITING_FILE_VALIDATION:
-                    processAwaitingFileValidation(submission);
-                    break;
+                    case AWAITING_FILE_VALIDATION:
+                        try {
+                            processAwaitingFileValidation(submission);
+                            submissionsBeingProcessed.remove(submission.getId());
+                            logger.debug("Submission being removed from current processing submission set: " + submission.getId());
+                            break;
+                        } catch (Exception e) {
+                            logger.error("There was an error in submission (AWAITING_FILE_VALIDATION) state", e);
+                        }
 
-                case VALIDATING_FILES:
-                    processValidatingFiles(submission);
-                    break;
+                    case VALIDATING_FILES:
+                        try {
+                            processValidatingFiles(submission);
+                            submissionsBeingProcessed.remove(submission.getId());
+                            logger.debug("Submission being removed from current processing submission set: " + submission.getId());
+                            break;
+                        } catch (Exception e) {
+                            logger.error("There was an error in submission (VALIDATING_FILES) state", e);
+                        }
+                }
             }
         }
     }
@@ -207,9 +245,9 @@ public class AeIntegrationWatchdog {
         try {
             JSONObject json = fileValidationService.checkStatus(submission.getId());
 
-            FileValidationStatus status = FileValidationStatus.valueOf(json.get("status").toString().replace(' ','_').toUpperCase()) ;
+            FileValidationStatus status = FileValidationStatus.valueOf(json.get("status").toString().replace(' ', '_').toUpperCase());
             logger.debug("File validation status for submission {} is {}", submission.getId(), status);
-            if (status!= FileValidationStatus.FINISHED) return;
+            if (status != FileValidationStatus.FINISHED) return;
             boolean hasErrors = fileValidationService.hasErrors(json);
             if (!hasErrors) {
                 submission.setStatus(SubmissionStatus.SUBMITTED);
@@ -238,7 +276,7 @@ public class AeIntegrationWatchdog {
 
     @Transactional(rollbackOn = {FileValidationException.class})
     public void processAwaitingFileValidation(Submission submission) throws Exception {
-        if (! (submission instanceof ExperimentSubmission)) {
+        if (!(submission instanceof ExperimentSubmission)) {
             logger.error("Ignoring invalid submission type " + submission.getClass().getName() + " for " + submission.getId());
             return;
         }
@@ -267,14 +305,14 @@ public class AeIntegrationWatchdog {
 
         // put raw datafiles in upload folder
         Set<DataFile> rawDataFiles = dataFileManager.getAssignedFiles(submission, FileType.RAW_FILE);
-        for (DataFile rawDataFile: rawDataFiles ) {
-            URI destinationURI =  new URI(ftpManager.getDirectory(ftpSubDirectory) + rawDataFile.getName());
+        for (DataFile rawDataFile : rawDataFiles) {
+            URI destinationURI = new URI(ftpManager.getDirectory(ftpSubDirectory) + rawDataFile.getName());
             DataFileHandle source = dataFileManager.getFileHandle(rawDataFile);
             source.copyTo(destinationURI);
         }
 
         // submit to file validator
-        fileValidationService.submit( new URI(ftpManager.getDirectory(ftpSubDirectory)).getPath() , submission.getId() );
+        fileValidationService.submit(new URI(ftpManager.getDirectory(ftpSubDirectory)).getPath(), submission.getId());
 
         //update status
         submission.setStatus(SubmissionStatus.VALIDATING_FILES);
@@ -291,7 +329,7 @@ public class AeIntegrationWatchdog {
         Integer substrackingId = submissionOutcomeIntegerPair.getRight();
         if (SubmissionOutcome.SUBMISSION_FAILED != outcome) {
             File exportDir = copyDataFiles(submission, substrackingId);
-            addFilesToSubstracking(submission,substrackingId, exportDir);
+            addFilesToSubstracking(submission, substrackingId, exportDir);
             boolean hasResubmitted = SubmissionStatus.RESUBMITTED == submission.getStatus();
             submission.setStatus(SubmissionStatus.IN_CURATION);
             submissionManager.save(submission);
@@ -304,12 +342,13 @@ public class AeIntegrationWatchdog {
                 if (submission instanceof ExperimentSubmission) {
                     try {
                         ExperimentProfile exp = ((ExperimentSubmission) submission).getExperimentProfile();
-                        if (exp.getType().isSequencing()) {
+                        if (exp.getType().isSequencing() || exp.getType().isPlantSequncing()) {
                             submissionType = "HTS";
                         } else {
-                             submissionType = "MA";
+                            submissionType = "MA";
                         }
-                    } catch (DataSerializationException x) {}
+                    } catch (DataSerializationException x) {
+                    }
                 }
 
                 sendEmail(
@@ -347,7 +386,7 @@ public class AeIntegrationWatchdog {
     private void addFilesToSubstracking(Submission submission, Integer substrackingId, File exportDir) throws SubsTrackingException {
         Connection subsTrackingConnection = null;
 
-        try{
+        try {
             if (properties.isSubsTrackingEnabled()) {
                 subsTrackingConnection = subsTracking.getConnection();
                 if (null == subsTrackingConnection) {
@@ -390,7 +429,7 @@ public class AeIntegrationWatchdog {
             ExperimentProfile exp = ((ExperimentSubmission) submission).getExperimentProfile();
             Set<DataFile> dataFiles = dataFileManager.getAssignedFiles(submission);
             Set<DataFile> rawDataFiles = dataFileManager.getAssignedFiles(submission, FileType.RAW_FILE);
-            boolean isSequencing = exp.getType().isSequencing();
+            boolean isSequencing = exp.getType().isSequencing() || exp.getType().isPlantSequncing();
             String dataFilesPostProcessingScript = properties.getSubsTrackingDataFilesPostProcessingScript();
 
             String ftpSubDirectory = submission.getFtpSubDirectory();
@@ -478,8 +517,7 @@ public class AeIntegrationWatchdog {
                                     .build(),
                             submission.getRtTicketNumber()
                     );
-                }
-                catch (Exception x){
+                } catch (Exception x) {
                     messenger.send("There was a problem updating Accession Number " + submission.getRtTicketNumber(), x);
                 }
                 if (ftpManager.doesExist(oldFtpSubDirectory)) {
@@ -595,7 +633,7 @@ public class AeIntegrationWatchdog {
             Collection<DataFile> files = dataFileManager.getAssignedFiles(submission);
             for (DataFile file : files) {
                 if (!file.getStatus().isFinal()) {
-                    return new MutablePair<>(result, -1) ;
+                    return new MutablePair<>(result, -1);
                 }
             }
 
@@ -618,7 +656,7 @@ public class AeIntegrationWatchdog {
                 subsTrackingConnection.commit();
 
             }
-            return new MutablePair<>(result, subsTrackingId) ;
+            return new MutablePair<>(result, subsTrackingId);
         } catch (Throwable e) {
             try {
                 if (null != subsTrackingConnection) {
@@ -682,7 +720,7 @@ public class AeIntegrationWatchdog {
             // copy data files
             Set<DataFile> dataFiles = dataFileManager.getAssignedFiles(submission);
             Set<DataFile> rawDataFiles = dataFileManager.getAssignedFiles(submission, FileType.RAW_FILE);
-            boolean isSequencing = exp.getType().isSequencing();
+            boolean isSequencing = exp.getType().isSequencing() || exp.getType().isPlantSequncing();
             String ftpSubDirectory = submission.getFtpSubDirectory();
 
             if (isSequencing && rawDataFiles.size() > 0) {
@@ -806,13 +844,12 @@ public class AeIntegrationWatchdog {
         }
     }
 
-    private void sendEmail(String template, Map<String,String> params, Submission submission) {
+    private void sendEmail(String template, Map<String, String> params, Submission submission) {
         try {
             messenger.send(template, params, submission.getCreatedBy(), submission);
         } catch (RuntimeException e) {
             logger.error("Unable to send email", e);
         }
     }
-
 
 }

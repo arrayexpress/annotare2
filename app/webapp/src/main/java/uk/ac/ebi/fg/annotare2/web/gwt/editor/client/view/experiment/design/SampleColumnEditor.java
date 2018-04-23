@@ -134,12 +134,6 @@ public class SampleColumnEditor extends Composite implements HasValueChangeHandl
                 fvChkBoxChanged();
             }
         });
-
-        if(!(column.getName().toLowerCase().equalsIgnoreCase("material type") || column.getName().toLowerCase().equalsIgnoreCase("organism")))
-        {
-            fvChkBox.setValue(true);
-            column.setType(SampleAttributeType.FACTOR_VALUE);
-        }
     }
 
     @UiHandler("nameText")

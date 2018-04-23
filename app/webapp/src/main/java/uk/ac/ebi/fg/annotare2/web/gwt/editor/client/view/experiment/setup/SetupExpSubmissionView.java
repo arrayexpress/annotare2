@@ -374,7 +374,7 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
                 plantTwoColorDetails.setVisible(false);
                 plantHighSeqDetails.setVisible(true);
                 plantOneColorDetails.setVisible(false);
-                return new HighThroughputSeqSettings();
+                return new PlantHighThroughputSeqSettings();
 
             case PLANT_ONE_COLOR_MICROARRAY:
                 genericExpDetails.setVisible(false);
@@ -382,7 +382,7 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
                 plantTwoColorDetails.setVisible(false);
                 plantHighSeqDetails.setVisible(false);
                 plantOneColorDetails.setVisible(true);
-                return new OneColorMicroarraySettings(this);
+                return new PlantOneColorMicroarraySettings(this);
 
             case PLANT_TWO_COLOR_MICROARRAY:
                 genericExpDetails.setVisible(false);
@@ -390,7 +390,7 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
                 plantTwoColorDetails.setVisible(true);
                 plantHighSeqDetails.setVisible(false);
                 plantOneColorDetails.setVisible(false);
-                return new TwoColorMicroarraySettings(this);
+                return new PlantTwoColorMicroarraySettings(this);
 
             default:
                 throw new IllegalArgumentException("Unknown experiment type: " + type);

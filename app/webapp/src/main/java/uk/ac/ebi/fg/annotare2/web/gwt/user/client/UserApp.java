@@ -93,18 +93,20 @@ public class UserApp implements EntryPoint {
         showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "Notice_100817_Shown"; // change name according to the cookie display date ddmmyy
+    private final static String NOTICE_COOKIE = "Notice_090418_Shown"; // change name according to the cookie display date ddmmyy
     private void showNotice() {
         Date stopNoticeDate = new Date();
-        stopNoticeDate.setTime(1503356400000L); // stop showing on 22 Aug (http://www.epochconverter.com/)
+        stopNoticeDate.setTime(1523833199000L); // stop showing on 15 April (http://www.epochconverter.com/)
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE)) && (new Date().before(stopNoticeDate))) {
             Date expiryDate = new Date();
             expiryDate.setTime(8000000000000L);
             CookieDialog dialogBox = new CookieDialog(
-                    "Annotare Downtime!",
-                    "<p>Dear Submitter,</p>" +
-                            "<p>Due to essential systems maintenance, Annotare will not be available from 18th to 21st August. We apologise for any inconvenience.</p>" +
-                            "<p>Regards,<br/>Annotare Team</p>",
+                    "Annotare Easter Downtime",
+                    "<p>Dear Submitters,<p>" +
+                            "<p>Please be aware but sadly both curators will be away from the office over " +
+                            "the next week (9th-13th April 2018) so there will be a delay in submissions processing." +
+                            "We will do our best to reply and curate urgent submissions or those already in progress.</p>" +
+                            "<p>Apologies for any inconvenience</p>",
                     NOTICE_COOKIE, expiryDate
             );
             dialogBox.show();

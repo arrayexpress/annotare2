@@ -1,7 +1,5 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
-import uk.ac.ebi.fg.annotare2.submission.model.SampleAttribute;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +12,7 @@ public enum ExperimentDesignType {
     BINDING_SITE_IDENTIFICATION_DESIGN("binding site identification design","EFO:0004664",SampleAttributeTemplate.IMMUNOPRECIPITATE_ORIGIN),
     CASE_CONTROL_DESIGN("case control design","EFO:0001427",SampleAttributeTemplate.DESEASE_ATTRIBUTE),
     CELL_TYPE_COMPARISON_DESIGN("cell type comparison design","EFO:0001745", SampleAttributeTemplate.CELL_TYPE_ORIGIN),
+    CLINICAL_HISTORY_DESIGN("clinical history design","EFO:0000352",SampleAttributeTemplate.CLINICAL_HISTORY_ATTRIBUTE),
     COMPOUND_TREATMENT_DESIGN("compound treatment design","EFO:0001755",SampleAttributeTemplate.COMPOUND_ATTRIBUTE,SampleAttributeTemplate.DOSE_ORIGIN),
     DEVELOPMENT_DIFFERENTIAL_DESIGN("development or differentiation design","EFO:0001746",SampleAttributeTemplate.DEVELOPMENTAL_STAGE_ORIGIN),
     DISEASE_STATE_DESIGN("disease state design","EFO:0001756",SampleAttributeTemplate.DESEASE_ATTRIBUTE),
@@ -21,6 +20,8 @@ public enum ExperimentDesignType {
     GENETIC_MODIFICATION_DESIGN("genetic modification design","EFO:0001758",SampleAttributeTemplate.GENOTYPE_ATTRIBUTE),
     GENOTYPE_DESIGN("genotype design","EFO:0001748",SampleAttributeTemplate.GENOTYPE_ATTRIBUTE),
     GROWTH_CONDITION_DESIGN("growth condition design","EFO:0001759",SampleAttributeTemplate.GROWTH_CONDITION_ORIGIN),
+    PATHOGENICITY_DESIGN("pathogenicity design","EFO:0001761",SampleAttributeTemplate.INFECT_ATTRIBUTE),
+    INJURY_DESIGN("injury design","EFO:0001760",SampleAttributeTemplate.INJURY_ATTRIBUTE),
     ORGANISM_PART_COMPARISON_DESIGN("organism part comparison design","EFO:0001750",SampleAttributeTemplate.ORGANISM_PART_ATTRIBUTE),
     SEX_DESIGN("sex design","EFO:0001752",SampleAttributeTemplate.SEX_ORIGIN),
     SPECIES_DESIGN("species design","EFO:0001753",SampleAttributeTemplate.ORGANISM_ATTRIBUTE),
