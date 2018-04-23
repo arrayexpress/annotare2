@@ -170,10 +170,7 @@ public class AeIntegrationWatchdog {
         for (Submission submission : submissions) {
             if (!submissionsBeingProcessed.contains(submission.getId())) {
                 submissionsBeingProcessed.add(submission.getId());
-                for (Long submissionId:
-                     submissionsBeingProcessed) {
-                    logger.debug("Submissions being processed: " + submissionId);
-                }
+
                 switch (submission.getStatus()) {
                     case SUBMITTED:
                     case RESUBMITTED:
@@ -190,7 +187,6 @@ public class AeIntegrationWatchdog {
                         try {
                             processInCuration(submission);
                             submissionsBeingProcessed.remove(submission.getId());
-                            logger.debug("Submission being removed from current processing submission set: " + submission.getId());
                             break;
                         } catch (Exception e) {
                             logger.error("There was an error in submission (IN_CURATION) state", e);
@@ -200,7 +196,6 @@ public class AeIntegrationWatchdog {
                         try {
                             processPrivateInAE(submission);
                             submissionsBeingProcessed.remove(submission.getId());
-                            logger.debug("Submission being removed from current processing submission set: " + submission.getId());
                             break;
                         } catch (Exception e) {
                             logger.error("There was an error in submission (PRIVATE_IN_AE) state", e);
@@ -210,7 +205,6 @@ public class AeIntegrationWatchdog {
                         try {
                             processPublicInAE(submission);
                             submissionsBeingProcessed.remove(submission.getId());
-                            logger.debug("Submission being removed from current processing submission set: " + submission.getId());
                             break;
                         } catch (Exception e) {
                             logger.error("There was an error in submission (PUBLIC_IN_AE) state", e);
@@ -220,7 +214,6 @@ public class AeIntegrationWatchdog {
                         try {
                             processAwaitingFileValidation(submission);
                             submissionsBeingProcessed.remove(submission.getId());
-                            logger.debug("Submission being removed from current processing submission set: " + submission.getId());
                             break;
                         } catch (Exception e) {
                             logger.error("There was an error in submission (AWAITING_FILE_VALIDATION) state", e);
@@ -230,7 +223,6 @@ public class AeIntegrationWatchdog {
                         try {
                             processValidatingFiles(submission);
                             submissionsBeingProcessed.remove(submission.getId());
-                            logger.debug("Submission being removed from current processing submission set: " + submission.getId());
                             break;
                         } catch (Exception e) {
                             logger.error("There was an error in submission (VALIDATING_FILES) state", e);
