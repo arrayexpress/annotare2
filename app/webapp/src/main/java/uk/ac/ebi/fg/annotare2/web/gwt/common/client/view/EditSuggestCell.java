@@ -460,6 +460,9 @@ public class EditSuggestCell extends
                       if (validateInput(viewData.getText(), context.getIndex())){
                           commit(context, parent, viewData, valueUpdater);
                       }
+                      else {
+                          cancel(context,parent,viewData);
+                      }
                   }
               }
           }
