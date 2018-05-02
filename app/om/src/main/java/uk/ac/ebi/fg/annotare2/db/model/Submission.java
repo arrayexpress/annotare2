@@ -20,6 +20,8 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.submission.transform.ModelVersion;
 
@@ -43,6 +45,9 @@ import static uk.ac.ebi.fg.annotare2.db.model.FilterNames.NOT_DELETED_SUBMISSION
 @FilterDef(name = NOT_DELETED_SUBMISSION_FILTER, defaultCondition = "deleted = 0")
 @Filter(name = NOT_DELETED_SUBMISSION_FILTER)
 public abstract class Submission implements HasEffectiveAcl {
+
+
+    private static final Logger logger = LoggerFactory.getLogger(Submission.class);
 
     @Id
     @GeneratedValue
@@ -169,6 +174,7 @@ public abstract class Submission implements HasEffectiveAcl {
     }
 
     public void setStatus(SubmissionStatus status) {
+        logger.debug("Changing status of submission {} from {} to {}", id, this.status, status);
         this.status = status;
     }
 

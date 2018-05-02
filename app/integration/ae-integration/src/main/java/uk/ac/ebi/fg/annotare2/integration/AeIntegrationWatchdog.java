@@ -174,6 +174,7 @@ public class AeIntegrationWatchdog {
                 case SUBMITTED:
                 case RESUBMITTED:
                     if (!hasProcessedOneSubmission) {
+                        logger.debug("Processing submission {}: {}", submission.getId(), submission.getStatus());
                         processSubmitted(submission);
                         hasProcessedOneSubmission = true;
                     }
