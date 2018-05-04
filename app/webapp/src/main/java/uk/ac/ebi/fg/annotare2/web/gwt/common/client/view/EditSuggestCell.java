@@ -403,6 +403,11 @@ public class EditSuggestCell extends
         String type = event.getType();
         int keyCode = event.getKeyCode();
 
+        if(null != display && !display.isSuggestionListShowing()){
+            String currentText = viewData.getText();
+            showSuggestions(context, parent, currentText, valueUpdater);
+        }
+
         if (KEYDOWN.equals(type)) {
             NotificationPopupPanel.cancel();
 
@@ -452,20 +457,19 @@ public class EditSuggestCell extends
             }
         } else if (BLUR.equals(type)) {
             if (null == display || !display.isSuggestionListShowing()) {
-              EventTarget eventTarget = event.getEventTarget();
-              if (Element.is(eventTarget)) {
-                  Element target = Element.as(eventTarget);
-                  if ("input".equals(target.getTagName().toLowerCase())) {
-                      // Commit changes.
-                      if (validateInput(viewData.getText(), context.getIndex())){
-                          commit(context, parent, viewData, valueUpdater);
-                      }
-                      else {
-                          cancel(context,parent,viewData);
-                      }
-                  }
-              }
-          }
+                EventTarget eventTarget = event.getEventTarget();
+                if (Element.is(eventTarget)) {
+                    Element target = Element.as(eventTarget);
+                    if ("input".equals(target.getTagName().toLowerCase())) {
+                        // Commit changes.
+                        if (validateInput(viewData.getText(), context.getIndex())) {
+                            commit(context, parent, viewData, valueUpdater);
+                        } else {
+                            cancel(context, parent, viewData);
+                        }
+                    }
+                }
+            }
 
         }
     }
