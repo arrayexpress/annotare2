@@ -97,7 +97,6 @@ public class AeIntegrationWatchdog {
     }
 
 
-
     @Inject
     public AeIntegrationWatchdog(HibernateSessionFactory sessionFactory,
                                  ExtendedAnnotareProperties properties,
@@ -181,30 +180,31 @@ public class AeIntegrationWatchdog {
                         logger.debug("Submission being removed from current processing submission set: " + submission.getId());
                         break;
 
-                case IN_CURATION:
-                    processInCuration(submission);
-                    submissionsBeingProcessed.remove(submission.getId());
-                    break;
+                    case IN_CURATION:
+                        processInCuration(submission);
+                        submissionsBeingProcessed.remove(submission.getId());
+                        break;
 
-                case PRIVATE_IN_AE:
-                    processPrivateInAE(submission);
-                    submissionsBeingProcessed.remove(submission.getId());
-                    break;
+                    case PRIVATE_IN_AE:
+                        processPrivateInAE(submission);
+                        submissionsBeingProcessed.remove(submission.getId());
+                        break;
 
-                case PUBLIC_IN_AE:
-                    processPublicInAE(submission);
-                    submissionsBeingProcessed.remove(submission.getId());
-                    break;
+                    case PUBLIC_IN_AE:
+                        processPublicInAE(submission);
+                        submissionsBeingProcessed.remove(submission.getId());
+                        break;
 
-                case AWAITING_FILE_VALIDATION:
-                    processAwaitingFileValidation(submission);
-                    submissionsBeingProcessed.remove(submission.getId());
-                    break;
+                    case AWAITING_FILE_VALIDATION:
+                        processAwaitingFileValidation(submission);
+                        submissionsBeingProcessed.remove(submission.getId());
+                        break;
 
-                case VALIDATING_FILES:
-                    processValidatingFiles(submission);
-                    submissionsBeingProcessed.remove(submission.getId());
-                    break;
+                    case VALIDATING_FILES:
+                        processValidatingFiles(submission);
+                        submissionsBeingProcessed.remove(submission.getId());
+                        break;
+                }
             }
         }
     }
@@ -214,9 +214,9 @@ public class AeIntegrationWatchdog {
         try {
             JSONObject json = fileValidationService.checkStatus(submission.getId());
 
-            FileValidationStatus status = FileValidationStatus.valueOf(json.get("status").toString().replace(' ','_').toUpperCase()) ;
+            FileValidationStatus status = FileValidationStatus.valueOf(json.get("status").toString().replace(' ', '_').toUpperCase());
             logger.debug("File validation status for submission {} is {}", submission.getId(), status);
-            if (status!= FileValidationStatus.FINISHED) return;
+            if (status != FileValidationStatus.FINISHED) return;
             boolean hasErrors = fileValidationService.hasErrors(json);
             if (!hasErrors) {
                 submission.setStatus(SubmissionStatus.SUBMITTED);
@@ -314,9 +314,10 @@ public class AeIntegrationWatchdog {
                         if (exp.getType().isSequencing() || exp.getType().isPlantSequncing()) {
                             submissionType = "HTS";
                         } else {
-                             submissionType = "MA";
+                            submissionType = "MA";
                         }
-                    } catch (DataSerializationException x) {}
+                    } catch (DataSerializationException x) {
+                    }
                 }
 
                 sendEmail(
@@ -354,7 +355,7 @@ public class AeIntegrationWatchdog {
     private void addFilesToSubstracking(Submission submission, Integer substrackingId, File exportDir) throws SubsTrackingException {
         Connection subsTrackingConnection = null;
 
-        try{
+        try {
             if (properties.isSubsTrackingEnabled()) {
                 subsTrackingConnection = subsTracking.getConnection();
                 if (null == subsTrackingConnection) {
@@ -485,8 +486,7 @@ public class AeIntegrationWatchdog {
                                     .build(),
                             submission.getRtTicketNumber()
                     );
-                }
-                catch (Exception x){
+                } catch (Exception x) {
                     messenger.send("There was a problem updating Accession Number " + submission.getRtTicketNumber(), x);
                 }
                 if (ftpManager.doesExist(oldFtpSubDirectory)) {
@@ -813,7 +813,7 @@ public class AeIntegrationWatchdog {
         }
     }
 
-    private void sendEmail(String template, Map<String,String> params, Submission submission) {
+    private void sendEmail(String template, Map<String, String> params, Submission submission) {
         try {
             messenger.send(template, params, submission.getCreatedBy(), submission);
         } catch (RuntimeException e) {
