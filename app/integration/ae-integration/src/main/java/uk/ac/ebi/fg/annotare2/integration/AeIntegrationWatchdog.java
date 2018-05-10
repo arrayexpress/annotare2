@@ -168,7 +168,7 @@ public class AeIntegrationWatchdog {
         );
 
         for (Submission submission : submissions) {
-            if (!submissionsBeingProcessed.contains(submission.getId())) {
+            if (!submissionsBeingProcessed.contains(submission.getId()) && (submissionsBeingProcessed.remainingCapacity() != 0)) {
                 submissionsBeingProcessed.add(submission.getId());
 
                 switch (submission.getStatus()) {
