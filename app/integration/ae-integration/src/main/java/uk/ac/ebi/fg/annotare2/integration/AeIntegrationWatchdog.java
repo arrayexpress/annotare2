@@ -130,6 +130,7 @@ public class AeIntegrationWatchdog {
             public void run() {
                 Session session = sessionFactory.openSession();
                 try {
+                    logger.debug("Thread {} stated processSubmission function.", Thread.currentThread().getId());
                     processSubmissions();
                 } catch (Throwable x) {
                     logger.error("Submission watchdog process caught an exception:", x);
@@ -157,6 +158,7 @@ public class AeIntegrationWatchdog {
     }
 
     private void processSubmissions() throws Exception {
+
         final Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(
                 SubmissionStatus.SUBMITTED
                 , SubmissionStatus.RESUBMITTED
@@ -168,45 +170,67 @@ public class AeIntegrationWatchdog {
         );
 
         for (Submission submission : submissions) {
-            if (!submissionsBeingProcessed.contains(submission.getId()) && (submissionsBeingProcessed.remainingCapacity() != 0)) {
-                submissionsBeingProcessed.add(submission.getId());
+
+            if (addSubmissionToSubmissionProcessingSet(submission)) {
 
                 switch (submission.getStatus()) {
                     case SUBMITTED:
                     case RESUBMITTED:
-                        logger.debug("Processing submission {}: {}", submission.getId(), submission.getStatus());
+                        logger.debug("Thread {} processing submission {}: {}", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
                         processSubmitted(submission);
-                        submissionsBeingProcessed.remove(submission.getId());
-                        logger.debug("Submission being removed from current processing submission set: " + submission.getId());
+                        removeSubmissionFromSubmissionProcessingSet(submission);
+                        logger.debug("Thread {} removed submission {}: {} from current processing submission set.", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
                         break;
 
                     case IN_CURATION:
                         processInCuration(submission);
-                        submissionsBeingProcessed.remove(submission.getId());
+                        removeSubmissionFromSubmissionProcessingSet(submission);
                         break;
 
                     case PRIVATE_IN_AE:
                         processPrivateInAE(submission);
-                        submissionsBeingProcessed.remove(submission.getId());
+                        removeSubmissionFromSubmissionProcessingSet(submission);
                         break;
 
                     case PUBLIC_IN_AE:
                         processPublicInAE(submission);
-                        submissionsBeingProcessed.remove(submission.getId());
+                        removeSubmissionFromSubmissionProcessingSet(submission);
                         break;
 
                     case AWAITING_FILE_VALIDATION:
                         processAwaitingFileValidation(submission);
-                        submissionsBeingProcessed.remove(submission.getId());
+                        removeSubmissionFromSubmissionProcessingSet(submission);
                         break;
 
                     case VALIDATING_FILES:
                         processValidatingFiles(submission);
-                        submissionsBeingProcessed.remove(submission.getId());
+                        removeSubmissionFromSubmissionProcessingSet(submission);
                         break;
                 }
+
             }
         }
+    }
+
+    private synchronized boolean addSubmissionToSubmissionProcessingSet(Submission submission) throws Exception {
+
+        sessionFactory.getCurrentSession().refresh(submission);
+
+        if (!submissionsBeingProcessed.contains(submission.getId()) && submissionsBeingProcessed.remainingCapacity() != 0) {
+            if(submission.getStatus() == SubmissionStatus.SUBMITTED || submission.getStatus() == SubmissionStatus.RESUBMITTED){
+                logger.debug("Thread {} is adding submission {}: {} to current submission processing set.", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
+            }
+            submissionsBeingProcessed.add(submission.getId());
+            if(submission.getStatus() == SubmissionStatus.SUBMITTED || submission.getStatus() == SubmissionStatus.RESUBMITTED){
+                logger.debug("Thread {} added submission {}: {} to current submission set.", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private synchronized void removeSubmissionFromSubmissionProcessingSet(Submission submission){
+        submissionsBeingProcessed.remove(submission.getId());
     }
 
     @Transactional(rollbackOn = {FileValidationException.class})
