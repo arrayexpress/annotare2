@@ -69,6 +69,7 @@ public class AnnotareProperties implements DataFileStoreProperties {
         return getListProperty("sequencingHardware");
     }
 
+    public Integer getWatchdogThreadCount() { return getIntegerProperty("watchdog.thread.count"); }
 
     public File getEfoIndexDir() {
         return getDirProperty("efo.index.dir");
@@ -194,6 +195,10 @@ public class AnnotareProperties implements DataFileStoreProperties {
             return emptyList();
         }
         return asList(property.split("\\s*,\\s*"));
+    }
+
+    protected int getIntegerProperty(String key) {
+        return Integer.parseInt(getProperty(key).trim());
     }
 
     protected boolean getBooleanProperty(String key) {

@@ -74,9 +74,6 @@ public class AeIntegrationWatchdog {
 
     private static final Logger logger = LoggerFactory.getLogger(AeIntegrationWatchdog.class);
 
-    private static final int THREAD_COUNT = 3;
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(THREAD_COUNT);
-    final BlockingQueue<Long> submissionsBeingProcessed = new ArrayBlockingQueue<>(THREAD_COUNT);
     private final HibernateSessionFactory sessionFactory;
     private final SubsTracking subsTracking;
     private final AEConnection aeConnection;
@@ -89,6 +86,8 @@ public class AeIntegrationWatchdog {
     private final EfoSearch efoSearch;
     private final ExtendedAnnotareProperties properties;
     private final Messenger messenger;
+    private ScheduledExecutorService scheduler;
+    private BlockingQueue<Long> submissionsBeingProcessed;
 
     private enum SubmissionOutcome {
         INITIAL_SUBMISSION_OK,
@@ -121,6 +120,8 @@ public class AeIntegrationWatchdog {
         this.efoSearch = efoSearch;
         this.properties = properties;
         this.messenger = messenger;
+        this.scheduler = Executors.newScheduledThreadPool(properties.getWatchdogThreadCount());
+        this.submissionsBeingProcessed = new ArrayBlockingQueue<>(properties.getWatchdogThreadCount());
     }
 
     @PostConstruct
@@ -143,7 +144,7 @@ public class AeIntegrationWatchdog {
         };
 
         if (properties.isSubsTrackingEnabled()) {
-            for (int i = 0; i < THREAD_COUNT; i++) {
+            for (int i = 0; i < properties.getWatchdogThreadCount(); i++) {
                 scheduler.scheduleAtFixedRate(periodicProcess, i * 20, 60, SECONDS);
             }
         }
@@ -172,40 +173,39 @@ public class AeIntegrationWatchdog {
         for (Submission submission : submissions) {
 
             if (addSubmissionToSubmissionProcessingSet(submission)) {
+                try {
+                    switch (submission.getStatus()) {
+                        case SUBMITTED:
+                        case RESUBMITTED:
+                            logger.debug("Thread {} processing submission {}: {}", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
+                            processSubmitted(submission);
+                            break;
 
-                switch (submission.getStatus()) {
-                    case SUBMITTED:
-                    case RESUBMITTED:
-                        logger.debug("Thread {} processing submission {}: {}", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
-                        processSubmitted(submission);
-                        removeSubmissionFromSubmissionProcessingSet(submission);
+                        case IN_CURATION:
+                            processInCuration(submission);
+                            break;
+
+                        case PRIVATE_IN_AE:
+                            processPrivateInAE(submission);
+                            break;
+
+                        case PUBLIC_IN_AE:
+                            processPublicInAE(submission);
+                            break;
+
+                        case AWAITING_FILE_VALIDATION:
+                            processAwaitingFileValidation(submission);
+                            break;
+
+                        case VALIDATING_FILES:
+                            processValidatingFiles(submission);
+                            break;
+                    }
+                } finally {
+                    removeSubmissionFromSubmissionProcessingSet(submission);
+                    if(submission.getStatus() == SubmissionStatus.SUBMITTED || submission.getStatus() == SubmissionStatus.RESUBMITTED) {
                         logger.debug("Thread {} removed submission {}: {} from current processing submission set.", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
-                        break;
-
-                    case IN_CURATION:
-                        processInCuration(submission);
-                        removeSubmissionFromSubmissionProcessingSet(submission);
-                        break;
-
-                    case PRIVATE_IN_AE:
-                        processPrivateInAE(submission);
-                        removeSubmissionFromSubmissionProcessingSet(submission);
-                        break;
-
-                    case PUBLIC_IN_AE:
-                        processPublicInAE(submission);
-                        removeSubmissionFromSubmissionProcessingSet(submission);
-                        break;
-
-                    case AWAITING_FILE_VALIDATION:
-                        processAwaitingFileValidation(submission);
-                        removeSubmissionFromSubmissionProcessingSet(submission);
-                        break;
-
-                    case VALIDATING_FILES:
-                        processValidatingFiles(submission);
-                        removeSubmissionFromSubmissionProcessingSet(submission);
-                        break;
+                    }
                 }
 
             }
