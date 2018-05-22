@@ -71,6 +71,30 @@
 
     pageContext.setAttribute("pageTitle", pageTitle);
 %>
+<script>
+    var localFrameworkVersion = '1.1'; // 1.1 or 1.2 or compliance or other
+    // if you select compliance or other we will add some helpful
+    // CSS styling, but you may need to add some CSS yourself
+    var newDataProtectionNotificationBanner = document.createElement('script');
+    newDataProtectionNotificationBanner.src = 'https://ebi.emblstatic.net/web_guidelines/EBI-Framework/v1.3/js/ebi-global-includes/script/5_ebiFrameworkNotificationBanner.js?legacyRequest='+localFrameworkVersion;
+    document.head.appendChild(newDataProtectionNotificationBanner);
+    newDataProtectionNotificationBanner.onload = function() {
+        ebiFrameworkRunDataProtectionBanner(); // invoke the banner
+    };
+</script>
+<style>
+    div#data-protection-banner a {
+        color: white;
+    }
+    .row{
+        width: 50%;
+        margin: auto;
+    }
+
+    a#data-protection-agree {
+        float: right;
+    }
+</style>
 <compress:html enabled="true" removeComments="true" compressCss="true" compressJavaScript="false" yuiJsDisableOptimizations="true">
     <t:frontierpage>
         <jsp:attribute name="title">${pageTitle}Annotare &lt; EMBL-EBI</jsp:attribute>

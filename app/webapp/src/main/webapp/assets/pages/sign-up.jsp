@@ -48,6 +48,7 @@
         <div><label for="confirm-password">Confirm password</label></div>
         <div><input type="password" id="confirm-password" name="confirm-password"/></div>
         <div class="error">${confirmPasswordErrors}</div>
+        <div>By signing up you agree to our <a target="_blank" href="https://www.ebi.ac.uk/data-protection/privacy-notice/embl-ebi-public-website">Privacy Policy</a> and <a target="_blank" href="https://www.ebi.ac.uk/about/terms-of-use">Terms of Use</a>.</div>
         <div class="btn-row">
             <div>Already registered? Please <a href="${pageContext.request.contextPath}/login/">log in</a>.</div>
             <div class="right"><input type="submit" class="submit" name="signup" value="Register"/></div>
