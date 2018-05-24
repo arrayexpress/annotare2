@@ -181,4 +181,9 @@
             ALTER TABLE data_files ADD COLUMN fileSize BIGINT(20) NOT NULL;
         </sql>
     </changeSet>
+    <changeSet id="addPrivacyNoticeVersionInUser" author="haider">
+        <sql>
+            ALTER TABLE users ADD COLUMN privacyNoticeVersion INT DEFAULT 0 NOT NULL;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

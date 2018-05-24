@@ -42,6 +42,10 @@ public interface AccountService {
 
     void logout(HttpSession session);
 
+    boolean isPrivacyNoticeAccepted(HttpServletRequest request) throws AccountServiceException;
+
+    void setPrivacyNoticeVersion(HttpServletRequest request, int version) throws AccountServiceException;
+
     User getCurrentUser(HttpSession session);
 
     String getCurrentUserEmail(HttpSession session);

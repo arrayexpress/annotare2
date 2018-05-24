@@ -27,17 +27,15 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Enumeration;
 
-import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.LOGIN;
 import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.PRIVACY_NOTICE;
 
 /**
  * @author Olga Melnichuk
  */
-public class SecurityFilter implements Filter {
+public class PrivacyNoticeFilter implements Filter {
 
-    private static final Logger log = LoggerFactory.getLogger(SecurityFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(PrivacyNoticeFilter.class);
 
     @Inject
     private AccountService accountService;
@@ -56,14 +54,11 @@ public class SecurityFilter implements Filter {
 
         if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
-            if (!accountService.isLoggedIn(request)) {
-                forceLogin(request, (HttpServletResponse) servletResponse);
-                return;
-            }
+
             try {
                 if(!accountService.isPrivacyNoticeAccepted(request)){
+
                     PRIVACY_NOTICE.redirect(request, (HttpServletResponse) servletResponse);
-                    return;
                 }
             } catch (AccountServiceException e) {
                 e.printStackTrace();
@@ -73,26 +68,5 @@ public class SecurityFilter implements Filter {
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    @SuppressWarnings("unchecked")
-    private void forceLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        log.debug("Unauthorised access; request headers: ");
-        for(Enumeration<String> e = request.getHeaderNames(); e.hasMoreElements();) {
-            String name = e.nextElement();
-            log.debug("--> {}: {}", name, request.getHeader(name));
-        }
 
-
-        if (isRpcServicePath(request)) {
-            log.debug("Is an RPC service path; so returning unauthorised ({}) code..", HttpServletResponse.SC_UNAUTHORIZED);
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-
-        log.debug("Not an RPC service path");
-        LOGIN.saveAndRedirect(request, response);
-    }
-
-    private boolean isRpcServicePath(HttpServletRequest request) {
-       return rpcServicePaths.recognizeUri(request.getRequestURI());
-    }
 }

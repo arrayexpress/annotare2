@@ -72,6 +72,12 @@ public class AccountManager {
         return null != user && nullToEmpty(user.getVerificationToken()).equals(token);
     }
 
+    public boolean isPrivacyNoticeAccepted(final String email){
+        User user = getByEmail(email);
+
+        return user.getPrivacyNoticeVersion() != 0;
+    }
+
     public User getById(final Long id) throws RecordNotFoundException {
         return userDao.get(id);
     }
@@ -105,6 +111,15 @@ public class AccountManager {
         if (null != user) {
             user.setEmailVerified(true);
             user.setVerificationToken(null);
+            userDao.save(user);
+        }
+        return user;
+    }
+
+    public User setPrivacyNoticeVersion(final String email, int noticeVersion){
+        User user = getByEmail(email);
+        if(null != user){
+            user.setPrivacyNoticeVersion(noticeVersion);
             userDao.save(user);
         }
         return user;

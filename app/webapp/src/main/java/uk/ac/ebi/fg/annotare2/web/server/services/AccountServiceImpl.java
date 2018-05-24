@@ -217,6 +217,17 @@ public class AccountServiceImpl implements AccountService {
         return errors;
     }
 
+    @Transactional
+    public void setPrivacyNoticeVersion(HttpServletRequest request, int version) throws AccountServiceException {
+
+        accountManager.setPrivacyNoticeVersion(getCurrentUserEmail(request.getSession()),version);
+    }
+
+    @Transactional
+    public boolean isPrivacyNoticeAccepted(HttpServletRequest request){
+        return accountManager.isPrivacyNoticeAccepted(getCurrentUserEmail(request.getSession()));
+    }
+
     public void logout(HttpSession session) {
         session.invalidate();
     }

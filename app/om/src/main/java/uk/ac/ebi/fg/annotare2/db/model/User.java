@@ -57,6 +57,9 @@ public class User {
     @Column(name = "referrer", nullable = true)
     private String referrer;
 
+    @Column(name = "privacyNoticeVersion", columnDefinition = "INT default 0")
+    private int privacyNoticeVersion;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @OrderBy("role ASC")
     private List<UserRole> roles;
@@ -136,6 +139,14 @@ public class User {
 
     public void setVerificationToken(String verificationToken) {
         this.verificationToken = verificationToken;
+    }
+
+    public int getPrivacyNoticeVersion() {
+        return privacyNoticeVersion;
+    }
+
+    public void setPrivacyNoticeVersion(int privacyNoticeVersion) {
+        this.privacyNoticeVersion = privacyNoticeVersion;
     }
 
     public boolean isAllowed(HasEffectiveAcl obj, Permission permission) {

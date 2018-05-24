@@ -40,7 +40,8 @@ enum ServletNavigation {
     VERIFY_EMAIL("/verify-email/", "/static.jsp?pageName=verify-email.jsp"),
     CHANGE_PASSWORD("/change-password/", "/static.jsp?pageName=change-password.jsp"),
     HOME("/", "/home.jsp"),
-    EDITOR("/edit/", "/editor.jsp");
+    EDITOR("/edit/", "/editor.jsp"),
+    PRIVACY_NOTICE("/privacy-notice/","/static.jsp?pageName=privacy-notice.jsp");
 
     private static final Logger log = LoggerFactory.getLogger(ServletNavigation.class);
 

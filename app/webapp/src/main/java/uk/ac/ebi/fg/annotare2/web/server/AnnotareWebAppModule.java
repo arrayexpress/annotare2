@@ -74,7 +74,8 @@ public class AnnotareWebAppModule extends ServletModule {
 
         filter("/status").through(AccessLoggingSuppressFilter.class);
 
-        filter("/login/",
+        filter("/",
+                "/login/",
                "/logout/",
                "/sign-up/",
                "/verify-email/",
@@ -83,7 +84,9 @@ public class AnnotareWebAppModule extends ServletModule {
                "/EditorApp/*",
                "/upload",
                "/export",
-               "/download").through(HibernateSessionFilter.class);
+                "/download",
+                "/edit/*",
+                "/privacy-notice/").through(HibernateSessionFilter.class) ;
 
         filter("/",
                "/UserApp/*",
@@ -111,6 +114,7 @@ public class AnnotareWebAppModule extends ServletModule {
         serveRegex("/sign-up/" + JSESSIONID).with(SignUpServlet.class);
         serveRegex("/verify-email/" + JSESSIONID).with(VerifyEmailServlet.class);
         serveRegex("/change-password/" + JSESSIONID).with(ChangePasswordServlet.class);
+        serveRegex("/privacy-notice/" + JSESSIONID).with(PrivacyNoticeServlet.class);
         serve("/status").with(StatusServlet.class);
         serve("/upload").with(UploadServlet.class);
         serve("/export").with(ExportServlet.class);
@@ -121,6 +125,7 @@ public class AnnotareWebAppModule extends ServletModule {
         bind(HibernateSessionFilter.class).in(SINGLETON);
         bind(SetCharacterEncodingFilter.class).in(SINGLETON);
         bind(SecurityFilter.class).in(SINGLETON);
+        bind(PrivacyNoticeFilter.class).in(SINGLETON);
         bind(UrlRewriteFilter.class).in(SINGLETON);
         bind(StatusServlet.class).in(SINGLETON);
         bind(LoginServlet.class).in(SINGLETON);
@@ -133,6 +138,7 @@ public class AnnotareWebAppModule extends ServletModule {
         bind(SignUpServlet.class).in(SINGLETON);
         bind(VerifyEmailServlet.class).in(SINGLETON);
         bind(ChangePasswordServlet.class).in(SINGLETON);
+        bind(PrivacyNoticeServlet.class).in(SINGLETON);
 
         // shared services
         serveAndBindRpcService(ApplicationDataService.NAME, ApplicationDataServiceImpl.class, "UserApp", "EditorApp");

@@ -28,6 +28,9 @@
     } else if (pageName.equals("login.jsp")) {
         pageContext.setAttribute("loginClass", " active");
         pageTitle = "Login";
+    } else if(pageName.equals("privacy-notice.jsp")) {
+        pageContext.setAttribute("privacyNoticeClass", " active");
+        pageTitle = "Privacy Notice";
     } else if (pageName.equals("sign-up.jsp")) {
         pageContext.setAttribute("signUpClass", " active");
         pageTitle = "Register";

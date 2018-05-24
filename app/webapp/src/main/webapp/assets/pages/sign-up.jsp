@@ -32,6 +32,24 @@
     pageContext.setAttribute("userEmail", values == null ? "" : values[0]);
 %>
 <t:analytics></t:analytics>
+<script>
+    function acceptPolicy(){
+        var acceptCheck = document.getElementById("acceptPolicy");
+        if(acceptCheck.checked){
+            document.getElementById("register").disabled = false;
+        } else {
+            document.getElementById("register").disabled = true;
+        }
+    }
+</script>
+<style>
+    #register:disabled,
+    #register[disabled]{
+        border: 1px solid #999999;
+        background-color: #666666;
+        color: white;
+    }
+</style>
 <section class="grid_12 push_6 form">
     <h2>Please register with Annotare</h2>
     <form method="POST">
@@ -48,10 +66,13 @@
         <div><label for="confirm-password">Confirm password</label></div>
         <div><input type="password" id="confirm-password" name="confirm-password"/></div>
         <div class="error">${confirmPasswordErrors}</div>
-        <div>By signing up you agree to our <a target="_blank" href="https://www.ebi.ac.uk/data-protection/privacy-notice/embl-ebi-public-website">Privacy Policy</a> and <a target="_blank" href="https://www.ebi.ac.uk/about/terms-of-use">Terms of Use</a>.</div>
+        <div>
+            <input type="checkbox" name="policyAccept" id="acceptPolicy" onchange="document.getElementById('register').disabled = !this.checked;"/>
+            By signing up you agree to our <a target="_blank" href="https://www.ebi.ac.uk/data-protection/privacy-notice/annotare">Privacy Policy</a> and <a target="_blank" href="https://www.ebi.ac.uk/about/terms-of-use">Terms of Use</a>.
+        </div>
         <div class="btn-row">
             <div>Already registered? Please <a href="${pageContext.request.contextPath}/login/">log in</a>.</div>
-            <div class="right"><input type="submit" class="submit" name="signup" value="Register"/></div>
+            <div class="right"><input type="submit" class="submit" name="signup" value="Register" id="register" disabled /></div>
         </div>
     </form>
 </section>
