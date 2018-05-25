@@ -81,6 +81,11 @@
     border: 1px solid black
 }
 
+#annotare-help img {
+    width: 80%;
+    border: 2px solid #385930;
+}
+
 #secondary-nav li.active a {
     font-weight: bold !important
 }
