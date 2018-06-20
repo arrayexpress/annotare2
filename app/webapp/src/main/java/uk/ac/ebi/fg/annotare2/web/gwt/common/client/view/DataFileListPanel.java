@@ -249,6 +249,16 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         return false;
     }
 
+    public boolean isDuplicated(String fileName) {
+        List<DataFileRow> rows = dataProvider.getList();
+        for(int i=0; i < rows.size(); i++){
+            if(rows.get(i).getName().equalsIgnoreCase(fileName)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     private String trimValue(String value) {
         if (null != value) {
             value = value.replaceAll("([^\\t]*)[\\t].*", "$1").trim();

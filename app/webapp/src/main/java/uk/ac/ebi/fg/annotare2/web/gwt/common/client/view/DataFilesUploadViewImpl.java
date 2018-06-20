@@ -75,7 +75,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
     private final FTPUploadDialog ftpUploadDialog;
 
-   // private UploadProgressPopupPanel progressPanel = null;
+    // private UploadProgressPopupPanel progressPanel = null;
 
     private final DivElement messageElement;
     private final Element progressBarElement;
@@ -136,6 +136,11 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
     }
 
+    @Override
+    public boolean isDuplicateFile(String fileName) {
+        return fileListPanel.isDuplicated(fileName);
+    }
+
     private void showProgress() {
 
         progressPanel.setVisible(true);
@@ -181,19 +186,19 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     private String formatSpeed(double speed) {
         int unit = 1024;
         if (speed < unit) return NumberFormat.getFormat("#.0 B/s").format(speed);
-        int exp = (int)(Math.log(speed) / Math.log(unit));
-        String unitName = "kMGTPE".charAt(exp-1) + "B/s";
+        int exp = (int) (Math.log(speed) / Math.log(unit));
+        String unitName = "kMGTPE".charAt(exp - 1) + "B/s";
         return NumberFormat.getFormat("#.0 " + unitName).format(speed / Math.pow(unit, exp));
     }
 
     private String formatTime(int time) {
         int unit = 60;
         String prefix = "";
-        if ( time > (unit * unit) ) {
+        if (time > (unit * unit)) {
             prefix = NumberFormat.getFormat("00:").format(time / (unit * unit));
-            time = time % (unit*unit);
+            time = time % (unit * unit);
         }
-        return prefix + NumberFormat.getFormat("00:").format(time/unit) +
+        return prefix + NumberFormat.getFormat("00:").format(time / unit) +
                 NumberFormat.getFormat("00").format(time % unit);
     }
 
@@ -375,11 +380,26 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
         @Override
         public void onFilesAdded(ResumableUploader uploader, JsArray<ResumableFile> files) {
+            boolean shouldUpload = true;
+            StringBuilder sb = new StringBuilder();
+            sb.append("Following files already exist. To re-upload, please delete them and upload again.<br/>"); //<br/> added here because Notification panel display this as HTML so simple new line character won't work.
+
             for (int i = 0; i < files.length(); ++i) {
                 ResumableFile file = files.get(i);
-                logger.info("Batch added file " + file.getFileName() + ", size " + file.getSize());
+                if (!isDuplicateFile(file.getFileName())) {
+                    logger.info("Batch added file " + file.getFileName() + ", size " + file.getSize());
+                } else {
+                    sb.append(file.getFileName()).append("<br/>");
+                    shouldUpload = false;
+                    uploader.removeFile(file);
+                }
             }
-            uploader.upload();
+
+            if (shouldUpload) {
+                uploader.upload();
+            } else {
+                NotificationPopupPanel.error(sb.toString(), true, false);
+            }
         }
 
         @Override

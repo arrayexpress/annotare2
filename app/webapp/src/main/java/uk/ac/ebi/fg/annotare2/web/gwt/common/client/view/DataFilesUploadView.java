@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client.view;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
@@ -30,6 +31,8 @@ public interface DataFilesUploadView extends IsWidget {
     void setSubmissionId(long submissionId);
 
     void setDataFiles(List<DataFileRow> rows);
+
+    boolean isDuplicateFile(String fileName);
 
     void setExperimentType(ExperimentProfileType type);
 
