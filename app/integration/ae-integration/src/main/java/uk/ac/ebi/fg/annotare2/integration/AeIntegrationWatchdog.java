@@ -131,7 +131,6 @@ public class AeIntegrationWatchdog {
             public void run() {
                 Session session = sessionFactory.openSession();
                 try {
-                    logger.debug("Thread {} stated processSubmission function.", Thread.currentThread().getId());
                     processSubmissions();
                 } catch (Throwable x) {
                     logger.error("Submission watchdog process caught an exception:", x);
