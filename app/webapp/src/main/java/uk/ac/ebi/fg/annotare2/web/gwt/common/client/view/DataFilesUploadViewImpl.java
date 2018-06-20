@@ -382,14 +382,14 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
         public void onFilesAdded(ResumableUploader uploader, JsArray<ResumableFile> files) {
             boolean shouldUpload = true;
             StringBuilder sb = new StringBuilder();
-            sb.append("Following files already exist. To re-upload, please delete them and upload again.<br/>"); //<br/> added here because Notification panel display this as HTML so simple new line character won't work.
+            sb.append("The file(s) already exist.<br/>To re-upload, please delete and upload again.<br/><br/>"); //<br/> added here because Notification panel display this as HTML so simple new line character won't work.
 
             for (int i = 0; i < files.length(); ++i) {
                 ResumableFile file = files.get(i);
                 if (!isDuplicateFile(file.getFileName())) {
                     logger.info("Batch added file " + file.getFileName() + ", size " + file.getSize());
                 } else {
-                    sb.append(file.getFileName()).append("<br/>");
+                    sb.append(" - ").append(file.getFileName()).append("<br/>");
                     shouldUpload = false;
                     uploader.removeFile(file);
                 }
