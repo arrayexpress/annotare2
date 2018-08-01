@@ -19,8 +19,8 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.core.data.SystemEfoTerm;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ApplicationDataServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
@@ -129,7 +129,7 @@ public class OntologyDataProxy {
         }
     }
 
-    public void getProtocolTypes(ExperimentProfileType expType, final AsyncCallback<ArrayList<ProtocolType>> callback) {
+    public void getProtocolTypes(ExpProfileType expType, final AsyncCallback<ArrayList<ProtocolType>> callback) {
         dataService.getProtocolTypes(expType, callbackWrap(callback));
     }
 

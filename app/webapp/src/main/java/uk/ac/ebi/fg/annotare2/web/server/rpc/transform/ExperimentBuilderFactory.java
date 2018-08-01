@@ -20,16 +20,14 @@ import com.google.common.collect.Lists;
 import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.submission.model.Contact;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExtractAttributesRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.*;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater;
 
 import java.util.Map;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Maps.newHashMap;
-import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.*;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.experimentUpdater;
 
 /**
@@ -37,11 +35,18 @@ import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.ex
  */
 public class ExperimentBuilderFactory {
 
+    private static ExpProfileType oneColorExperimentType = new OneColorMicroarrayExpProfileType("One-color microarray");
+    private static ExpProfileType twoColorExperimentType = new TwoColorMicroarrayExpProfileType("Two-color microarray");
+    private static ExpProfileType plantOneColorExperimentType = new PlantOneColorMicroarrayExpProfileType("Plant - One-color microarray");
+    private static ExpProfileType plantTwoColorExperimentType = new PlantTwoColorMicroarrayExpProfileType("Plant - Two-color microarray");
+    private static ExpProfileType sequencingExperimentType = new SequencingExpProfileType("High-throughput sequencing");
+    private static ExpProfileType plantSequencingExperimentType = new PlantSequencingExpProfileType("Plant - High-throughput sequencing");
+
     private enum Builder {
-        ONE_COLOR_EXPERIMENT_BUILDER(ONE_COLOR_MICROARRAY) {
+        ONE_COLOR_EXPERIMENT_BUILDER(oneColorExperimentType) {
             @Override
             ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
-                ExperimentProfile exp = new ExperimentProfile(ONE_COLOR_MICROARRAY);
+                ExperimentProfile exp = new ExpProfile(oneColorExperimentType);
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
                 updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
@@ -49,10 +54,10 @@ public class ExperimentBuilderFactory {
                 return exp;
             }
         },
-        PLANT_ONE_COLOR_EXPERIMENT_BUILDER(PLANT_ONE_COLOR_MICROARRAY) {
+        PLANT_ONE_COLOR_EXPERIMENT_BUILDER(plantOneColorExperimentType) {
             @Override
             ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
-                ExperimentProfile exp = new ExperimentProfile(PLANT_ONE_COLOR_MICROARRAY);
+                ExperimentProfile exp = new ExpProfile(plantOneColorExperimentType);
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
                 updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
@@ -60,10 +65,10 @@ public class ExperimentBuilderFactory {
                 return exp;
             }
         },
-        TWO_COLOR_EXPERIMENT_BUILDER(TWO_COLOR_MICROARRAY) {
+        TWO_COLOR_EXPERIMENT_BUILDER(twoColorExperimentType) {
             @Override
             ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
-                ExperimentProfile exp = new ExperimentProfile(TWO_COLOR_MICROARRAY);
+                ExperimentProfile exp = new ExpProfile(twoColorExperimentType);
                 exp.addLabel("Cy3");
                 exp.addLabel("Cy5");
 
@@ -74,10 +79,10 @@ public class ExperimentBuilderFactory {
                 return exp;
             }
         },
-        PLANT_TWO_COLOR_EXPERIMENT_BUILDER(PLANT_TWO_COLOR_MICROARRAY) {
+        PLANT_TWO_COLOR_EXPERIMENT_BUILDER(plantTwoColorExperimentType) {
             @Override
             ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
-                ExperimentProfile exp = new ExperimentProfile(PLANT_TWO_COLOR_MICROARRAY);
+                ExperimentProfile exp = new ExpProfile(plantTwoColorExperimentType);
                 exp.addLabel("Cy3");
                 exp.addLabel("Cy5");
 
@@ -88,10 +93,10 @@ public class ExperimentBuilderFactory {
                 return exp;
             }
         },
-        SEQUENCING_EXPERIMENT_BUILDER(SEQUENCING) {
+        SEQUENCING_EXPERIMENT_BUILDER(sequencingExperimentType) {
             @Override
             ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
-                ExperimentProfile exp = new ExperimentProfile(SEQUENCING);
+                ExperimentProfile exp = new ExpProfile(sequencingExperimentType);
 
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
@@ -101,10 +106,10 @@ public class ExperimentBuilderFactory {
                 return exp;
             }
         },
-        PLANT_SEQUENCING_EXPERIMENT_BUILDER(PLANT_SEQUENCING) {
+        PLANT_SEQUENCING_EXPERIMENT_BUILDER(plantSequencingExperimentType) {
             @Override
             ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
-                ExperimentProfile exp = new ExperimentProfile(PLANT_SEQUENCING);
+                ExperimentProfile exp = new ExpProfile(plantSequencingExperimentType);
 
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
@@ -115,7 +120,7 @@ public class ExperimentBuilderFactory {
             }
         };
 
-        public static Map<ExperimentProfileType, Builder> map = newHashMap();
+        public static Map<ExpProfileType, Builder> map = newHashMap();
 
         static {
             for (Builder b : Builder.values()) {
@@ -123,9 +128,9 @@ public class ExperimentBuilderFactory {
             }
         }
 
-        private ExperimentProfileType type;
+        private ExpProfileType type;
 
-        Builder(ExperimentProfileType type) {
+        Builder(ExpProfileType type) {
             this.type = type;
         }
 

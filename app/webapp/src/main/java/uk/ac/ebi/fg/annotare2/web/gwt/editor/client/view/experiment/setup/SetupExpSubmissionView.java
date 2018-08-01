@@ -28,6 +28,10 @@ import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import uk.ac.ebi.fg.annotare2.submission.model.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.OneColorMicroarrayExpProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.SequencingExpProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.TwoColorMicroarrayExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.WaitingPopup;
@@ -40,8 +44,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SelectableLabel;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
 import java.util.*;
-
-import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromSafeConstant;
 
 /**
  * @author Olga Melnichuk
@@ -125,6 +127,8 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
 
     private List<OntologyTerm> experimentalDesignTerms;
 
+    private List<ExpProfileType> submissionTemplates;
+
     private Boolean oneClrDetail, twoClrDetail, highSeqDetail, plantDetail;
 
     public SetupExpSubmissionView() {
@@ -153,11 +157,11 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
         OptGroupElement plantGroup = Document.get().createOptGroupElement();
         plantGroup.setLabel("Plant");
         templateBox.getElement().appendChild(nonPlantGroup);
-        for (ExperimentProfileType type : ExperimentProfileType.values()) {
+        for (ExpProfileType type : createTemplatesList()) {
             OptionElement optElement = Document.get().createOptionElement();
             optElement.setInnerText(type.getTitle());
-            optElement.setValue(type.name());
-            if (type.name().toLowerCase().startsWith("plant")) {
+            optElement.setValue(type.getTitle());
+            if (type.getTitle().toLowerCase().startsWith("plant")) {
                 plantGroup.appendChild(optElement);
             } else {
                 nonPlantGroup.appendChild(optElement);
@@ -169,7 +173,7 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
         templateBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
-                showDetails(ExperimentProfileType.valueOf(getSelectedSettingsTemplate()));
+                showDetails(submissionTemplates.get(templateBox.getSelectedIndex()));
             }
         });
         selectFirstTemplate(templateBox);
@@ -337,12 +341,12 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
         return templateBox.getValue(templateBox.getSelectedIndex());
     }
 
-    private void showDetails(ExperimentProfileType type) {
+    private void showDetails(ExpProfileType type) {
         HasSubmissionSettings w = createWidget(type);
         templateDetails.setWidget(w);
     }
 
-    private HasSubmissionSettings createWidget(ExperimentProfileType type) {
+/*    private HasSubmissionSettings createWidget(ExperimentProfileType type) {
         switch (type) {
             case ONE_COLOR_MICROARRAY:
                 genericExpDetails.setVisible(true);
@@ -395,6 +399,23 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
             default:
                 throw new IllegalArgumentException("Unknown experiment type: " + type);
         }
+    }*/
+
+    private HasSubmissionSettings createWidget(ExpProfileType type){
+        return type.getExperimentSettings(this);
+    }
+
+    private List<ExpProfileType> createTemplatesList(){
+        List<ExpProfileType> templates = new ArrayList<>();
+
+        templates.add(new OneColorMicroarrayExpProfileType("One-color Microarray"));
+        templates.add(new TwoColorMicroarrayExpProfileType("Two-color Microarray"));
+        templates.add(new SequencingExpProfileType("High-throughput sequencing"));
+        templates.add(new OneColorMicroarrayExpProfileType("Plant - One-color Microarray"));
+        templates.add(new TwoColorMicroarrayExpProfileType("Plant - Two-color Microarray"));
+        templates.add(new SequencingExpProfileType("Plant - High-throughput sequencing"));
+
+        return templates;
     }
 
     private static void selectFirstTemplate(ListBox listBox) {

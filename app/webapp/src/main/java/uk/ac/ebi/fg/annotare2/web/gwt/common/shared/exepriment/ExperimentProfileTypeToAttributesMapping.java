@@ -1,26 +1,30 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.PlantOneColorMicroarrayExpProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.PlantSequencingExpProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.PlantTwoColorMicroarrayExpProfileType;
 
 import java.util.*;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableSet;
-import static java.util.EnumSet.*;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttributeTemplate.*;
 
 /**
  * Created by haideri on 09/10/2017.
  */
 public enum ExperimentProfileTypeToAttributesMapping {
 
-    PLANT_EXPERIMENT(of(ExperimentProfileType.PLANT_SEQUENCING), SampleAttributeTemplate.ORGANISM_ATTRIBUTE,SampleAttributeTemplate.CULTIVAR_ATTRIBUTE,SampleAttributeTemplate.AGE_ATTRIBUTE,SampleAttributeTemplate.DEVELOPMENTAL_STAGE_ORIGIN,SampleAttributeTemplate.GENOTYPE_ATTRIBUTE,SampleAttributeTemplate.ORGANISM_PART_ATTRIBUTE);
+    PLANT_SEQUENCING_EXPERIMENT(new PlantSequencingExpProfileType("Plant - High-throughput sequencing"), ORGANISM_ATTRIBUTE,CULTIVAR_ATTRIBUTE,AGE_ATTRIBUTE,DEVELOPMENTAL_STAGE_ORIGIN,GENOTYPE_ATTRIBUTE,ORGANISM_PART_ATTRIBUTE),
+    PLANT_ONE_COLOR_EXPERIMENT(new PlantOneColorMicroarrayExpProfileType("Plant - One-color microarray"), ORGANISM_ATTRIBUTE,CULTIVAR_ATTRIBUTE,AGE_ATTRIBUTE,DEVELOPMENTAL_STAGE_ORIGIN,GENOTYPE_ATTRIBUTE,ORGANISM_PART_ATTRIBUTE),
+    PLANT_TWO_COLOR_EXPERIMENT(new PlantTwoColorMicroarrayExpProfileType("Plant - Two-color microarray"), ORGANISM_ATTRIBUTE,CULTIVAR_ATTRIBUTE,AGE_ATTRIBUTE,DEVELOPMENTAL_STAGE_ORIGIN,GENOTYPE_ATTRIBUTE,ORGANISM_PART_ATTRIBUTE);
 
     private final List<SampleAttributeTemplate> attributes;
-    private EnumSet<ExperimentProfileType> expProfileTypes;
+    private ExpProfileType expProfileType;
 
-    ExperimentProfileTypeToAttributesMapping(EnumSet<ExperimentProfileType> expProfieType, SampleAttributeTemplate... attributes) {
+    ExperimentProfileTypeToAttributesMapping(ExpProfileType expProfieType, SampleAttributeTemplate... attributes) {
         this.attributes = asList(attributes);
-        this.expProfileTypes = expProfieType;
+        this.expProfileType = expProfieType;
 
     }
 
@@ -29,10 +33,8 @@ public enum ExperimentProfileTypeToAttributesMapping {
         return new ArrayList<>(this.attributes);
     }
 
-    public Collection<ExperimentProfileType> getExpProfileTypes() {
-
-        expProfileTypes.add(ExperimentProfileType.PLANT_ONE_COLOR_MICROARRAY);
-        expProfileTypes.add(ExperimentProfileType.PLANT_TWO_COLOR_MICROARRAY);
-        return unmodifiableSet(expProfileTypes);}
+    public ExpProfileType getExpProfileType() {
+        return expProfileType;
+    }
 
 }

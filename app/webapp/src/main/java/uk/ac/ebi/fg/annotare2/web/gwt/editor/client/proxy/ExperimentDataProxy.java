@@ -20,6 +20,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.submission.model.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
@@ -378,7 +379,7 @@ public class ExperimentDataProxy {
         });
     }
 
-    public void getExperimentProfileTypeAsync(final AsyncCallback<ExperimentProfileType> callback) {
+    public void getExperimentProfileTypeAsync(final AsyncCallback<ExpProfileType> callback) {
         getExperiment(new AsyncCallback<ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -387,7 +388,7 @@ public class ExperimentDataProxy {
 
             @Override
             public void onSuccess(ExperimentProfile result) {
-                callback.onSuccess(result.getType());
+                callback.onSuccess((ExpProfileType)result.getType());
             }
         });
     }

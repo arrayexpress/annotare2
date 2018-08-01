@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
@@ -34,7 +34,7 @@ public interface SamplesView extends IsWidget {
 
     void setData(List<SampleRow> rows, List<SampleColumn> columns);
 
-    void setExperimentType(ExperimentProfileType type);
+    void setExperimentType(ExpProfileType type);
 
     void setPresenter(Presenter presenter);
 
@@ -44,7 +44,7 @@ public interface SamplesView extends IsWidget {
 
         Collection<OntologyTerm> getExperimentDesigns();
 
-        ExperimentProfileType getExperimentProfileType();
+        ExpProfileType getExperimentProfileType();
 
         void updateColumns(List<SampleColumn> newColumns);
 

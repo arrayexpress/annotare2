@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProType;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 
@@ -30,7 +31,7 @@ public class ExperimentSetupSettings extends ExperimentSettings {
         /*used by GWT serialization*/
     }
 
-    public ExperimentSetupSettings(ExperimentProfileType experimentType) {
+    public ExperimentSetupSettings(ExperimentProType experimentType) {
         super(experimentType);
     }
 

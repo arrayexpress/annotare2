@@ -36,7 +36,7 @@ public class SubmissionSerializationTest {
 
     private static final Logger log = LoggerFactory.getLogger(SubmissionSerializationTest.class);
 
-    @Test
+    /*@Test
     public void experimentProfileSerializationTest() throws Exception {
         ExperimentProfile profileIn = new ExperimentProfile(ONE_COLOR_MICROARRAY);
         profileIn.setTitle(null);
@@ -115,7 +115,7 @@ public class SubmissionSerializationTest {
 
         ExperimentProfile profileOut = JsonCodec.readExperiment(jsonString, ModelVersion.CURRENT_VERSION);
         assertReflectionEquals(profileIn, profileOut);
-    }
+    }*/
 
     @Test
     public void arrayDesignHeaderSerializationTest() throws DataSerializationException {

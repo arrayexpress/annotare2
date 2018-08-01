@@ -20,6 +20,8 @@
 
     <inherits name="uk.ac.ebi.fg.annotare2.ExperimentProfile"/>
     <inherits name="uk.ac.ebi.fg.annotare2.core.Data"/>
+    <inherits name="uk.ac.ebi.fg.annotare2.web.gwt.editor.EditorApp"/>
+
 
     <inherits name="com.google.gwt.user.User"/>
 
@@ -35,7 +37,7 @@
 
     <set-property name="compiler.stackMode" value="emulated" />
 
-    <!--<set-property name="user.agent" value="safari"></set-property>-->
+    <set-property name="user.agent" value="safari,gecko1_8"></set-property>
 
     <set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="true" />
     <set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true" />
@@ -48,5 +50,7 @@
     <source path="client"/>
     <source path="shared"/>
     <source path="public"/>
+    <source path="model"/>
+    <source path="web/server/rpc/updates"/>
 
 </module>

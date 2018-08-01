@@ -186,6 +186,7 @@ public class AnnotareWebAppModule extends ServletModule {
 
         bind(DatabaseDataSource.class).asEagerSingleton();
 
+
         bind(EfoSearch.class).to(EfoSearchImpl.class).asEagerSingleton();
         bind(AnnotareEfoService.class).in(SINGLETON);
 

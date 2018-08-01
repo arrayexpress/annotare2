@@ -26,6 +26,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Ordering;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProType;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.ProtocolSubjectType;
 
@@ -34,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
+import static java.util.Arrays.asList;
 import static java.util.EnumSet.*;
 import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.*;
 
@@ -76,7 +78,7 @@ public class ProtocolTypes {
         return new ProtocolTypes();
     }
 
-    public Collection<Config> filter(final ExperimentProfileType expType) {
+    public Collection<Config> filter(final ExperimentProType expType) {
         return Ordering.natural().onResultOf(
                 new Function<Config, Integer>() {
                     @Override
@@ -154,7 +156,7 @@ public class ProtocolTypes {
             return precedence;
         }
 
-        private boolean isUsedIn(ExperimentProfileType expType) {
+        private boolean isUsedIn(ExperimentProType expType) {
             for (Usage use: usage
                  ) {
                 if(flag = use.isOkay(expType))
@@ -174,22 +176,29 @@ public class ProtocolTypes {
         }
     }
 
+    //Dirty Code but has to find workaround to keep using USAGE enum instead changing the design completely. Design changing is difficult in sense code is too complicated and changing one thing can mess the other thing
+
     private enum Usage {
-        MICRO_ARRAY(of(ONE_COLOR_MICROARRAY, TWO_COLOR_MICROARRAY)),
-        SEQUENCING(of(ExperimentProfileType.SEQUENCING)),
-        PLANT_SEQUENCING(of(ExperimentProfileType.PLANT_SEQUENCING)),
-        PLANT_MICRO_ARRAY(of(PLANT_ONE_COLOR_MICROARRAY, PLANT_TWO_COLOR_MICROARRAY)),
-        ANY(allOf(ExperimentProfileType.class)),
-        NONE(noneOf(ExperimentProfileType.class));
+        MICRO_ARRAY("One-color microarray","Two-color microarray"),
+        SEQUENCING("High-throughput sequencing"),
+        PLANT_SEQUENCING("Plant - High-throughput sequencing"),
+        PLANT_MICRO_ARRAY("Plant - One-color microarray", "Plant - Two-color microarray"),
+        ANY("One-color microarray",
+                "Two-color microarray",
+                "High-throughput sequencing",
+                "Plant - High-throughput sequencing",
+                "Plant - One-color microarray",
+                "Plant - Two-color microarray"),
+        NONE("");
 
-        private final EnumSet<ExperimentProfileType> set;
+        private final List<String> set;
 
-        Usage(EnumSet<ExperimentProfileType> set) {
-            this.set = set;
+        Usage(String... set) {
+            this.set = asList(set);
         }
 
-        private boolean isOkay(ExperimentProfileType expType) {
-            return set.contains(expType);
+        private boolean isOkay(ExperimentProType expType) {
+            return set.contains(expType.getTitle());
         }
     }
 }

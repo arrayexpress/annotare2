@@ -20,20 +20,16 @@ import com.google.common.base.Function;
 import com.google.common.collect.Ordering;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
-import uk.ac.ebi.fg.annotare2.submission.model.SampleAttributeType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
@@ -101,12 +97,12 @@ public class SampleColumnsDialog extends DialogBox {
 
     private final SampleAttributeEfoSuggest efoSuggest;
 
-    private final ExperimentProfileType experimentProfileType;
+    private final ExpProfileType experimentProfileType;
 
     public SampleColumnsDialog(List<SampleColumn> columns,
                                SampleAttributeEfoSuggest efoSuggest,
                                Collection<OntologyTerm> experimentDesigns,
-                               ExperimentProfileType experimentProfileType,
+                               ExpProfileType experimentProfileType,
                                DialogCallback<List<SampleColumn>> callback) {
         setModal(true);
         setGlassEnabled(true);
@@ -312,19 +308,19 @@ public class SampleColumnsDialog extends DialogBox {
         move(index, index + 1);
     }
 
-    private void addMandatoryColumns(ExperimentProfileType experimentProfileType) {
+    private void addMandatoryColumns(ExpProfileType experimentProfileType) {
 
         List<SampleAttributeTemplate> attributeTemplates;
-        Collection<ExperimentProfileType> experimentProfileTypes;
+        ExpProfileType experimentType;
 
         Set<SampleAttributeTemplate> used = getUsedTemplates();
 
         for (ExperimentProfileTypeToAttributesMapping expTypeToAttribute:
              ExperimentProfileTypeToAttributesMapping.values()) {
 
-            experimentProfileTypes = expTypeToAttribute.getExpProfileTypes();
+            experimentType = expTypeToAttribute.getExpProfileType();
 
-            if(experimentProfileTypes.contains(experimentProfileType)) {
+            if(experimentType == experimentProfileType) {
                 attributeTemplates = expTypeToAttribute.getAttributes();
 
                 for (SampleAttributeTemplate attributeTemplate :
@@ -549,17 +545,17 @@ public class SampleColumnsDialog extends DialogBox {
         DomEvent.fireNativeEvent(Document.get().createChangeEvent(), listBox);
     }
 
-    private boolean hasTemplate(SampleAttributeTemplate template, ExperimentProfileType experimentProfileType)
+    private boolean hasTemplate(SampleAttributeTemplate template, ExpProfileType experimentProfileType)
     {
         List<SampleAttributeTemplate> attributeTemplates;
-        Collection<ExperimentProfileType> experimentProfileTypes;
+        ExpProfileType experimentType;
 
         for (ExperimentProfileTypeToAttributesMapping expTypeToAttribute:
                 ExperimentProfileTypeToAttributesMapping.values()) {
 
-            experimentProfileTypes = expTypeToAttribute.getExpProfileTypes();
+            experimentType = expTypeToAttribute.getExpProfileType();
 
-            if(experimentProfileTypes.contains(experimentProfileType)) {
+            if(experimentType == experimentProfileType) {
                 attributeTemplates = expTypeToAttribute.getAttributes();
 
                 for (SampleAttributeTemplate attributeTemplate :

@@ -35,13 +35,11 @@ import static java.util.Collections.unmodifiableSet;
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentProfile implements Serializable {
+public abstract class ExperimentProfile implements Serializable {
 
     private static final long serialVersionUID = 7357226309547876375L;
 
     int nextId;
-
-    private ExperimentProfileType type;
 
     private String relatedAccessionNumber;
 
@@ -98,12 +96,12 @@ public class ExperimentProfile implements Serializable {
 
     @SuppressWarnings("unused")
     ExperimentProfile() {
-        /* used by GWT serialization */
+        //*//* used by GWT serialization *//*
         this(null);
+
     }
 
-    public ExperimentProfile(ExperimentProfileType type) {
-        this.type = type;
+    public ExperimentProfile(String dummyParameter) {
         experimentalDesigns = newArrayList();
         contactMap = newLinkedHashMap();
         publicationMap = newLinkedHashMap();
@@ -128,9 +126,7 @@ public class ExperimentProfile implements Serializable {
         protocol2FileRefs = new MultiSets<>();
     }
 
-    public ExperimentProfileType getType() {
-        return type;
-    }
+    public abstract ExperimentProType getType();
 
     public String getTitle() {
         return title;

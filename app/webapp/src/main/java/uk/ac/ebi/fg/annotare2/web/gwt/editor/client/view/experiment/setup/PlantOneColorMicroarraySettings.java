@@ -4,11 +4,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.PlantOneColorMicroarrayExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignSuggestOracle;
 
-import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.PLANT_ONE_COLOR_MICROARRAY;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.ValidationUtils.integerValuesOnly;
 
 /**
@@ -40,7 +40,7 @@ public class PlantOneColorMicroarraySettings extends Composite implements HasSub
 
     @Override
     public ExperimentSetupSettings getSettings() {
-        ExperimentSetupSettings settings = new ExperimentSetupSettings(PLANT_ONE_COLOR_MICROARRAY);
+        ExperimentSetupSettings settings = new ExperimentSetupSettings(new PlantOneColorMicroarrayExpProfileType("Plant - One-color microarray"));
         settings.setArrayDesign(arrayDesign.getValue());
         settings.setNumberOfHybs(intValue(numberOfHybs.getValue()));
         settings.setLabel(label.getValue());

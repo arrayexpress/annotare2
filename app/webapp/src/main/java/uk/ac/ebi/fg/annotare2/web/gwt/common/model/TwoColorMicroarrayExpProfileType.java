@@ -1,24 +1,27 @@
-package uk.ac.ebi.fg.annotare2.submission;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.model;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.settings.DummySettingsEditor;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.settings.Editor;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.settings.ExperimentSettingsPanel;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.settings.TwoColorMicroarraySettingsEditor;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup.HasSubmissionSettings;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup.HighThroughputSeqSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup.SetupExpSubmissionView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup.TwoColorMicroarraySettings;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater;
-import uk.ac.ebi.fg.annotare2.web.server.rpc.updates.SequencingUpdater;
+//import uk.ac.ebi.fg.annotare2.web.server.rpc.updates.TwoColorMicroarrayUpdater;
 
-import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.SEQUENCING;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.experimentUpdater;
 
-public class SequencingExpProfileType extends ExpProfileType {
+public class TwoColorMicroarrayExpProfileType extends ExpProfileType{
 
-    public SequencingExpProfileType(String title){
+    public TwoColorMicroarrayExpProfileType(String title){
         super(title);
+    }
+
+    public TwoColorMicroarrayExpProfileType() {
     }
 
     @Override
@@ -26,36 +29,36 @@ public class SequencingExpProfileType extends ExpProfileType {
         return title;
     }
 
-    @Override
+    /*@Override
     public ExperimentUpdater getExperimentUpdater(ExperimentProfile exp) {
-        return new SequencingUpdater(exp);
+        return new TwoColorMicroarrayUpdater(exp);
     }
-
+*/
     @Override
     public HasSubmissionSettings getExperimentSettings(SetupExpSubmissionView view) {
-
-        //view is not being used here
-
-        return new HighThroughputSeqSettings();
+        return new TwoColorMicroarraySettings(view);
     }
 
     @Override
     public Editor<ExperimentSettings> getExperimentSettingsEditor(ExperimentSettingsPanel panel) {
-
-        //there is no settings editor for sequencing experiments
-
-        return new DummySettingsEditor();
+        return new TwoColorMicroarraySettingsEditor(panel);
     }
 
-    @Override
+    /*@Override
     public ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
-        ExperimentProfile exp = new ExperimentProfile(SEQUENCING);
+        ExperimentProfile exp = new ExpProfile(this);
+        exp.addLabel("Cy3");
+        exp.addLabel("Cy5");
 
         ExperimentUpdater updater = experimentUpdater(exp);
         updater.updateSettings(settings);
         updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
-        //updater.updateExtractAttributes(settings.getExtractValues(),settings.getNumberOfHybs());
-        exp.setAeExperimentType("RNA-seq of coding RNA");
+        exp.setAeExperimentType("transcription profiling by array");
         return exp;
+    }*/
+
+    @Override
+    public SafeHtml getSettingDetails(ExperimentSettings settings) {
+        return null;
     }
 }

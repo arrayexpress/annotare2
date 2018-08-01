@@ -26,9 +26,9 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
 import uk.ac.ebi.fg.annotare2.submission.model.EnumWithHelpText;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.FileRef;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentRow;
@@ -48,7 +48,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     private List<DataAssignmentColumn> columns = new ArrayList<DataAssignmentColumn>();
 
     private DataAssignment dataAssignment = new DataAssignment();
-    private ExperimentProfileType experimentType;
+    private ExpProfileType experimentType;
     private Presenter presenter;
 
     public DataAssignmentViewImpl() {
@@ -134,7 +134,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     }
 
     @Override
-    public void setExperimentType(ExperimentProfileType type) {
+    public void setExperimentType(ExpProfileType type) {
         experimentType = type;
     }
 
@@ -167,9 +167,9 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     private List<EnumWithHelpText> getAllowedColumnTypes() {
         List<EnumWithHelpText> types = new ArrayList<>();
         for (FileType type : FileType.values()) {
-            if(!((ExperimentProfileType.TWO_COLOR_MICROARRAY == experimentType || ExperimentProfileType.PLANT_TWO_COLOR_MICROARRAY == experimentType) && (type.isRawMatix())))
+            if(!((experimentType.isTwoColorMicroarray() || experimentType.isPlantTwoColorMicroarray()) && (type.isRawMatix())))
             {
-                if (ExperimentProfileType.SEQUENCING == experimentType || ExperimentProfileType.PLANT_SEQUENCING == experimentType) {
+                if (experimentType.isSequencing() || experimentType.isPlantSequncing()) {
                     if (!type.isFGEM() || type.isProcessed() && (0 == countColumnsByType(type))) {
                         types.add(type);
                     }

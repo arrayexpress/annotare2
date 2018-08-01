@@ -48,7 +48,7 @@ public class TwoColorMicroarrayUpdater extends BasicExperimentUpdater {
 
     @Override
     public void updateSettings(ExperimentSettings settings) {
-        if (settings.getExperimentType() != TWO_COLOR_MICROARRAY) {
+        if (!settings.getExperimentType().isTwoColorMicroarray()) {
             return;
         }
         exp().setArrayDesign(settings.getArrayDesign());

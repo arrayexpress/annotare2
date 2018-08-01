@@ -17,8 +17,8 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
@@ -39,7 +39,7 @@ public interface ApplicationDataServiceAsync {
 
     void getEfoTermByLabel(String label, AsyncCallback<OntologyTerm> async);
 
-    void getProtocolTypes(ExperimentProfileType type, AsyncCallback<ArrayList<ProtocolType>> async);
+    void getProtocolTypes(ExpProfileType type, AsyncCallback<ArrayList<ProtocolType>> async);
 
     void getApplicationProperties(AsyncCallback<ApplicationProperties> async);
 
@@ -47,7 +47,7 @@ public interface ApplicationDataServiceAsync {
 
     void getExperimentalDesigns(AsyncCallback<ArrayList<OntologyTermGroup>> async);
 
-    void getAeExperimentTypes(ExperimentProfileType type, AsyncCallback<ArrayList<String>> async);
+    void getAeExperimentTypes(ExpProfileType type, AsyncCallback<ArrayList<String>> async);
 
     void getMaterialTypes(AsyncCallback<ArrayList<String>> async);
 

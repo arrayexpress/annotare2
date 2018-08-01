@@ -30,7 +30,7 @@
 
     <inherits name="uk.ac.ebi.fg.annotare2.web.gwt.common.CommonApp" />
 
-    <!--<set-property name="user.agent" value="safari"></set-property>-->
+    <set-property name="user.agent" value="safari,gecko1_8"></set-property>
 
     <entry-point class="uk.ac.ebi.fg.annotare2.web.gwt.user.client.UserApp" />
 
@@ -38,6 +38,5 @@
 
     <source path="client" />
     <source path="shared" />
-
     <source path="public" />
 </module>

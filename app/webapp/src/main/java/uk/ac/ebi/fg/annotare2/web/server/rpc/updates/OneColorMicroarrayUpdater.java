@@ -52,7 +52,7 @@ public class OneColorMicroarrayUpdater extends BasicExperimentUpdater {
 
     @Override
     public void updateSettings(ExperimentSettings settings) {
-        if (settings.getExperimentType() != ONE_COLOR_MICROARRAY) {
+        if (!settings.getExperimentType().isMicroarray()) {
             return;
         }
         exp().setArrayDesign(settings.getArrayDesign());

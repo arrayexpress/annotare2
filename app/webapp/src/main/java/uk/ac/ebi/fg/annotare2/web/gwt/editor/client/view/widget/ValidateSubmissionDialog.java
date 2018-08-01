@@ -26,7 +26,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
 
 
@@ -81,9 +81,9 @@ public class ValidateSubmissionDialog extends DialogBox {
     HTMLPanel pnlReferrer;
 
     private DialogCallback<Void> callback;
-    private ExperimentProfileType experimentProfileType;
+    private ExpProfileType experimentProfileType;
 
-    public ValidateSubmissionDialog(ExperimentProfileType experimentProfileType, boolean askForReferrer) {
+    public ValidateSubmissionDialog(ExpProfileType experimentProfileType, boolean askForReferrer) {
         setModal(true);
         setGlassEnabled(true);
         setWidget(Binder.BINDER.createAndBindUi(this));

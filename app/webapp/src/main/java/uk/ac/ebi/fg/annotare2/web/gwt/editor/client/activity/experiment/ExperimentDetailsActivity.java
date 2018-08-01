@@ -23,7 +23,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
@@ -95,16 +95,16 @@ public class ExperimentDetailsActivity extends AbstractActivity implements Exper
 
     private void loadAsync() {
         experimentDataProxy.getExperimentProfileTypeAsync(
-                new ReportingAsyncCallback<ExperimentProfileType>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_TYPE) {
+                new ReportingAsyncCallback<ExpProfileType>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_TYPE) {
                     @Override
-                    public void onSuccess(ExperimentProfileType result) {
+                    public void onSuccess(ExpProfileType result) {
                         loadDetailsAsync(result);
                     }
                 }
         );
     }
 
-    private void loadDetailsAsync(final ExperimentProfileType type) {
+    private void loadDetailsAsync(final ExpProfileType type) {
         experimentDataProxy.getDetailsAsync(
                 new ReportingAsyncCallback<ExperimentDetailsDto>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_DETAILS) {
                     @Override
@@ -115,7 +115,7 @@ public class ExperimentDetailsActivity extends AbstractActivity implements Exper
         );
     }
 
-    private void setDetails(ExperimentProfileType type, final ExperimentDetailsDto details) {
+    private void setDetails(ExpProfileType type, final ExperimentDetailsDto details) {
         applicationDataProxy.getAeExperimentTypesAsync(type,
                 new ReportingAsyncCallback<ArrayList<String>>(FailureMessage.UNABLE_TO_LOAD_AE_EXPERIMENT_TYPES) {
                     @Override

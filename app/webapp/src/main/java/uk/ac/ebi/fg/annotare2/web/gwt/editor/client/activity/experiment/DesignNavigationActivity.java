@@ -23,6 +23,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ApplicationDataServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
@@ -123,7 +124,7 @@ public class DesignNavigationActivity extends AbstractActivity implements LeftNa
                     @Override
                     public void onSuccess(ExperimentSettings result) {
                         if (setSections) {
-                            List<ExpDesignSection> sections = experimentDesignSectionsFor(result.getExperimentType());
+                            List<ExpDesignSection> sections = experimentDesignSectionsFor((ExpProfileType)result.getExperimentType());
                             view.setSections(sections);
                             if (sections.contains(section)) {
                                 view.setSelected(section);

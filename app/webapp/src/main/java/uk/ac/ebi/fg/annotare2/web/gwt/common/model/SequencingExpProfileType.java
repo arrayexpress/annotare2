@@ -1,5 +1,6 @@
-package uk.ac.ebi.fg.annotare2.submission;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.model;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
@@ -7,18 +8,20 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.settings.Dum
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.settings.Editor;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.settings.ExperimentSettingsPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup.HasSubmissionSettings;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup.PlantHighThroughputSeqSettings;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup.HighThroughputSeqSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup.SetupExpSubmissionView;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater;
-import uk.ac.ebi.fg.annotare2.web.server.rpc.updates.PlantSequencingUpdater;
+//import uk.ac.ebi.fg.annotare2.web.server.rpc.updates.SequencingUpdater;
 
-import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.PLANT_SEQUENCING;
-import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.experimentUpdater;
+//import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.experimentUpdater;
 
-public class PlantSequencingExpProfileType extends ExpProfileType {
+public class SequencingExpProfileType extends ExpProfileType {
 
-    public PlantSequencingExpProfileType(String title){
+    public SequencingExpProfileType(String title){
         super(title);
+    }
+
+    public SequencingExpProfileType() {
     }
 
     @Override
@@ -26,17 +29,17 @@ public class PlantSequencingExpProfileType extends ExpProfileType {
         return title;
     }
 
-    @Override
+    /*@Override
     public ExperimentUpdater getExperimentUpdater(ExperimentProfile exp) {
-        return new PlantSequencingUpdater(exp);
+        return new SequencingUpdater(exp);
     }
-
+*/
     @Override
     public HasSubmissionSettings getExperimentSettings(SetupExpSubmissionView view) {
 
         //view is not being used here
 
-        return new PlantHighThroughputSeqSettings();
+        return new HighThroughputSeqSettings();
     }
 
     @Override
@@ -47,9 +50,9 @@ public class PlantSequencingExpProfileType extends ExpProfileType {
         return new DummySettingsEditor();
     }
 
-    @Override
+    /*@Override
     public ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
-        ExperimentProfile exp = new ExperimentProfile(PLANT_SEQUENCING);
+        ExperimentProfile exp = new ExpProfile(this);
 
         ExperimentUpdater updater = experimentUpdater(exp);
         updater.updateSettings(settings);
@@ -57,5 +60,10 @@ public class PlantSequencingExpProfileType extends ExpProfileType {
         //updater.updateExtractAttributes(settings.getExtractValues(),settings.getNumberOfHybs());
         exp.setAeExperimentType("RNA-seq of coding RNA");
         return exp;
+    }*/
+
+    @Override
+    public SafeHtml getSettingDetails(ExperimentSettings settings) {
+        return null;
     }
 }

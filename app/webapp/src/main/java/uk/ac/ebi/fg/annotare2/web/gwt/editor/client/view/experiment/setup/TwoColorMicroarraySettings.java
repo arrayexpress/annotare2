@@ -20,12 +20,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.TwoColorMicroarrayExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignSuggestOracle;
 
-import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromSafeConstant;
-import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.TWO_COLOR_MICROARRAY;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.ValidationUtils.integerValuesOnly;
 
 /**
@@ -54,7 +53,7 @@ public class TwoColorMicroarraySettings extends Composite implements HasSubmissi
 
     @Override
     public ExperimentSetupSettings getSettings() {
-        ExperimentSetupSettings settings = new ExperimentSetupSettings(TWO_COLOR_MICROARRAY);
+        ExperimentSetupSettings settings = new ExperimentSetupSettings(new TwoColorMicroarrayExpProfileType("Two-color microarray"));
         settings.setArrayDesign(arrayDesign.getValue());
         settings.setNumberOfHybs(intValue(numberOfHybs.getValue()));
         return settings;

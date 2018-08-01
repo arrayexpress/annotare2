@@ -25,12 +25,11 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.Label;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.Protocol;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolDetail;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 
 import java.util.ArrayList;
@@ -39,7 +38,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static java.util.Arrays.asList;
 
 /**
  * @author Olga Melnichuk
@@ -63,9 +61,9 @@ public class AddProtocolDialog extends DialogBox {
     private List<Protocol> selectedProtocolTypes;
     private DialogCallback<List<Protocol>> callback;
     private HashMap<String,TextArea> protocolDescriptions;
-    private ExperimentProfileType experimentProfileType;
+    private ExpProfileType experimentProfileType;
 
-    public AddProtocolDialog(Presenter presenter, ExperimentProfileType experimentProfileType, DialogCallback<List<Protocol>> callback) {
+    public AddProtocolDialog(Presenter presenter, ExpProfileType experimentProfileType, DialogCallback<List<Protocol>> callback) {
         this.presenter = presenter;
         this.callback = callback;
 

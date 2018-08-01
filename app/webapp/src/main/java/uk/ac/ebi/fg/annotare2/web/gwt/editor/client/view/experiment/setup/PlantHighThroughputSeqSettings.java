@@ -6,10 +6,10 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.PlantSequencingExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 
-import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.PLANT_SEQUENCING;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.ValidationUtils.integerValuesOnly;
 
 /**
@@ -31,7 +31,7 @@ public class PlantHighThroughputSeqSettings extends Composite implements HasSubm
 
     @Override
     public ExperimentSetupSettings getSettings() {
-        ExperimentSetupSettings settings = new ExperimentSetupSettings(PLANT_SEQUENCING);
+        ExperimentSetupSettings settings = new ExperimentSetupSettings(new PlantSequencingExpProfileType("Plant - High-throughput sequencing"));
         settings.setNumberOfHybs(intValue(numberOfSamples.getValue()));
         return settings;
     }

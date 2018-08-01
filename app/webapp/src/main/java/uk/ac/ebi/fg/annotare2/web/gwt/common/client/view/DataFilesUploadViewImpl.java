@@ -35,7 +35,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.SelectionChangeEvent;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.AsperaConnect;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.Urls;
@@ -89,7 +89,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
     private String asperaUrl;
 
-    private ExperimentProfileType experimentProfileType;
+    private ExpProfileType experimentProfileType;
 
     interface Binder extends UiBinder<Widget, DataFilesUploadViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
@@ -269,7 +269,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     }
 
     @Override
-    public void setExperimentType(ExperimentProfileType type) {
+    public void setExperimentType(ExpProfileType type) {
 
         experimentProfileType = type;
         JSONObject uploaderOptions = new JSONObject();

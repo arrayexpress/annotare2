@@ -25,6 +25,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
@@ -34,9 +35,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromSafeConstant;
-import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromTrustedString;
 
 /**
  * @author Olga Melnichuk
@@ -76,7 +74,11 @@ public class ExperimentSettingsPanel extends Composite implements SuggestService
     }
 
     public void update(ExperimentSettings settings) {
-        switch (settings.getExperimentType()) {
+
+        ExpProfileType expProfileType = (ExpProfileType) settings.getExperimentType();
+        summary.setHTML(expProfileType.getSettingDetails(settings));
+
+        /*switch (settings.getExperimentType()) {
             case ONE_COLOR_MICROARRAY:
                 summary.setHTML(templates.div(fromTrustedString(
                         settings.getExperimentType().getTitle() +
@@ -107,19 +109,23 @@ public class ExperimentSettingsPanel extends Composite implements SuggestService
                 summary.setHTML(templates.div(fromSafeConstant(settings.getExperimentType().getTitle())));
                 changeLink.setVisible(false);
                 break;
-        }
+        }*/
     }
 
-    private static String valueOrNone(String value) {
+    /*private static String valueOrNone(String value) {
         return value == null || value.isEmpty() ? "none" : value;
     }
 
     private static String aeArrayLinkOrNone(String value) {
         return value == null || value.isEmpty() ? "none" : "<a href=\"http://www.ebi.ac.uk/arrayexpress/arrays/" + value + "\" target=\"_blank\">" + value + "</a>";
-    }
+    }*/
 
     private Editor<ExperimentSettings> createEditor(ExperimentSettings settings) {
-        switch (settings.getExperimentType()) {
+
+        ExpProfileType expProfileType = (ExpProfileType) settings.getExperimentType();
+        return expProfileType.getExperimentSettingsEditor(this);
+
+        /*switch (settings.getExperimentType()) {
             case ONE_COLOR_MICROARRAY:
                 return new OneColorMicroarraySettingsEditor(this);
             case TWO_COLOR_MICROARRAY:
@@ -130,7 +136,7 @@ public class ExperimentSettingsPanel extends Composite implements SuggestService
                 return new PlantTwoColorMicroarraySettingsEditor(this);
             default:
                 return new DummySettingsEditor();
-        }
+        }*/
     }
 
     @UiHandler("changeLink")

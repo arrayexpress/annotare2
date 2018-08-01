@@ -22,7 +22,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
@@ -59,7 +59,7 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     private HandlerRegistration criticalUpdateHandler;
     private Collection<OntologyTerm> expDesigns = new ArrayList<>();
 
-    private ExperimentProfileType expProfileType;
+    private ExpProfileType expProfileType;
 
     @Inject
     public SamplesActivity(SamplesView view,
@@ -122,16 +122,16 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     }
 
     @Override
-    public ExperimentProfileType getExperimentProfileType()
+    public ExpProfileType getExperimentProfileType()
     {
-        expDataProxy.getExperimentProfileTypeAsync(new AsyncCallbackWrapper<ExperimentProfileType>() {
+        expDataProxy.getExperimentProfileTypeAsync(new AsyncCallbackWrapper<ExpProfileType>() {
             @Override
             public void onFailure(Throwable throwable) {
 
             }
 
             @Override
-            public void onSuccess(ExperimentProfileType experimentProfileType) {
+            public void onSuccess(ExpProfileType experimentProfileType) {
                 expProfileType = experimentProfileType;
             }
         });
@@ -170,9 +170,9 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
 
     private void loadAsync() {
         expDataProxy.getExperimentProfileTypeAsync(
-                new ReportingAsyncCallback<ExperimentProfileType>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_TYPE) {
+                new ReportingAsyncCallback<ExpProfileType>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_TYPE) {
                     @Override
-                    public void onSuccess(ExperimentProfileType result) {
+                    public void onSuccess(ExpProfileType result) {
                         view.setExperimentType(result);
                     }
                 }

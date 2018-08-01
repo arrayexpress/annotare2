@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ApplicationDataServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
@@ -35,7 +35,7 @@ public class ApplicationDataProxy {
     private final ApplicationDataServiceAsync dataService;
 
     private ApplicationProperties properties;
-    private Map<ExperimentProfileType,ArrayList<String>> aeExperimentTypes;
+    private Map<ExpProfileType,ArrayList<String>> aeExperimentTypes;
     private ArrayList<String> materialTypes;
     private ArrayList<String> sequencingHardware;
 
@@ -65,7 +65,7 @@ public class ApplicationDataProxy {
         }.wrap());
     }
 
-    public void getAeExperimentTypesAsync(final ExperimentProfileType type, final AsyncCallback<ArrayList<String>> callback) {
+    public void getAeExperimentTypesAsync(final ExpProfileType type, final AsyncCallback<ArrayList<String>> callback) {
         if (aeExperimentTypes.containsKey(type)) {
             callback.onSuccess(aeExperimentTypes.get(type));
         } else {

@@ -43,6 +43,7 @@ import uk.ac.ebi.fg.annotare2.db.model.Message;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateEntity;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProType;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
@@ -337,7 +338,7 @@ public class RtMessengerService extends EmailMessengerService {
                 .build();
     }
 
-    private Map<String,String> getTicketUpdateFieldsMap(Message message, Submission submission, ExperimentProfileType submissionType)
+    private Map<String,String> getTicketUpdateFieldsMap(Message message, Submission submission, ExperimentProType submissionType)
     {
         if(submissionType != null)
             return new ImmutableMap.Builder<String, String>()
@@ -377,7 +378,13 @@ public class RtMessengerService extends EmailMessengerService {
         params.add(new BasicNameValuePair("pass",properties.getRtIntegrationPassword()));
         params.add(new BasicNameValuePair("content",getMessageContent(getFieldsMap(message))));
 
-        ExperimentProfileType submissionType = ExperimentProfileType.ONE_COLOR_MICROARRAY;
+        ExperimentProType submissionType = new ExperimentProType() {
+            @Override
+            public String getTitle() {
+                return null;
+            }
+        };
+
         Submission submission = message.getSubmission();
         submission = HibernateEntity.deproxy(submission, Submission.class);
 

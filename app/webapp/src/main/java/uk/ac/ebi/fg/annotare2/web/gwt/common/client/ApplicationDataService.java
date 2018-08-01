@@ -18,8 +18,8 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
@@ -46,7 +46,7 @@ public interface ApplicationDataService extends RemoteService {
 
     OntologyTerm getEfoTermByLabel(String label);
 
-    ArrayList<ProtocolType> getProtocolTypes(ExperimentProfileType type);
+    ArrayList<ProtocolType> getProtocolTypes(ExpProfileType type);
 
     ArrayList<OntologyTerm> getContactRoles();
 
@@ -54,7 +54,7 @@ public interface ApplicationDataService extends RemoteService {
 
     ApplicationProperties getApplicationProperties();
 
-    ArrayList<String> getAeExperimentTypes(ExperimentProfileType type);
+    ArrayList<String> getAeExperimentTypes(ExpProfileType type);
 
     ArrayList<String> getMaterialTypes();
 

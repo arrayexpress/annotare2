@@ -20,6 +20,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import uk.ac.ebi.fg.annotare2.core.utils.NamingPatternUtil;
 import uk.ac.ebi.fg.annotare2.submission.model.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
@@ -30,7 +31,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Lists.transform;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.common.collect.Sets.newLinkedHashSet;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignment.createProtocolAssignment;
@@ -47,19 +47,23 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     }
 
     public static ExperimentUpdater experimentUpdater(ExperimentProfile exp) {
-        ExperimentProfileType type = exp.getType();
-        switch (type) {
-            case ONE_COLOR_MICROARRAY:
+        ExperimentProType type = exp.getType();
+        ExpProfileType expType = (ExpProfileType) type;
+
+        //return expType.getExperimentUpdater(exp);
+
+        switch (type.getTitle()) {
+            case "One-color microarray":
                 return new OneColorMicroarrayUpdater(exp);
-            case PLANT_ONE_COLOR_MICROARRAY:
+            case "Plant - One-color microarray":
                 return new PlantOneColorMicroarrayUpdater(exp);
-            case TWO_COLOR_MICROARRAY:
+            case "Two-color microarray":
                 return new TwoColorMicroarrayUpdater(exp);
-            case PLANT_TWO_COLOR_MICROARRAY:
+            case "Plant - Two-color microarray":
                 return new PlantTwoColorMicroarrayUpdater(exp);
-            case SEQUENCING:
+            case "High-throughput sequencing":
                 return new SequencingUpdater(exp);
-            case PLANT_SEQUENCING:
+            case "Plant - High-throughput sequencing":
                 return new PlantSequencingUpdater(exp);
         }
         throw new IllegalArgumentException("No updater for experiment type: " + type);

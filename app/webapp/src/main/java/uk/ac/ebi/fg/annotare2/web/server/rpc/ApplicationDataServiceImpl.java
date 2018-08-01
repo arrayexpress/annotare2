@@ -27,8 +27,8 @@ import uk.ac.ebi.fg.annotare2.core.data.ProtocolTypes;
 import uk.ac.ebi.fg.annotare2.core.data.SystemEfoTerm;
 import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoTerm;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ApplicationDataService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
@@ -128,7 +128,7 @@ public class ApplicationDataServiceImpl extends ErrorReportingRemoteServiceServl
     }
 
     @Override
-    public ArrayList<ProtocolType> getProtocolTypes(ExperimentProfileType expType) {
+    public ArrayList<ProtocolType> getProtocolTypes(ExpProfileType expType) {
         ArrayList<ProtocolType> types = newArrayList();
         for (ProtocolTypes.Config typeConfig : protocolTypes.filter(expType)) {
             EfoTerm term = efoService.findTermByAccession(typeConfig.getId());
@@ -171,7 +171,7 @@ public class ApplicationDataServiceImpl extends ErrorReportingRemoteServiceServl
     }
 
     @Override
-    public ArrayList<String> getAeExperimentTypes(ExperimentProfileType type) {
+    public ArrayList<String> getAeExperimentTypes(ExpProfileType type) {
         return new ArrayList<>(experimentTypeList.getExperimentTypes());
     }
 

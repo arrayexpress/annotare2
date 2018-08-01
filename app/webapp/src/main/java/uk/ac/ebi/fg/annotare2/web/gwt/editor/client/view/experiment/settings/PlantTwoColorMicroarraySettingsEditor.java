@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.UpperCaseSuggestBox;
 import com.google.gwt.user.client.ui.Widget;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.PlantTwoColorMicroarrayExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignSuggestOracle;
@@ -76,7 +76,7 @@ public class PlantTwoColorMicroarraySettingsEditor extends Composite implements 
 
     @Override
     public ExperimentSettings getValues() {
-        ExperimentSettings settings = new ExperimentSettings(ExperimentProfileType.PLANT_TWO_COLOR_MICROARRAY);
+        ExperimentSettings settings = new ExperimentSettings(new PlantTwoColorMicroarrayExpProfileType("Plant - Two-color microarray"));
         settings.setArrayDesign(arrayDesign.getValue().trim());
         return settings;
     }

@@ -38,7 +38,7 @@ public class ServerWatchdog {
     private static boolean isPaused;
 
     public static void start() {
-        isPaused = false;
+        isPaused = true;
         isNotificaionVisible = false;
         Scheduler.get().scheduleFixedPeriod(new Scheduler.RepeatingCommand() {
             @Override

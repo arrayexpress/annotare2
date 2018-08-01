@@ -25,8 +25,8 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.proxy.DataFilesProxy;
@@ -138,9 +138,9 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
 
     private void loadExpDataAsync() {
         expDataService.getExperimentProfileTypeAsync(
-                new ReportingAsyncCallback<ExperimentProfileType>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_TYPE) {
+                new ReportingAsyncCallback<ExpProfileType>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_TYPE) {
                     @Override
-                    public void onSuccess(ExperimentProfileType result) {
+                    public void onSuccess(ExpProfileType result) {
                         view.getUploadView().setExperimentType(result);
                         view.getAssignmentView().setExperimentType(result);
                     }

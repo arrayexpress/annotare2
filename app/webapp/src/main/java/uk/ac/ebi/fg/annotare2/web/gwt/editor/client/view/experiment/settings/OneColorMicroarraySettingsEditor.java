@@ -20,7 +20,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.OneColorMicroarrayExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignSuggestOracle;
@@ -80,7 +80,7 @@ public class OneColorMicroarraySettingsEditor extends Composite implements Edito
 
     @Override
     public ExperimentSettings getValues() {
-        ExperimentSettings settings = new ExperimentSettings(ExperimentProfileType.ONE_COLOR_MICROARRAY);
+        ExperimentSettings settings = new ExperimentSettings(new OneColorMicroarrayExpProfileType("One-color microarray"));
         settings.setArrayDesign(arrayDesign.getValue().trim());
         settings.setLabel(label.getValue().trim());
         return settings;

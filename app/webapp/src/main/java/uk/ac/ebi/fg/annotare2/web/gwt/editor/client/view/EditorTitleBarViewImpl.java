@@ -29,14 +29,12 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.Urls;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExperimentPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.ExperimentTab;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.AutoSaveLabel;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactUsDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidateSubmissionDialog;
@@ -47,7 +45,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidateSubmissi
 public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarView {
 
     private SubmissionDetails submissionDetails;
-    private ExperimentProfileType experimentProfileType;
+    private ExpProfileType experimentProfileType;
 
 
     interface Binder extends UiBinder<HTMLPanel, EditorTitleBarViewImpl> {
@@ -162,7 +160,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     }
 
     @Override
-    public void setExperimentProfileType(ExperimentProfileType experimentProfileType) {
+    public void setExperimentProfileType(ExpProfileType experimentProfileType) {
         this.experimentProfileType = experimentProfileType;
     }
 

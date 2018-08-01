@@ -28,8 +28,8 @@ import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.datepicker.client.CalendarUtil;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AdfServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ApplicationDataServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountServiceAsync;
@@ -206,12 +206,12 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     }
 
     private void setExperimentProfileType() {
-        expData.getExperimentProfileTypeAsync(new AsyncCallbackWrapper<ExperimentProfileType>() {
+        expData.getExperimentProfileTypeAsync(new AsyncCallbackWrapper<ExpProfileType>() {
             @Override
             public void onFailure(Throwable throwable) {
             }
             @Override
-            public void onSuccess(ExperimentProfileType experimentProfileType) {
+            public void onSuccess(ExpProfileType experimentProfileType) {
                 view.setExperimentProfileType(experimentProfileType);
             }
         });

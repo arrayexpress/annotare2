@@ -28,8 +28,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.EditSuggestCell;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
@@ -168,8 +168,8 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
     }
 
     @Override
-    public void setExperimentType(ExperimentProfileType type) {
-        if (ExperimentProfileType.TWO_COLOR_MICROARRAY == type || ExperimentProfileType.PLANT_TWO_COLOR_MICROARRAY == type) {
+    public void setExperimentType(ExpProfileType type) {
+        if (type.isTwoColorMicroarray() || type.isPlantTwoColorMicroarray()) {
             maxSamplesLimit = 500;
         }
     }

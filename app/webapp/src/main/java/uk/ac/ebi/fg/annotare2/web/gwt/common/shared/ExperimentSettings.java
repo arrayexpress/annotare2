@@ -17,19 +17,17 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProType;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
-import uk.ac.ebi.fg.annotare2.submission.model.ExtractAttribute;
 
 import java.util.Collection;
-import java.util.HashMap;
 
 /**
  * @author Olga Melnichuk
  */
 public class ExperimentSettings implements IsSerializable {
 
-    private ExperimentProfileType experimentType;
+    private ExperimentProType experimentType;
 
     //private HashMap<ExtractAttribute,String> extractValues;
     private String arrayDesign;
@@ -39,7 +37,7 @@ public class ExperimentSettings implements IsSerializable {
         /* used by GWT serialization */
     }
 
-    public ExperimentSettings(ExperimentProfileType experimentType) {
+    public ExperimentSettings(ExperimentProType experimentType) {
         this.experimentType = experimentType;
 
     }
@@ -52,7 +50,7 @@ public class ExperimentSettings implements IsSerializable {
         this.label = label;
     }
 
-    public ExperimentProfileType getExperimentType() {
+    public ExperimentProType getExperimentType() {
         return experimentType;
     }
 

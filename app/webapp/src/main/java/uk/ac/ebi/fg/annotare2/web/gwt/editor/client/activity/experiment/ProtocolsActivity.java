@@ -22,8 +22,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.Protocol;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
@@ -37,7 +37,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ApplicationDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.OntologyDataProxy;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolDetail;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ProtocolsView;
 
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
     private final ApplicationDataProxy appData;
     private HandlerRegistration criticalUpdateHandler;
 
-    private ExperimentProfileType expProfileType;
+    private ExpProfileType expProfileType;
 
     @Inject
     public ProtocolsActivity(ProtocolsView view, OntologyDataProxy ontologyDataProxy, ExperimentDataProxy expData, ApplicationDataProxy appData) {
@@ -94,9 +93,9 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
     @Override
     public void getProtocolTypes(final AsyncCallback<ArrayList<ProtocolType>> callback) {
         expData.getExperimentProfileTypeAsync(
-                new ReportingAsyncCallback<ExperimentProfileType>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_TYPE) {
+                new ReportingAsyncCallback<ExpProfileType>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_TYPE) {
                     @Override
-                    public void onSuccess(ExperimentProfileType result) {
+                    public void onSuccess(ExpProfileType result) {
                         ontologyDataProxy.getProtocolTypes(result, callback);
                     }
                 }
@@ -109,16 +108,16 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
     }
 
     @Override
-    public ExperimentProfileType getExperimentProfileType()
+    public ExpProfileType getExperimentProfileType()
     {
-        expData.getExperimentProfileTypeAsync(new AsyncCallbackWrapper<ExperimentProfileType>() {
+        expData.getExperimentProfileTypeAsync(new AsyncCallbackWrapper<ExpProfileType>() {
             @Override
             public void onFailure(Throwable throwable) {
 
             }
 
             @Override
-            public void onSuccess(ExperimentProfileType experimentProfileType) {
+            public void onSuccess(ExpProfileType experimentProfileType) {
 
                 expProfileType = experimentProfileType;
             }

@@ -32,7 +32,7 @@ public class PlantTwoColorMicroarrayUpdater extends BasicExperimentUpdater {
 
     @Override
     public void updateSettings(ExperimentSettings settings) {
-        if (settings.getExperimentType() != PLANT_TWO_COLOR_MICROARRAY) {
+        if (!settings.getExperimentType().isPlantTwoColorMicroarray()) {
             return;
         }
         exp().setArrayDesign(settings.getArrayDesign());

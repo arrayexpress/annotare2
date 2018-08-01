@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.model.ExpProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.LeftNavigationView;
 
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public enum ExpDesignSection implements LeftNavigationView.Section {
         this.helpText = helpText;
     }
 
-    private boolean appliesTo(ExperimentProfileType type) {
+    private boolean appliesTo(ExpProfileType type) {
         return type != null && applyTo.contains(type);
     }
 
@@ -78,7 +79,7 @@ public enum ExpDesignSection implements LeftNavigationView.Section {
         return name();
     }
 
-    public static List<ExpDesignSection> experimentDesignSectionsFor(ExperimentProfileType type) {
+    public static List<ExpDesignSection> experimentDesignSectionsFor(ExpProfileType type) {
         List<ExpDesignSection> list = new ArrayList<ExpDesignSection>();
         for (ExpDesignSection section : values()) {
             if (section.appliesTo(type)) {

@@ -31,6 +31,7 @@ import uk.ac.ebi.fg.annotare2.db.util.HibernateEntity;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.otrs.OtrsConnector;
 import uk.ac.ebi.fg.annotare2.otrs.OtrsMessageParser;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProType;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
@@ -90,7 +91,13 @@ public class OtrsMessengerService extends EmailMessengerService {
     private String createOtrsTicket(Submission submission) throws Exception {
         OtrsConnector otrs = getOtrsConnector();
 
-        ExperimentProfileType submissionType = ExperimentProfileType.ONE_COLOR_MICROARRAY;
+        ExperimentProType submissionType = new ExperimentProType() {
+            @Override
+            public String getTitle() {
+                return null;
+            }
+        };
+
         submission = HibernateEntity.deproxy(submission, Submission.class);
         if (submission instanceof ExperimentSubmission) {
             try {
