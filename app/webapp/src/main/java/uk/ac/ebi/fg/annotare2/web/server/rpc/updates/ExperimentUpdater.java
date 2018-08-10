@@ -30,7 +30,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Lists.transform;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.common.collect.Sets.newLinkedHashSet;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignment.createProtocolAssignment;
@@ -53,14 +52,33 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
                 return new OneColorMicroarrayUpdater(exp);
             case PLANT_ONE_COLOR_MICROARRAY:
                 return new PlantOneColorMicroarrayUpdater(exp);
+            case HUMAN_ONE_COLOR_MICROARRAY:
+                return new HumanOneColorMicroarrayUpdater(exp);
+            case CELL_LINE_ONE_COLOR_MICROARRAY:
+                return new CellLineOneColorMicroarrayUpdater(exp);
+            case VERTEBRATE_ONE_COLOR_MICROARRAY:
+                return new VertebrateOneColorMicroarrayUpdater(exp);
             case TWO_COLOR_MICROARRAY:
                 return new TwoColorMicroarrayUpdater(exp);
             case PLANT_TWO_COLOR_MICROARRAY:
                 return new PlantTwoColorMicroarrayUpdater(exp);
+            case HUMAN_TWO_COLOR_MICROARRAY:
+                return new HumanTwoColorMicroarrayUpdater(exp);
+            case CELL_LINE_TWO_COLOR_MICROARRAY:
+                return new CellLineTwoColorMicroarrayUpdater(exp);
+            case VERTEBRATE_TWO_COLOR_MICROARRAY:
+                return new VertebrateTwoColorMicroarrayUpdater(exp);
             case SEQUENCING:
-                return new SequencingUpdater(exp);
             case PLANT_SEQUENCING:
-                return new PlantSequencingUpdater(exp);
+            case SINGLE_CELL_HUMAN_SEQUENCING:
+            case SINGLE_CELL_CELL_LINE_SEQUENCING:
+            case SINGLE_CELL_VERTEBRATE_SEQUENCING:
+            case SINGLE_CELL_PLANT_SEQUENCING:
+            case SINGLE_CELL_SEQUENCING:
+            case CELL_LINE_SEQUENCING:
+            case VERTEBRATE_SEQUENCING:
+            case HUMAN_SEQUENCING:
+                return new SequencingUpdater(exp);
         }
         throw new IllegalArgumentException("No updater for experiment type: " + type);
     }
