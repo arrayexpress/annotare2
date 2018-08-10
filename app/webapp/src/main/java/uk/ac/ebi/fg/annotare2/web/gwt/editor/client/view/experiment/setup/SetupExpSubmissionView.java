@@ -148,23 +148,52 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
         prevButton.setVisible(false);
         expDesignInfo.setVisible(false);
 
-        OptGroupElement nonPlantGroup = Document.get().createOptGroupElement();
-        nonPlantGroup.setLabel("Non-Plant");
+        OptGroupElement otherGroup = Document.get().createOptGroupElement();
+        otherGroup.setLabel("Other");
         OptGroupElement plantGroup = Document.get().createOptGroupElement();
         plantGroup.setLabel("Plant");
-        templateBox.getElement().appendChild(nonPlantGroup);
+        OptGroupElement humanGroup = Document.get().createOptGroupElement();
+        humanGroup.setLabel("Human");
+        OptGroupElement vertebrateGroup = Document.get().createOptGroupElement();
+        vertebrateGroup.setLabel("Vertebrate");
+        OptGroupElement cellLineGroup = Document.get().createOptGroupElement();
+        cellLineGroup.setLabel("Cell Line");
+        OptGroupElement singleCellGroup = Document.get().createOptGroupElement();
+        singleCellGroup.setLabel("Single Cell");
+        templateBox.getElement().appendChild(otherGroup);
+
         for (ExperimentProfileType type : ExperimentProfileType.values()) {
             OptionElement optElement = Document.get().createOptionElement();
             optElement.setInnerText(type.getTitle());
             optElement.setValue(type.name());
+
             if (type.name().toLowerCase().startsWith("plant")) {
                 plantGroup.appendChild(optElement);
-            } else {
-                nonPlantGroup.appendChild(optElement);
+            }
+            else if(type.name().toLowerCase().startsWith("cell")) {
+                cellLineGroup.appendChild(optElement);
+            }
+            else if(type.name().toLowerCase().startsWith("human")) {
+                humanGroup.appendChild(optElement);
+            }
+            else if(type.name().toLowerCase().startsWith("vertebrate")) {
+                vertebrateGroup.appendChild(optElement);
+            }
+            else if(type.name().toLowerCase().startsWith("single")) {
+                singleCellGroup.appendChild(optElement);
+            }
+            else {
+                otherGroup.appendChild(optElement);
             }
         }
-        templateBox.getElement().appendChild(nonPlantGroup);
+
+        templateBox.getElement().appendChild(otherGroup);
+        templateBox.getElement().appendChild(singleCellGroup);
         templateBox.getElement().appendChild(plantGroup);
+        templateBox.getElement().appendChild(humanGroup);
+        templateBox.getElement().appendChild(vertebrateGroup);
+        templateBox.getElement().appendChild(cellLineGroup);
+
 
         templateBox.addChangeHandler(new ChangeHandler() {
             @Override
@@ -345,56 +374,136 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
     private HasSubmissionSettings createWidget(ExperimentProfileType type) {
         switch (type) {
             case ONE_COLOR_MICROARRAY:
-                genericExpDetails.setVisible(true);
-                twoColorDetails.setVisible(false);
-                highSeqDetails.setVisible(false);
-                oneColorDetails.setVisible(true);
-                plantExpDetails.setVisible(false);
+                setupOneColorDetailsPanel();
                 return new OneColorMicroarraySettings(this);
 
             case TWO_COLOR_MICROARRAY:
-                genericExpDetails.setVisible(true);
-                twoColorDetails.setVisible(true);
-                oneColorDetails.setVisible(false);
-                highSeqDetails.setVisible(false);
-                plantExpDetails.setVisible(false);
+                setupTwoColorDetailsPanel();
                 return new TwoColorMicroarraySettings(this);
 
             case SEQUENCING:
-                genericExpDetails.setVisible(true);
-                twoColorDetails.setVisible(false);
-                oneColorDetails.setVisible(false);
-                highSeqDetails.setVisible(true);
-                plantExpDetails.setVisible(false);
+                setupSeqDetailsPanel();
                 return new HighThroughputSeqSettings();
 
             case PLANT_SEQUENCING:
-                genericExpDetails.setVisible(false);
-                plantExpDetails.setVisible(true);
-                plantTwoColorDetails.setVisible(false);
-                plantHighSeqDetails.setVisible(true);
-                plantOneColorDetails.setVisible(false);
+                setupPlantSeqColorDetailsPanel();
                 return new PlantHighThroughputSeqSettings();
 
             case PLANT_ONE_COLOR_MICROARRAY:
-                genericExpDetails.setVisible(false);
-                plantExpDetails.setVisible(true);
-                plantTwoColorDetails.setVisible(false);
-                plantHighSeqDetails.setVisible(false);
-                plantOneColorDetails.setVisible(true);
+                setupPlantOneColorDetailsPanel();
                 return new PlantOneColorMicroarraySettings(this);
 
             case PLANT_TWO_COLOR_MICROARRAY:
-                genericExpDetails.setVisible(false);
-                plantExpDetails.setVisible(true);
-                plantTwoColorDetails.setVisible(true);
-                plantHighSeqDetails.setVisible(false);
-                plantOneColorDetails.setVisible(false);
+                setupPlantTwoColorDetailsPanel();
                 return new PlantTwoColorMicroarraySettings(this);
+
+            case HUMAN_ONE_COLOR_MICROARRAY:
+                setupOneColorDetailsPanel();
+                return new HumanOneColorMicroarraySettings(this);
+
+            case HUMAN_TWO_COLOR_MICROARRAY:
+                setupTwoColorDetailsPanel();
+                return new HumanTwoColorMicroarraySettings(this);
+
+            case HUMAN_SEQUENCING:
+                setupSeqDetailsPanel();
+                return new HumanHighThroughputSeqSettings();
+
+            case VERTEBRATE_ONE_COLOR_MICROARRAY:
+                setupOneColorDetailsPanel();
+                return new VertebrateOneColorMicroarraySettings(this);
+
+            case VERTEBRATE_TWO_COLOR_MICROARRAY:
+                setupTwoColorDetailsPanel();
+                return new VertebrateTwoColorMicroarraySettings(this);
+
+            case VERTEBRATE_SEQUENCING:
+                setupSeqDetailsPanel();
+                return new VertebrateHighThroughputSeqSettings();
+
+            case CELL_LINE_ONE_COLOR_MICROARRAY:
+                setupOneColorDetailsPanel();
+                return new CellLineOneColorMicroarraySettings(this);
+
+            case CELL_LINE_TWO_COLOR_MICROARRAY:
+                setupTwoColorDetailsPanel();
+                return new CellLineTwoColorMicroarraySettings(this);
+
+            case CELL_LINE_SEQUENCING:
+                setupSeqDetailsPanel();
+                return new CellLineHighThroughputSeqSettings();
+
+            case SINGLE_CELL_HUMAN_SEQUENCING:
+                setupSeqDetailsPanel();
+                return new SingleCellHumanHighThroughputSeqSettings();
+
+            case SINGLE_CELL_PLANT_SEQUENCING:
+                setupPlantSeqColorDetailsPanel();
+                return new SingleCellPlantHighThroughputSeqSettings();
+
+            case SINGLE_CELL_CELL_LINE_SEQUENCING:
+                setupSeqDetailsPanel();
+                return new SCCellLineHighThroughputSeqSettings();
+
+            case SINGLE_CELL_VERTEBRATE_SEQUENCING:
+                setupSeqDetailsPanel();
+                return new SingleCellVertebrateHighThroughputSeqSettings();
+
+            case SINGLE_CELL_SEQUENCING:
+                setupSeqDetailsPanel();
+                return new SingleCellHighThroughputSeqSettings();
 
             default:
                 throw new IllegalArgumentException("Unknown experiment type: " + type);
         }
+    }
+
+    private void setupOneColorDetailsPanel() {
+        genericExpDetails.setVisible(true);
+        oneColorDetails.setVisible(true);
+        twoColorDetails.setVisible(false);
+        highSeqDetails.setVisible(false);
+        plantExpDetails.setVisible(false);
+    }
+
+    private void setupTwoColorDetailsPanel() {
+        genericExpDetails.setVisible(true);
+        oneColorDetails.setVisible(false);
+        twoColorDetails.setVisible(true);
+        highSeqDetails.setVisible(false);
+        plantExpDetails.setVisible(false);
+    }
+
+    private void setupSeqDetailsPanel() {
+        genericExpDetails.setVisible(true);
+        oneColorDetails.setVisible(false);
+        twoColorDetails.setVisible(false);
+        highSeqDetails.setVisible(true);
+        plantExpDetails.setVisible(false);
+    }
+
+    private void setupPlantOneColorDetailsPanel() {
+        genericExpDetails.setVisible(false);
+        plantExpDetails.setVisible(true);
+        plantTwoColorDetails.setVisible(false);
+        plantHighSeqDetails.setVisible(false);
+        plantOneColorDetails.setVisible(true);
+    }
+
+    private void setupPlantTwoColorDetailsPanel() {
+        genericExpDetails.setVisible(false);
+        plantExpDetails.setVisible(true);
+        plantTwoColorDetails.setVisible(true);
+        plantHighSeqDetails.setVisible(false);
+        plantOneColorDetails.setVisible(false);
+    }
+
+    private void setupPlantSeqColorDetailsPanel() {
+        genericExpDetails.setVisible(false);
+        plantExpDetails.setVisible(true);
+        plantTwoColorDetails.setVisible(false);
+        plantHighSeqDetails.setVisible(true);
+        plantOneColorDetails.setVisible(false);
     }
 
     private static void selectFirstTemplate(ListBox listBox) {

@@ -23,9 +23,23 @@ public enum ExperimentProfileType {
     ONE_COLOR_MICROARRAY("One-color microarray"),
     TWO_COLOR_MICROARRAY("Two-color microarray"),
     SEQUENCING("High-throughput sequencing"),
+    SINGLE_CELL_SEQUENCING("Single cell sequencing"),
     PLANT_ONE_COLOR_MICROARRAY("Plant - One-color microarray"),
     PLANT_TWO_COLOR_MICROARRAY("Plant - Two-color microarray"),
-    PLANT_SEQUENCING("Plant - High-throughput sequencing");
+    PLANT_SEQUENCING("Plant - High-throughput sequencing"),
+    SINGLE_CELL_PLANT_SEQUENCING("Single cell - Plant sequencing"),
+    HUMAN_ONE_COLOR_MICROARRAY("Human - One-color microarray"),
+    HUMAN_TWO_COLOR_MICROARRAY("Human - Two-color microarray"),
+    HUMAN_SEQUENCING("Human - High-throughput sequencing"),
+    SINGLE_CELL_HUMAN_SEQUENCING("Single cell - Human sequencing"),
+    VERTEBRATE_ONE_COLOR_MICROARRAY("Vertebrate - One-color microarray"),
+    VERTEBRATE_TWO_COLOR_MICROARRAY("Vertebrate - Two-color microarray"),
+    VERTEBRATE_SEQUENCING("Vertebrate - High-throughput sequencing"),
+    SINGLE_CELL_VERTEBRATE_SEQUENCING("Single cell - Vertebrate sequencing"),
+    CELL_LINE_ONE_COLOR_MICROARRAY("Cell line - One-color microarray"),
+    CELL_LINE_TWO_COLOR_MICROARRAY("Cell line - Two-color microarray"),
+    CELL_LINE_SEQUENCING("Cell line - High-throughput sequencing"),
+    SINGLE_CELL_CELL_LINE_SEQUENCING("Single cell - Cell-line  sequencing");
 
     private final String title;
 
@@ -38,22 +52,28 @@ public enum ExperimentProfileType {
     }
 
     public boolean isMicroarray() {
-        return this == ONE_COLOR_MICROARRAY || isTwoColorMicroarray();
-    }
-
-    public boolean isTwoColorMicroarray() {
-        return this == TWO_COLOR_MICROARRAY;
+        return ONE_COLOR_MICROARRAY == this ||
+                TWO_COLOR_MICROARRAY == this ||
+                PLANT_ONE_COLOR_MICROARRAY == this ||
+                PLANT_TWO_COLOR_MICROARRAY == this ||
+                HUMAN_ONE_COLOR_MICROARRAY == this ||
+                HUMAN_TWO_COLOR_MICROARRAY == this ||
+                VERTEBRATE_ONE_COLOR_MICROARRAY == this ||
+                VERTEBRATE_TWO_COLOR_MICROARRAY == this ||
+                CELL_LINE_ONE_COLOR_MICROARRAY == this ||
+                CELL_LINE_TWO_COLOR_MICROARRAY == this;
     }
 
     public boolean isSequencing() {
-        return SEQUENCING == this;
+        return SEQUENCING == this ||
+                SINGLE_CELL_SEQUENCING == this ||
+                PLANT_SEQUENCING == this ||
+                SINGLE_CELL_PLANT_SEQUENCING == this ||
+                HUMAN_SEQUENCING == this ||
+                SINGLE_CELL_HUMAN_SEQUENCING == this ||
+                VERTEBRATE_SEQUENCING == this ||
+                SINGLE_CELL_VERTEBRATE_SEQUENCING == this ||
+                CELL_LINE_SEQUENCING == this ||
+                SINGLE_CELL_CELL_LINE_SEQUENCING == this;
     }
-
-    public boolean isPlantSequncing() {return PLANT_SEQUENCING == this;}
-
-    public boolean isPlantMicroarray()  {
-        return this == PLANT_ONE_COLOR_MICROARRAY || isPlantTwoColorMicroarray();
-    }
-
-    public boolean isPlantTwoColorMicroarray() { return this == PLANT_TWO_COLOR_MICROARRAY; }
 }
