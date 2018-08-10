@@ -60,6 +60,39 @@ public class ExperimentBuilderFactory {
                 return exp;
             }
         },
+        HUMAN_ONE_COLOR_EXPERIMENT_BUILDER(HUMAN_ONE_COLOR_MICROARRAY) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(HUMAN_ONE_COLOR_MICROARRAY);
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                exp.setAeExperimentType("transcription profiling by array");
+                return exp;
+            }
+        },
+        VERTEBRATE_ONE_COLOR_EXPERIMENT_BUILDER(VERTEBRATE_ONE_COLOR_MICROARRAY) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(VERTEBRATE_ONE_COLOR_MICROARRAY);
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                exp.setAeExperimentType("transcription profiling by array");
+                return exp;
+            }
+        },
+        CELL_LINE_ONE_COLOR_EXPERIMENT_BUILDER(CELL_LINE_ONE_COLOR_MICROARRAY) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(CELL_LINE_ONE_COLOR_MICROARRAY);
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                exp.setAeExperimentType("transcription profiling by array");
+                return exp;
+            }
+        },
         TWO_COLOR_EXPERIMENT_BUILDER(TWO_COLOR_MICROARRAY) {
             @Override
             ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
@@ -88,6 +121,48 @@ public class ExperimentBuilderFactory {
                 return exp;
             }
         },
+        HUMAN_TWO_COLOR_EXPERIMENT_BUILDER(HUMAN_TWO_COLOR_MICROARRAY) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(HUMAN_TWO_COLOR_MICROARRAY);
+                exp.addLabel("Cy3");
+                exp.addLabel("Cy5");
+
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                exp.setAeExperimentType("transcription profiling by array");
+                return exp;
+            }
+        },
+        VERTEBRATE_TWO_COLOR_EXPERIMENT_BUILDER(VERTEBRATE_TWO_COLOR_MICROARRAY) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(VERTEBRATE_TWO_COLOR_MICROARRAY);
+                exp.addLabel("Cy3");
+                exp.addLabel("Cy5");
+
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                exp.setAeExperimentType("transcription profiling by array");
+                return exp;
+            }
+        },
+        CELL_LINE_TWO_COLOR_EXPERIMENT_BUILDER(CELL_LINE_TWO_COLOR_MICROARRAY) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(CELL_LINE_TWO_COLOR_MICROARRAY);
+                exp.addLabel("Cy3");
+                exp.addLabel("Cy5");
+
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                exp.setAeExperimentType("transcription profiling by array");
+                return exp;
+            }
+        },
         SEQUENCING_EXPERIMENT_BUILDER(SEQUENCING) {
             @Override
             ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
@@ -96,7 +171,6 @@ public class ExperimentBuilderFactory {
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
                 updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
-                //updater.updateExtractAttributes(settings.getExtractValues(),settings.getNumberOfHybs());
                 exp.setAeExperimentType("RNA-seq of coding RNA");
                 return exp;
             }
@@ -109,7 +183,102 @@ public class ExperimentBuilderFactory {
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
                 updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
-                //updater.updateExtractAttributes(settings.getExtractValues(),settings.getNumberOfHybs());
+                exp.setAeExperimentType("RNA-seq of coding RNA");
+                return exp;
+            }
+        },
+        HUMAN_SEQUENCING_EXPERIMENT_BUILDER(HUMAN_SEQUENCING) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(HUMAN_SEQUENCING);
+
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                exp.setAeExperimentType("RNA-seq of coding RNA");
+                return exp;
+            }
+        },
+        VERTEBRATE_SEQUENCING_EXPERIMENT_BUILDER(VERTEBRATE_SEQUENCING) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(VERTEBRATE_SEQUENCING);
+
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                exp.setAeExperimentType("RNA-seq of coding RNA");
+                return exp;
+            }
+        },
+        CELL_LINE_SEQUENCING_EXPERIMENT_BUILDER(CELL_LINE_SEQUENCING) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(CELL_LINE_SEQUENCING);
+
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                exp.setAeExperimentType("RNA-seq of coding RNA");
+                return exp;
+            }
+        },
+        SINGLE_CELL_SEQUENCING_EXPERIMENT_BUILDER(SINGLE_CELL_SEQUENCING) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(SINGLE_CELL_SEQUENCING);
+
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                exp.setAeExperimentType("RNA-seq of coding RNA");
+                return exp;
+            }
+        },
+        SINGLE_CELL_HUMAN_SEQUENCING_EXPERIMENT_BUILDER(SINGLE_CELL_HUMAN_SEQUENCING) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(SINGLE_CELL_HUMAN_SEQUENCING);
+
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                exp.setAeExperimentType("RNA-seq of coding RNA");
+                return exp;
+            }
+        },
+        SINGLE_CELL_PLANT_SEQUENCING_EXPERIMENT_BUILDER(SINGLE_CELL_PLANT_SEQUENCING) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(SINGLE_CELL_PLANT_SEQUENCING);
+
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                exp.setAeExperimentType("RNA-seq of coding RNA");
+                return exp;
+            }
+        },
+        SINGLE_CELL_CELL_LINE_SEQUENCING_EXPERIMENT_BUILDER(SINGLE_CELL_CELL_LINE_SEQUENCING) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(SINGLE_CELL_CELL_LINE_SEQUENCING);
+
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                exp.setAeExperimentType("RNA-seq of coding RNA");
+                return exp;
+            }
+        },
+        SINGLE_CELL_VERTEBRATE_SEQUENCING_EXPERIMENT_BUILDER(SINGLE_CELL_VERTEBRATE_SEQUENCING) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(SINGLE_CELL_VERTEBRATE_SEQUENCING);
+
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
                 exp.setAeExperimentType("RNA-seq of coding RNA");
                 return exp;
             }
