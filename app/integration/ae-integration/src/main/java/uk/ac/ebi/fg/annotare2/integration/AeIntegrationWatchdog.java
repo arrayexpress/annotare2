@@ -334,7 +334,7 @@ public class AeIntegrationWatchdog {
                 if (submission instanceof ExperimentSubmission) {
                     try {
                         ExperimentProfile exp = ((ExperimentSubmission) submission).getExperimentProfile();
-                        if (exp.getType().isSequencing() || exp.getType().isPlantSequncing()) {
+                        if (exp.getType().isSequencing()) {
                             submissionType = "HTS";
                         } else {
                             submissionType = "MA";
@@ -421,7 +421,7 @@ public class AeIntegrationWatchdog {
             ExperimentProfile exp = ((ExperimentSubmission) submission).getExperimentProfile();
             Set<DataFile> dataFiles = dataFileManager.getAssignedFiles(submission);
             Set<DataFile> rawDataFiles = dataFileManager.getAssignedFiles(submission, FileType.RAW_FILE);
-            boolean isSequencing = exp.getType().isSequencing() || exp.getType().isPlantSequncing();
+            boolean isSequencing = exp.getType().isSequencing();
             String dataFilesPostProcessingScript = properties.getSubsTrackingDataFilesPostProcessingScript();
 
             String ftpSubDirectory = submission.getFtpSubDirectory();
@@ -712,7 +712,7 @@ public class AeIntegrationWatchdog {
             // copy data files
             Set<DataFile> dataFiles = dataFileManager.getAssignedFiles(submission);
             Set<DataFile> rawDataFiles = dataFileManager.getAssignedFiles(submission, FileType.RAW_FILE);
-            boolean isSequencing = exp.getType().isSequencing() || exp.getType().isPlantSequncing();
+            boolean isSequencing = exp.getType().isSequencing();
             String ftpSubDirectory = submission.getFtpSubDirectory();
 
             if (isSequencing && rawDataFiles.size() > 0) {

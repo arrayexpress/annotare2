@@ -206,7 +206,7 @@ public class ValidateSubmissionDialog extends DialogBox {
         this.callback = callback;
         feedbackPanel.setVisible(shouldShowFeedback);
         cancelButton.setVisible(shouldShowFeedback);
-        if (this.experimentProfileType != null && (this.experimentProfileType.isSequencing() || this.experimentProfileType.isPlantSequncing())) {
+        if (this.experimentProfileType != null && this.experimentProfileType.isSequencing()) {
             setTitleAndMessage(
                     "Submission Successful",
                     "Thanks for submitting!<br/><br/>" +

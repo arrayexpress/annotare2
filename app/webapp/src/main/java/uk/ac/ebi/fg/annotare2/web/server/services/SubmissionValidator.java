@@ -99,7 +99,7 @@ public class SubmissionValidator {
         Long userId = submission.getCreatedBy().getId();
         Long submissionId = submission.getId();
         ExperimentProfile exp = submission.getExperimentProfile();
-        ExperimentType type = exp.getType().isMicroarray() || exp.getType().isPlantMicroarray() ? ExperimentType.MICRO_ARRAY : ExperimentType.HTS;
+        ExperimentType type = exp.getType().isMicroarray() ? ExperimentType.MICRO_ARRAY : ExperimentType.HTS;
 
 
 
