@@ -33,6 +33,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.submission.model.SampleAttribute;
 import uk.ac.ebi.fg.annotare2.submission.model.SampleAttributeType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
@@ -145,6 +146,7 @@ public class SampleColumnsDialog extends DialogBox {
         }
 
         this.experimentProfileType = experimentProfileType;
+        addSuggestedColumns(experimentProfileType);
         addMandatoryColumns(experimentProfileType);
     }
 
@@ -312,19 +314,46 @@ public class SampleColumnsDialog extends DialogBox {
         move(index, index + 1);
     }
 
+    private void addSuggestedColumns(ExperimentProfileType experimentProfileType){
+
+        List<SampleAttributeTemplate> attributeTemplates = new ArrayList<>();
+        List<SampleAttributeTemplate> suggestedTemplates = new ArrayList<>();
+
+        Set<SampleAttributeTemplate> used = getUsedTemplates();
+
+        for (ExperimentProfileTypeToAttributesMapping expTypeToAttribute:
+                ExperimentProfileTypeToAttributesMapping.values()){
+
+            if(expTypeToAttribute.isSingleCellExperiment(experimentProfileType)){
+                attributeTemplates = expTypeToAttribute.getSingleCellAttributes();
+                break;
+            }
+
+        }
+
+        for (SampleAttributeTemplate attributeTemplate:
+                attributeTemplates) {
+            if(!used.contains(attributeTemplate)){
+                suggestedTemplates.add(attributeTemplate);
+            }
+        }
+
+        addOptionalColumn(suggestedTemplates);
+    }
+
     private void addMandatoryColumns(ExperimentProfileType experimentProfileType) {
 
         List<SampleAttributeTemplate> attributeTemplates;
-        Collection<ExperimentProfileType> experimentProfileTypes;
+        ExperimentProfileType expProfileType;
 
         Set<SampleAttributeTemplate> used = getUsedTemplates();
 
         for (ExperimentProfileTypeToAttributesMapping expTypeToAttribute:
              ExperimentProfileTypeToAttributesMapping.values()) {
 
-            experimentProfileTypes = expTypeToAttribute.getExpProfileTypes();
+            expProfileType = expTypeToAttribute.getExpProfileType();
 
-            if(experimentProfileTypes.contains(experimentProfileType)) {
+            if(expProfileType == experimentProfileType) {
                 attributeTemplates = expTypeToAttribute.getAttributes();
 
                 for (SampleAttributeTemplate attributeTemplate :
@@ -381,6 +410,17 @@ public class SampleColumnsDialog extends DialogBox {
             names.add(column.getName().toLowerCase());
         }
         return names;
+    }
+
+    private void addOptionalColumn(final List<SampleAttributeTemplate> template) {
+        efoSuggest.getSystemEfoTerms(
+                new ReportingAsyncCallback<SystemEfoTermMap>(FailureMessage.UNABLE_TO_LOAD_EFO) {
+                    @Override
+                    public void onSuccess(SystemEfoTermMap systemEfoTermMap) {
+                        addOptionalColumn(template, systemEfoTermMap);
+                    }
+                }
+        );
     }
 
     private void addColumn(final SampleAttributeTemplate template, final String experimentDesignType) {
@@ -445,6 +485,21 @@ public class SampleColumnsDialog extends DialogBox {
         for (SampleAttributeTemplate template: templates
              ) {
             SampleColumn column = SampleColumn.create(template, context);
+            if (null == column) {
+                NotificationPopupPanel.error("Unable to add an attribute.", true, false);
+            } else if (getUserColumnNamesLowerCased().contains(column.getName().toLowerCase())) {
+                NotificationPopupPanel.error("Unable to add '" + column.getName() + "': attribute is already defined.", true, false);
+            } else {
+                setColumn(column, true);
+
+            }
+        }
+    }
+
+    private void addOptionalColumn(List<SampleAttributeTemplate> templates, SystemEfoTermMap context) {
+        for (SampleAttributeTemplate template: templates
+        ) {
+            SampleColumn column = SampleColumn.create(template, context,"");
             if (null == column) {
                 NotificationPopupPanel.error("Unable to add an attribute.", true, false);
             } else if (getUserColumnNamesLowerCased().contains(column.getName().toLowerCase())) {
@@ -552,14 +607,14 @@ public class SampleColumnsDialog extends DialogBox {
     private boolean hasTemplate(SampleAttributeTemplate template, ExperimentProfileType experimentProfileType)
     {
         List<SampleAttributeTemplate> attributeTemplates;
-        Collection<ExperimentProfileType> experimentProfileTypes;
+        ExperimentProfileType expProfileType;
 
         for (ExperimentProfileTypeToAttributesMapping expTypeToAttribute:
                 ExperimentProfileTypeToAttributesMapping.values()) {
 
-            experimentProfileTypes = expTypeToAttribute.getExpProfileTypes();
+            expProfileType = expTypeToAttribute.getExpProfileType();
 
-            if(experimentProfileTypes.contains(experimentProfileType)) {
+            if(expProfileType == experimentProfileType) {
                 attributeTemplates = expTypeToAttribute.getAttributes();
 
                 for (SampleAttributeTemplate attributeTemplate :

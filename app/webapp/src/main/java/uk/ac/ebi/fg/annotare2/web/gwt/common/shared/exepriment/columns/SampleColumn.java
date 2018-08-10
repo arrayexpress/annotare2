@@ -113,11 +113,11 @@ public class SampleColumn implements IsSerializable {
         }
 
                 if (isNullOrEmpty(experimentDesignType)) {
-                    if (!(template.getName().toLowerCase().equalsIgnoreCase("material type") || template.getName().toLowerCase().equalsIgnoreCase("organism"))) {
+                    if (!isMaterialTypeOrOrganismAttribute(template) && !isSingleCellAttribute(template)) {
                         attr.setType(SampleAttributeType.CHARACTERISTIC_AND_FACTOR_VALUE);
                     }
                 } else {
-                    if (!(template.getName().toLowerCase().equalsIgnoreCase("material type"))) {
+                    if (!isMaterialType(template) && !isSingleCellAttribute(template)) {
                         attr.setType(SampleAttributeType.CHARACTERISTIC_AND_FACTOR_VALUE);
                     }
                 }
@@ -143,5 +143,20 @@ public class SampleColumn implements IsSerializable {
         }
 
         return new SampleColumn(attr);
+    }
+
+    private static boolean isMaterialTypeOrOrganismAttribute(SampleAttributeTemplate template){
+        return template.getName().toLowerCase().equalsIgnoreCase("material type") || template.getName().toLowerCase().equalsIgnoreCase("organism");
+    }
+
+    private static boolean isMaterialType(SampleAttributeTemplate template){
+        return template.getName().toLowerCase().equalsIgnoreCase("material type");
+    }
+
+    private static boolean isSingleCellAttribute(SampleAttributeTemplate template){
+        return template.getName().toLowerCase().equalsIgnoreCase("single cell identifier") ||
+                template.getName().toLowerCase().equalsIgnoreCase("inferred cell type") ||
+                template.getName().toLowerCase().equalsIgnoreCase("single cell well quality") ||
+                template.getName().toLowerCase().equalsIgnoreCase("post analysis well quality");
     }
 }
