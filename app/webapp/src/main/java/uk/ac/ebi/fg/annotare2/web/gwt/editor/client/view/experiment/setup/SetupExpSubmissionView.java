@@ -56,9 +56,6 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
     SimplePanel templateDetails;
 
     @UiField
-    ListBox templateBox;
-
-    @UiField
     ScrollPanel experimentDesignPanel;
 
     @UiField
@@ -79,41 +76,21 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
     @UiField
     Button prevButton;
 
-    @UiField
-    Label selectSubmissionTypeLabel;
 
     @UiField
-    HTMLPanel oneColorDetails;
+    HTMLPanel techTypePanel;
 
     @UiField
-    HTMLPanel twoColorDetails;
+    RadioGroup techType;
 
     @UiField
-    HTMLPanel highSeqDetails;
+    HTMLPanel materialTypePanel;
 
     @UiField
-    HTMLPanel plantOneColorDetails;
-
-    @UiField
-    HTMLPanel plantTwoColorDetails;
-
-    @UiField
-    HTMLPanel plantHighSeqDetails;
-
-    @UiField
-    HTMLPanel warningMsg;
+    RadioGroup materialType;
 
     @UiField
     HTMLPanel expDesignInfo;
-
-    @UiField
-    VerticalPanel expSetupPanel;
-
-    @UiField
-    VerticalPanel plantExpDetails;
-
-    @UiField
-    VerticalPanel genericExpDetails;
 
     private Presenter presenter;
 
@@ -148,60 +125,6 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
         prevButton.setVisible(false);
         expDesignInfo.setVisible(false);
 
-        OptGroupElement otherGroup = Document.get().createOptGroupElement();
-        otherGroup.setLabel("Other");
-        OptGroupElement plantGroup = Document.get().createOptGroupElement();
-        plantGroup.setLabel("Plant");
-        OptGroupElement humanGroup = Document.get().createOptGroupElement();
-        humanGroup.setLabel("Human");
-        OptGroupElement vertebrateGroup = Document.get().createOptGroupElement();
-        vertebrateGroup.setLabel("Vertebrate");
-        OptGroupElement cellLineGroup = Document.get().createOptGroupElement();
-        cellLineGroup.setLabel("Cell Line");
-        OptGroupElement singleCellGroup = Document.get().createOptGroupElement();
-        singleCellGroup.setLabel("Single Cell");
-        templateBox.getElement().appendChild(otherGroup);
-
-        for (ExperimentProfileType type : ExperimentProfileType.values()) {
-            OptionElement optElement = Document.get().createOptionElement();
-            optElement.setInnerText(type.getTitle());
-            optElement.setValue(type.name());
-
-            if (type.name().toLowerCase().startsWith("plant")) {
-                plantGroup.appendChild(optElement);
-            }
-            else if(type.name().toLowerCase().startsWith("cell")) {
-                cellLineGroup.appendChild(optElement);
-            }
-            else if(type.name().toLowerCase().startsWith("human")) {
-                humanGroup.appendChild(optElement);
-            }
-            else if(type.name().toLowerCase().startsWith("vertebrate")) {
-                vertebrateGroup.appendChild(optElement);
-            }
-            else if(type.name().toLowerCase().startsWith("single")) {
-                singleCellGroup.appendChild(optElement);
-            }
-            else {
-                otherGroup.appendChild(optElement);
-            }
-        }
-
-        templateBox.getElement().appendChild(otherGroup);
-        templateBox.getElement().appendChild(singleCellGroup);
-        templateBox.getElement().appendChild(plantGroup);
-        templateBox.getElement().appendChild(humanGroup);
-        templateBox.getElement().appendChild(vertebrateGroup);
-        templateBox.getElement().appendChild(cellLineGroup);
-
-
-        templateBox.addChangeHandler(new ChangeHandler() {
-            @Override
-            public void onChange(ChangeEvent event) {
-                showDetails(ExperimentProfileType.valueOf(getSelectedSettingsTemplate()));
-            }
-        });
-        selectFirstTemplate(templateBox);
         getExpDesigns();
 
         nextButton.addClickHandler(new ClickHandler() {
@@ -215,11 +138,11 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
                 prevButton.setVisible(true);
                 okButton.setVisible(true);
 
-                selectSubmissionTypeLabel.setVisible(false);
-                warningMsg.setVisible(false);
-                templateBox.setVisible(false);
                 nextButton.setVisible(false);
-                expSetupPanel.setVisible(false);
+                techTypePanel.setVisible(false);
+                materialTypePanel.setVisible(false);
+
+                setDetails(techType,materialType);
             }
         });
 
@@ -234,25 +157,12 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
                 prevButton.setVisible(false);
                 okButton.setVisible(false);
 
-                selectSubmissionTypeLabel.setVisible(true);
-                warningMsg.setVisible(true);
-                expSetupPanel.setVisible(true);
-                templateBox.setVisible(true);
+                techTypePanel.setVisible(true);
+                materialTypePanel.setVisible(true);
                 nextButton.setVisible(true);
 
             }
         });
-        //getExpDesigns();
-
-        /*Button btn = new Button();
-        experimentDesignPanel.add(btn);
-        btn.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent clickEvent) {
-                getExpDesigns();
-            }
-        });*/
-
 
         templateDetails.setVisible(false);
         templateDetailsLabel.setVisible(false);
@@ -260,15 +170,33 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
         experimentDesignPanelLabel.setVisible(false);
     }
 
+    private void setDetails(RadioGroup techType, RadioGroup materialType) {
+        showDetails(getExperimentType(techType, materialType));
+    }
+
+    private ExperimentProfileType getExperimentType(RadioGroup techType, RadioGroup materialType){
+        if(!materialType.getValue().equalsIgnoreCase("other")){
+            String expTitle = materialType.getValue() + " - " +techType.getValue();
+            return getExpProfileType(expTitle);
+        }
+        else {
+            String expTitle = techType.getValue();
+            return getExpProfileType(expTitle);
+        }
+    }
+
+    private ExperimentProfileType getExpProfileType(String experimentType) {
+        for (ExperimentProfileType expProfileType:
+                ExperimentProfileType.values()) {
+            if(expProfileType.getTitle().equalsIgnoreCase(experimentType)){
+                return expProfileType;
+            }
+        }
+        return null;
+    }
+
     private void getExpDesigns()
     {
-        /*presenter.getExperimentalDesigns(new ReportingAsyncCallback<List<OntologyTermGroup>>() {
-            @Override
-            public void onSuccess(List<OntologyTermGroup> ontologyTermGroups) {
-                experimentDesignPanel.add(createContent(ontologyTermGroups));
-            }
-        });*/
-
         experimentDesignPanel.add(createContent());
     }
 
@@ -283,10 +211,6 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
     }
 
     private Widget createSectionContent(OntologyTerm term) {
-       // HorizontalPanel panel = new HorizontalPanel();
-        //panel.setWidth("100%");
-        //panel.setSpacing(4);
-
             final SelectableLabel<OntologyTerm> label = new SelectableLabel<>(term.getLabel(), term);
             label.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
                 @Override
@@ -294,14 +218,6 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
                     updateSelection(label.getValue(), label.isSelected());
                 }
             });
-            //String definition = group.getDefinition(term);
-            //if (definition != null && !definition.isEmpty()) {
-            //    tooltip.attach(label.info(), definition);
-            //}
-          //  panel.add(label);
-
-/*        ScrollPanel scrollPanel = new ScrollPanel();
-        scrollPanel.add(panel);*/
         return label;
     }
 
@@ -362,10 +278,6 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
         this.presenter = presenter;
     }
 
-    private String getSelectedSettingsTemplate() {
-        return templateBox.getValue(templateBox.getSelectedIndex());
-    }
-
     private void showDetails(ExperimentProfileType type) {
         HasSubmissionSettings w = createWidget(type);
         templateDetails.setWidget(w);
@@ -374,136 +286,68 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
     private HasSubmissionSettings createWidget(ExperimentProfileType type) {
         switch (type) {
             case ONE_COLOR_MICROARRAY:
-                setupOneColorDetailsPanel();
                 return new OneColorMicroarraySettings(this);
 
             case TWO_COLOR_MICROARRAY:
-                setupTwoColorDetailsPanel();
                 return new TwoColorMicroarraySettings(this);
 
             case SEQUENCING:
-                setupSeqDetailsPanel();
                 return new HighThroughputSeqSettings();
 
             case PLANT_SEQUENCING:
-                setupPlantSeqColorDetailsPanel();
                 return new PlantHighThroughputSeqSettings();
 
             case PLANT_ONE_COLOR_MICROARRAY:
-                setupPlantOneColorDetailsPanel();
                 return new PlantOneColorMicroarraySettings(this);
 
             case PLANT_TWO_COLOR_MICROARRAY:
-                setupPlantTwoColorDetailsPanel();
                 return new PlantTwoColorMicroarraySettings(this);
 
             case HUMAN_ONE_COLOR_MICROARRAY:
-                setupOneColorDetailsPanel();
                 return new HumanOneColorMicroarraySettings(this);
 
             case HUMAN_TWO_COLOR_MICROARRAY:
-                setupTwoColorDetailsPanel();
                 return new HumanTwoColorMicroarraySettings(this);
 
             case HUMAN_SEQUENCING:
-                setupSeqDetailsPanel();
                 return new HumanHighThroughputSeqSettings();
 
             case VERTEBRATE_ONE_COLOR_MICROARRAY:
-                setupOneColorDetailsPanel();
                 return new VertebrateOneColorMicroarraySettings(this);
 
             case VERTEBRATE_TWO_COLOR_MICROARRAY:
-                setupTwoColorDetailsPanel();
                 return new VertebrateTwoColorMicroarraySettings(this);
 
             case VERTEBRATE_SEQUENCING:
-                setupSeqDetailsPanel();
                 return new VertebrateHighThroughputSeqSettings();
 
             case CELL_LINE_ONE_COLOR_MICROARRAY:
-                setupOneColorDetailsPanel();
                 return new CellLineOneColorMicroarraySettings(this);
 
             case CELL_LINE_TWO_COLOR_MICROARRAY:
-                setupTwoColorDetailsPanel();
                 return new CellLineTwoColorMicroarraySettings(this);
 
             case CELL_LINE_SEQUENCING:
-                setupSeqDetailsPanel();
                 return new CellLineHighThroughputSeqSettings();
 
             case SINGLE_CELL_HUMAN_SEQUENCING:
-                setupSeqDetailsPanel();
                 return new SingleCellHumanHighThroughputSeqSettings();
 
             case SINGLE_CELL_PLANT_SEQUENCING:
-                setupPlantSeqColorDetailsPanel();
                 return new SingleCellPlantHighThroughputSeqSettings();
 
             case SINGLE_CELL_CELL_LINE_SEQUENCING:
-                setupSeqDetailsPanel();
                 return new SCCellLineHighThroughputSeqSettings();
 
             case SINGLE_CELL_VERTEBRATE_SEQUENCING:
-                setupSeqDetailsPanel();
                 return new SingleCellVertebrateHighThroughputSeqSettings();
 
             case SINGLE_CELL_SEQUENCING:
-                setupSeqDetailsPanel();
                 return new SingleCellHighThroughputSeqSettings();
 
             default:
                 throw new IllegalArgumentException("Unknown experiment type: " + type);
         }
-    }
-
-    private void setupOneColorDetailsPanel() {
-        genericExpDetails.setVisible(true);
-        oneColorDetails.setVisible(true);
-        twoColorDetails.setVisible(false);
-        highSeqDetails.setVisible(false);
-        plantExpDetails.setVisible(false);
-    }
-
-    private void setupTwoColorDetailsPanel() {
-        genericExpDetails.setVisible(true);
-        oneColorDetails.setVisible(false);
-        twoColorDetails.setVisible(true);
-        highSeqDetails.setVisible(false);
-        plantExpDetails.setVisible(false);
-    }
-
-    private void setupSeqDetailsPanel() {
-        genericExpDetails.setVisible(true);
-        oneColorDetails.setVisible(false);
-        twoColorDetails.setVisible(false);
-        highSeqDetails.setVisible(true);
-        plantExpDetails.setVisible(false);
-    }
-
-    private void setupPlantOneColorDetailsPanel() {
-        genericExpDetails.setVisible(false);
-        plantExpDetails.setVisible(true);
-        plantTwoColorDetails.setVisible(false);
-        plantHighSeqDetails.setVisible(false);
-        plantOneColorDetails.setVisible(true);
-    }
-
-    private void setupPlantTwoColorDetailsPanel() {
-        genericExpDetails.setVisible(false);
-        plantExpDetails.setVisible(true);
-        plantTwoColorDetails.setVisible(true);
-        plantHighSeqDetails.setVisible(false);
-        plantOneColorDetails.setVisible(false);
-    }
-
-    private void setupPlantSeqColorDetailsPanel() {
-        genericExpDetails.setVisible(false);
-        plantExpDetails.setVisible(true);
-        plantTwoColorDetails.setVisible(false);
-        plantHighSeqDetails.setVisible(true);
-        plantOneColorDetails.setVisible(false);
     }
 
     private static void selectFirstTemplate(ListBox listBox) {
@@ -516,8 +360,5 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
         void setupNewSubmission(ExperimentSetupSettings settings, List<OntologyTerm> experimentDesigns, AsyncCallback<Void> callback);
 
         void getArrayDesigns(String query, int limit, AsyncCallback<ArrayList<ArrayDesignRef>> callback);
-
-        //void setExperimentalDesigns(List<OntologyTerm> experimentalDesigns); // needed if want to get experiment design terms from EFO
-        // currently its a hard coded list for setup screen
     }
 }
