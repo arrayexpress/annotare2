@@ -217,6 +217,14 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     }
 
     @Override
+    public void updateSingleCellExtractAttributes(SingleCellExtractAttributesRow row) {
+        Extract extract = exp.getExtract(row.getId());
+        if (extract != null) {
+            extract.setSingleCellAttributeValues(row.getValues());
+        }
+    }
+
+    @Override
     public void updateExtractAttributes(HashMap<ExtractAttribute,String> values, int noOfSamples)
     {
         for(int i=2; i<= noOfSamples*2; i++)

@@ -39,6 +39,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
 
     private final Provider<SamplesActivity> samplesActivityProvider;
     private final Provider<ExtractAttributesActivity> extractAttributesActivityProvider;
+    private final Provider<SingleCellExtractAttributesActivity> singleCellExtractAttributesActivityProvider;
     private final Provider<LabeledExtractsActivity> labeledExtractsActivityProvider;
     private final Provider<DataFileAssignmentActivity> dataFileAssignmentActivityProvider;
     private final Provider<ProtocolsActivity> protocolsActivityProvider;
@@ -56,6 +57,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
             Provider<PublicationListActivity> publicationsActivityProvider,
             Provider<SamplesActivity> samplesActivityProvider,
             Provider<ExtractAttributesActivity> extractAttributesActivityProvider,
+            Provider<SingleCellExtractAttributesActivity> singleCellExtractAttributesActivityProvider,
             Provider<LabeledExtractsActivity> labeledExtractsActivityProvider,
             Provider<DataFileAssignmentActivity> dataFileAssignmentActivityProvider,
             Provider<ProtocolsActivity> protocolsActivityProvider,
@@ -69,6 +71,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
 
         this.samplesActivityProvider = samplesActivityProvider;
         this.extractAttributesActivityProvider = extractAttributesActivityProvider;
+        this.singleCellExtractAttributesActivityProvider = singleCellExtractAttributesActivityProvider;
         this.labeledExtractsActivityProvider = labeledExtractsActivityProvider;
         this.dataFileAssignmentActivityProvider = dataFileAssignmentActivityProvider;
         this.protocolsActivityProvider = protocolsActivityProvider;
@@ -106,6 +109,8 @@ public class EditorContentActivityMapper implements ActivityMapper {
                     return (samplesActivityProvider.get()).withPlace(designPlace);
                 case EXTRACTS_LIBRARY_INFO:
                     return (extractAttributesActivityProvider.get()).withPlace(designPlace);
+                case SINGLE_CELL_LIBRARY_INFO:
+                    return (singleCellExtractAttributesActivityProvider.get()).withPlace(designPlace);
                 case LABELED_EXTRACTS:
                     return (labeledExtractsActivityProvider.get()).withPlace(designPlace);
                 case FILES:

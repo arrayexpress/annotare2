@@ -36,6 +36,7 @@ public enum ExpDesignSection implements LeftNavigationView.Section {
     PUBLICATIONS("Publications", allOf(ExperimentProfileType.class), "Enter the publication(s) using this experiment"),
     SAMPLES("Create samples, add attributes and experimental variables", allOf(ExperimentProfileType.class)),
     EXTRACTS_LIBRARY_INFO("Assign ENA library information","Provide technical details of your sequencing libraries as required by the Sequence Read Archive (SRA)", SEQUENCING, PLANT_SEQUENCING, SINGLE_CELL_SEQUENCING, SINGLE_CELL_HUMAN_SEQUENCING, SINGLE_CELL_CELL_LINE_SEQUENCING, SINGLE_CELL_VERTEBRATE_SEQUENCING, SINGLE_CELL_PLANT_SEQUENCING, HUMAN_SEQUENCING, VERTEBRATE_SEQUENCING, CELL_LINE_SEQUENCING ),
+    SINGLE_CELL_LIBRARY_INFO("Assign Single Cell library information","Provide technical details of your sequencing libraries as required by the Sequence Read Archive (SRA)",SINGLE_CELL_SEQUENCING, SINGLE_CELL_HUMAN_SEQUENCING, SINGLE_CELL_CELL_LINE_SEQUENCING, SINGLE_CELL_VERTEBRATE_SEQUENCING, SINGLE_CELL_PLANT_SEQUENCING),
     LABELED_EXTRACTS("Create labeled extracts and assign labels", "Assign the label to each sample by removing the one thatdoes not apply. For dye-swap designs both labels can be kept.", TWO_COLOR_MICROARRAY, PLANT_TWO_COLOR_MICROARRAY, HUMAN_TWO_COLOR_MICROARRAY, CELL_LINE_TWO_COLOR_MICROARRAY, VERTEBRATE_TWO_COLOR_MICROARRAY),
     PROTOCOLS("Describe protocols", allOf(ExperimentProfileType.class)),
     FILES("Assign data files", allOf(ExperimentProfileType.class)),

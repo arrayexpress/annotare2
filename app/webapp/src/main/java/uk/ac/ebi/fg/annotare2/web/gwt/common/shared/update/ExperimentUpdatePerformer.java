@@ -55,6 +55,8 @@ public interface ExperimentUpdatePerformer {
 
     void updateExtractAttributes(ExtractAttributesRow row);
 
+    void updateSingleCellExtractAttributes(SingleCellExtractAttributesRow row);
+
     void updateExtractAttributes(HashMap<ExtractAttribute,String> values, int noOfSamples);
 
     void updateExtractLabels(LabeledExtractsRow row);

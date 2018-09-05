@@ -34,6 +34,8 @@ public class Extract implements Serializable {
 
     private Map<ExtractAttribute, String> attributeValues;
 
+    private Map<SingleCellExtractAttribute, String> singleCellAttributeValues;
+
     Extract() {
         /* used by GWT serialization */
         this(0);
@@ -43,6 +45,7 @@ public class Extract implements Serializable {
     public Extract(int id) {
         this.id = id;
         this.attributeValues = new HashMap<ExtractAttribute, String>();
+        this.singleCellAttributeValues = new HashMap<SingleCellExtractAttribute, String>();
     }
 
     public int getId() {
@@ -61,14 +64,28 @@ public class Extract implements Serializable {
         return attributeValues.get(attribute);
     }
 
+    public String getSingleCellAttributeValue(SingleCellExtractAttribute attribute) {
+        return singleCellAttributeValues.get(attribute);
+    }
+
     @JsonIgnore
     public Map<ExtractAttribute, String> getAttributeValues() {
         return new HashMap<ExtractAttribute, String>(attributeValues);
     }
 
     @JsonIgnore
+    public Map<SingleCellExtractAttribute, String> getSingleCellAttributeValues() {
+        return new HashMap<SingleCellExtractAttribute, String>(singleCellAttributeValues);
+    }
+
+    @JsonIgnore
     public void setAttributeValues(Map<ExtractAttribute, String> values) {
         this.attributeValues = new HashMap<ExtractAttribute, String>(values);
+    }
+
+    @JsonIgnore
+    public void setSingleCellAttributeValues(Map<SingleCellExtractAttribute, String> values) {
+        this.singleCellAttributeValues = new HashMap<SingleCellExtractAttribute, String>(values);
     }
 
     @Override

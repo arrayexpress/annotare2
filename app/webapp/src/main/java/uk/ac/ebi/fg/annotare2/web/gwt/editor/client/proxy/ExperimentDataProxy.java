@@ -188,6 +188,14 @@ public class ExperimentDataProxy {
         return rows;
     }
 
+    private List<SingleCellExtractAttributesRow> getSingleCellExtractAttributeRows(ExperimentProfile exp) {
+        List<SingleCellExtractAttributesRow> rows = new ArrayList<>();
+        for (Extract extract : exp.getExtracts()) {
+            rows.add(new SingleCellExtractAttributesRow(extract.getId(), extract.getName(), extract.getSingleCellAttributeValues()));
+        }
+        return rows;
+    }
+
     private List<LabeledExtractsRow> getLabeledExtractRows(ExperimentProfile exp) {
         List<LabeledExtractsRow> rows = new ArrayList<LabeledExtractsRow>();
         for (Extract extract : exp.getExtracts()) {
@@ -334,6 +342,20 @@ public class ExperimentDataProxy {
         });
     }
 
+    public void getSingleCellExtractAttributeRowsAsync(final AsyncCallback<List<SingleCellExtractAttributesRow>> callback) {
+        getExperiment(new AsyncCallback<ExperimentProfile>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfile result) {
+                callback.onSuccess(getSingleCellExtractAttributeRows(result));
+            }
+        });
+    }
+
     public void getLabeledExtractsAsync(final AsyncCallback<LabeledExtracts> callback) {
         getExperiment(new AsyncCallback<ExperimentProfile>() {
             @Override
@@ -464,6 +486,10 @@ public class ExperimentDataProxy {
 
     public void updateExtractAttributeRow(ExtractAttributesRow row) {
         updateQueue.add(new UpdateExtractAttributesRowCommand(row));
+    }
+
+    public void updateSingleCellExtractAttributeRow(SingleCellExtractAttributesRow row) {
+        updateQueue.add(new UpdateSingleCellExtractAttributesRowCommand(row));
     }
 
     public void updateExtractLabelsRow(LabeledExtractsRow row) {

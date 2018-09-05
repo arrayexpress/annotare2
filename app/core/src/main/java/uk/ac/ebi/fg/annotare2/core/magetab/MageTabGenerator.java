@@ -558,6 +558,13 @@ public class MageTabGenerator {
                     extractNode.comments.put(attr.getName(), Arrays.asList(value));
                 }
             }
+
+            for (SingleCellExtractAttribute attr : SingleCellExtractAttribute.values()) {
+                String value = extract.getSingleCellAttributeValue(attr);
+                if (!isNullOrEmpty(value)) {
+                    extractNode.comments.put(attr.getName(), Arrays.asList(value));
+                }
+            }
         }
         connect(sampleNode, extractNode, protocols);
         return extractNode;
