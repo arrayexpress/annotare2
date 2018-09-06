@@ -250,10 +250,10 @@
                             <p style="font-size: 16px;">Tech Type:</p>
                         </div>
                         <g:RadioGroup ui:field="techType">
-                            <g:RadioButton addStyleNames="{style.radio-inline},{style.hts}" name="foo" text="High-Throughput Sequencing" value="true"/>
-                            <g:RadioButton addStyleNames="{style.radio-inline},{style.oneColor}" name="foo" text="One-color Microarray" value="false"/>
-                            <g:RadioButton addStyleNames="{style.radio-inline},{style.twoColor}" name="foo" text="Two-color Microarray" value="false"/>
-                            <g:RadioButton addStyleNames="{style.radio-inline},{style.singleCell}" name="foo" text="Single Cell Sequencing" value="false"/>
+                            <g:RadioButton addStyleNames="{style.radio-inline},{style.hts}" name="techType" text="High-Throughput Sequencing" value="true"/>
+                            <g:RadioButton addStyleNames="{style.radio-inline},{style.oneColor}" name="techType" text="One-color Microarray" value="false"/>
+                            <g:RadioButton addStyleNames="{style.radio-inline},{style.twoColor}" name="techType" text="Two-color Microarray" value="false"/>
+                            <g:RadioButton addStyleNames="{style.radio-inline},{style.singleCell}" name="techType" text="Single Cell Sequencing" value="false"/>
                         </g:RadioGroup>
                     </g:HTMLPanel>
                     <g:HTMLPanel ui:field="materialTypePanel" addStyleNames="{style.centerAlignMaterialType}">
@@ -262,11 +262,11 @@
                             <p style="font-size: 16px;">Material Type:</p>
                         </div>
                         <g:RadioGroup ui:field="materialType" addStyleNames="{style.materialType}">
-                            <g:RadioButton addStyleNames="{style.radio-inline},{style.human}" name="foo1" text="Human" value="true"/>
-                            <g:RadioButton addStyleNames="{style.radio-inline},{style.vertebrate}" name="foo1" text="Vertebrate" value="false"/>
-                            <g:RadioButton addStyleNames="{style.radio-inline},{style.cellLine}" name="foo1" text="Cell Line" value="false"/>
-                            <g:RadioButton addStyleNames="{style.radio-inline},{style.plant}" name="foo1" text="Plant" value="false"/>
-                            <g:RadioButton addStyleNames="{style.radio-inline},{style.other}" name="foo1" text="Other" value="false"/>
+                            <g:RadioButton addStyleNames="{style.radio-inline},{style.human}" name="materialType" text="Human" value="true"/>
+                            <g:RadioButton addStyleNames="{style.radio-inline},{style.vertebrate}" name="materialType" text="Vertebrate" value="false"/>
+                            <g:RadioButton addStyleNames="{style.radio-inline},{style.cellLine}" name="materialType" text="Cell Line" value="false"/>
+                            <g:RadioButton addStyleNames="{style.radio-inline},{style.plant}" name="materialType" text="Plant" value="false"/>
+                            <g:RadioButton addStyleNames="{style.radio-inline},{style.other}" name="materialType" text="Other" value="false"/>
                         </g:RadioGroup>
                     </g:HTMLPanel>
 
