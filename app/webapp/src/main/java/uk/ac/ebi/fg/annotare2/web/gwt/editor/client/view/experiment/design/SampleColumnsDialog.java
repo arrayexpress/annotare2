@@ -146,8 +146,9 @@ public class SampleColumnsDialog extends DialogBox {
         }
 
         this.experimentProfileType = experimentProfileType;
-        addSuggestedColumns(experimentProfileType);
+
         addMandatoryColumns(experimentProfileType);
+        addSuggestedColumns(experimentProfileType);
     }
 
     private void setMandatoryColumn()
