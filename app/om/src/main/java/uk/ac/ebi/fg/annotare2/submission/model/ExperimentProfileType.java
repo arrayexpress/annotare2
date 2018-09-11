@@ -23,23 +23,23 @@ public enum ExperimentProfileType {
     ONE_COLOR_MICROARRAY("One-color microarray"),
     TWO_COLOR_MICROARRAY("Two-color microarray"),
     SEQUENCING("High-throughput sequencing"),
-    SINGLE_CELL_SEQUENCING("Single cell sequencing"),
+    SINGLE_CELL_SEQUENCING("Single-cell sequencing"),
     PLANT_ONE_COLOR_MICROARRAY("Plant - One-color microarray"),
     PLANT_TWO_COLOR_MICROARRAY("Plant - Two-color microarray"),
     PLANT_SEQUENCING("Plant - High-throughput sequencing"),
-    SINGLE_CELL_PLANT_SEQUENCING("Plant - Single cell sequencing"),
+    SINGLE_CELL_PLANT_SEQUENCING("Plant - Single-cell sequencing"),
     HUMAN_ONE_COLOR_MICROARRAY("Human - One-color microarray"),
     HUMAN_TWO_COLOR_MICROARRAY("Human - Two-color microarray"),
     HUMAN_SEQUENCING("Human - High-throughput sequencing"),
-    SINGLE_CELL_HUMAN_SEQUENCING("Human - Single cell sequencing"),
+    SINGLE_CELL_HUMAN_SEQUENCING("Human - Single-cell sequencing"),
     VERTEBRATE_ONE_COLOR_MICROARRAY("Vertebrate - One-color microarray"),
     VERTEBRATE_TWO_COLOR_MICROARRAY("Vertebrate - Two-color microarray"),
     VERTEBRATE_SEQUENCING("Vertebrate - High-throughput sequencing"),
-    SINGLE_CELL_VERTEBRATE_SEQUENCING("Vertebrate - Single cell sequencing"),
+    SINGLE_CELL_VERTEBRATE_SEQUENCING("Vertebrate - Single-cell sequencing"),
     CELL_LINE_ONE_COLOR_MICROARRAY("Cell line - One-color microarray"),
     CELL_LINE_TWO_COLOR_MICROARRAY("Cell line - Two-color microarray"),
     CELL_LINE_SEQUENCING("Cell line - High-throughput sequencing"),
-    SINGLE_CELL_CELL_LINE_SEQUENCING("Cell line - Single cell sequencing");
+    SINGLE_CELL_CELL_LINE_SEQUENCING("Cell line - Single-cell sequencing");
 
     private final String title;
 

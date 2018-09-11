@@ -54,15 +54,15 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
 
     private void setColumns() {
         addNameColumn();
+
         addColumn(SINGLE_CELL_ISOLATION);
         addColumn(LIBRARY_CONSTRUCTION);
         addColumn(END_BIAS);
         addColumn(PRIMER);
         addColumn(SPIKE_IN);
+        addColumn(SPIKE_IN_DILUTION);
 
         addInputMoleculeColumn();
-
-        addColumn(SPIKE_IN_DILUTION);
 
         addColumnForLibraryConstruction10xSeq(UMI_BARCODE_READ);
         addColumnForLibraryConstruction10xSeq(UMI_BARCODE_OFFSET);
@@ -260,8 +260,8 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
     }
 
     private boolean is10xDropSeqLibrarySelected(String value){
-        return "10x V1".equalsIgnoreCase(value) ||
-                "10x V2".equalsIgnoreCase(value) ||
+        return "10xV1".equalsIgnoreCase(value) ||
+                "10xV2".equalsIgnoreCase(value) ||
                 "Drop-seq".equalsIgnoreCase(value);
     }
 

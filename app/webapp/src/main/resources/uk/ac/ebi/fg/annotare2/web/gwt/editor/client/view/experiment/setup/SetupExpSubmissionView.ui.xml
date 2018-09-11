@@ -253,7 +253,7 @@
                             <g:RadioButton addStyleNames="{style.radio-inline},{style.hts}" name="techType" text="High-Throughput Sequencing" value="true"/>
                             <g:RadioButton addStyleNames="{style.radio-inline},{style.oneColor}" name="techType" text="One-color Microarray" value="false"/>
                             <g:RadioButton addStyleNames="{style.radio-inline},{style.twoColor}" name="techType" text="Two-color Microarray" value="false"/>
-                            <g:RadioButton addStyleNames="{style.radio-inline},{style.singleCell}" name="techType" text="Single Cell Sequencing" value="false"/>
+                            <g:RadioButton addStyleNames="{style.radio-inline},{style.singleCell}" name="techType" text="Single-cell Sequencing" value="false"/>
                         </g:RadioGroup>
                     </g:HTMLPanel>
                     <g:HTMLPanel ui:field="materialTypePanel" addStyleNames="{style.centerAlignMaterialType}">

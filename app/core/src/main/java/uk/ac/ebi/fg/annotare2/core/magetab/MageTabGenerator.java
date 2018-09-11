@@ -562,7 +562,7 @@ public class MageTabGenerator {
             for (SingleCellExtractAttribute attr : SingleCellExtractAttribute.values()) {
                 String value = extract.getSingleCellAttributeValue(attr);
                 if (!isNullOrEmpty(value)) {
-                    extractNode.comments.put(attr.getName(), Arrays.asList(value));
+                    extractNode.comments.put(attr.getName().replace("_"," ").toLowerCase(), Arrays.asList(value));
                 }
             }
         }
