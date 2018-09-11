@@ -167,9 +167,9 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     private List<EnumWithHelpText> getAllowedColumnTypes() {
         List<EnumWithHelpText> types = new ArrayList<>();
         for (FileType type : FileType.values()) {
-            if(!((ExperimentProfileType.TWO_COLOR_MICROARRAY == experimentType || ExperimentProfileType.PLANT_TWO_COLOR_MICROARRAY == experimentType) && (type.isRawMatix())))
+            if(!((experimentType.isTwoColorMicroarray()) && (type.isRawMatix())))
             {
-                if (ExperimentProfileType.SEQUENCING == experimentType || ExperimentProfileType.PLANT_SEQUENCING == experimentType) {
+                if (experimentType.isSequencing()) {
                     if (!type.isFGEM() || type.isProcessed() && (0 == countColumnsByType(type))) {
                         types.add(type);
                     }
