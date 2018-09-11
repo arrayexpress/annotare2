@@ -56,8 +56,8 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
                 return new HumanOneColorMicroarrayUpdater(exp);
             case CELL_LINE_ONE_COLOR_MICROARRAY:
                 return new CellLineOneColorMicroarrayUpdater(exp);
-            case VERTEBRATE_ONE_COLOR_MICROARRAY:
-                return new VertebrateOneColorMicroarrayUpdater(exp);
+            case ANIMAL_ONE_COLOR_MICROARRAY:
+                return new AnimalOneColorMicroarrayUpdater(exp);
             case TWO_COLOR_MICROARRAY:
                 return new TwoColorMicroarrayUpdater(exp);
             case PLANT_TWO_COLOR_MICROARRAY:
@@ -66,17 +66,17 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
                 return new HumanTwoColorMicroarrayUpdater(exp);
             case CELL_LINE_TWO_COLOR_MICROARRAY:
                 return new CellLineTwoColorMicroarrayUpdater(exp);
-            case VERTEBRATE_TWO_COLOR_MICROARRAY:
-                return new VertebrateTwoColorMicroarrayUpdater(exp);
+            case ANIMAL_TWO_COLOR_MICROARRAY:
+                return new AnimalTwoColorMicroarrayUpdater(exp);
             case SEQUENCING:
             case PLANT_SEQUENCING:
             case SINGLE_CELL_HUMAN_SEQUENCING:
             case SINGLE_CELL_CELL_LINE_SEQUENCING:
-            case SINGLE_CELL_VERTEBRATE_SEQUENCING:
+            case SINGLE_CELL_ANIMAL_SEQUENCING:
             case SINGLE_CELL_PLANT_SEQUENCING:
             case SINGLE_CELL_SEQUENCING:
             case CELL_LINE_SEQUENCING:
-            case VERTEBRATE_SEQUENCING:
+            case ANIMAL_SEQUENCING:
             case HUMAN_SEQUENCING:
                 return new SequencingUpdater(exp);
         }

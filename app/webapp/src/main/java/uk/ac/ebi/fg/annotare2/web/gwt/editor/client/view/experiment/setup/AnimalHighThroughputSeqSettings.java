@@ -25,27 +25,27 @@ import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 
-import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.VERTEBRATE_SEQUENCING;
+import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.ANIMAL_SEQUENCING;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.ValidationUtils.integerValuesOnly;
 
 
-public class VertebrateHighThroughputSeqSettings extends Composite implements HasSubmissionSettings {
+public class AnimalHighThroughputSeqSettings extends Composite implements HasSubmissionSettings {
 
     @UiField
     TextBox numberOfSamples;
 
-    interface Binder extends UiBinder<Widget, VertebrateHighThroughputSeqSettings> {
+    interface Binder extends UiBinder<Widget, AnimalHighThroughputSeqSettings> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
-    public VertebrateHighThroughputSeqSettings() {
+    public AnimalHighThroughputSeqSettings() {
         initWidget(Binder.BINDER.createAndBindUi(this));
         integerValuesOnly(numberOfSamples);
     }
 
     @Override
     public ExperimentSetupSettings getSettings() {
-        ExperimentSetupSettings settings = new ExperimentSetupSettings(VERTEBRATE_SEQUENCING);
+        ExperimentSetupSettings settings = new ExperimentSetupSettings(ANIMAL_SEQUENCING);
         settings.setNumberOfHybs(intValue(numberOfSamples.getValue()));
         return settings;
     }

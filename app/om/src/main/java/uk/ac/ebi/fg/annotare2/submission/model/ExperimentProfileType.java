@@ -32,10 +32,10 @@ public enum ExperimentProfileType {
     HUMAN_TWO_COLOR_MICROARRAY("Human - Two-color microarray"),
     HUMAN_SEQUENCING("Human - High-throughput sequencing"),
     SINGLE_CELL_HUMAN_SEQUENCING("Human - Single-cell sequencing"),
-    VERTEBRATE_ONE_COLOR_MICROARRAY("Vertebrate - One-color microarray"),
-    VERTEBRATE_TWO_COLOR_MICROARRAY("Vertebrate - Two-color microarray"),
-    VERTEBRATE_SEQUENCING("Vertebrate - High-throughput sequencing"),
-    SINGLE_CELL_VERTEBRATE_SEQUENCING("Vertebrate - Single-cell sequencing"),
+    ANIMAL_ONE_COLOR_MICROARRAY("Animal - One-color microarray"),
+    ANIMAL_TWO_COLOR_MICROARRAY("Animal - Two-color microarray"),
+    ANIMAL_SEQUENCING("Animal - High-throughput sequencing"),
+    SINGLE_CELL_ANIMAL_SEQUENCING("Animal - Single-cell sequencing"),
     CELL_LINE_ONE_COLOR_MICROARRAY("Cell line - One-color microarray"),
     CELL_LINE_TWO_COLOR_MICROARRAY("Cell line - Two-color microarray"),
     CELL_LINE_SEQUENCING("Cell line - High-throughput sequencing"),
@@ -58,8 +58,8 @@ public enum ExperimentProfileType {
                 PLANT_TWO_COLOR_MICROARRAY == this ||
                 HUMAN_ONE_COLOR_MICROARRAY == this ||
                 HUMAN_TWO_COLOR_MICROARRAY == this ||
-                VERTEBRATE_ONE_COLOR_MICROARRAY == this ||
-                VERTEBRATE_TWO_COLOR_MICROARRAY == this ||
+                ANIMAL_ONE_COLOR_MICROARRAY == this ||
+                ANIMAL_TWO_COLOR_MICROARRAY == this ||
                 CELL_LINE_ONE_COLOR_MICROARRAY == this ||
                 CELL_LINE_TWO_COLOR_MICROARRAY == this;
     }
@@ -68,7 +68,7 @@ public enum ExperimentProfileType {
         return TWO_COLOR_MICROARRAY == this ||
                 PLANT_TWO_COLOR_MICROARRAY == this ||
                 HUMAN_TWO_COLOR_MICROARRAY == this ||
-                VERTEBRATE_TWO_COLOR_MICROARRAY == this ||
+                ANIMAL_TWO_COLOR_MICROARRAY == this ||
                 CELL_LINE_TWO_COLOR_MICROARRAY == this;
     }
 
@@ -79,8 +79,8 @@ public enum ExperimentProfileType {
                 SINGLE_CELL_PLANT_SEQUENCING == this ||
                 HUMAN_SEQUENCING == this ||
                 SINGLE_CELL_HUMAN_SEQUENCING == this ||
-                VERTEBRATE_SEQUENCING == this ||
-                SINGLE_CELL_VERTEBRATE_SEQUENCING == this ||
+                ANIMAL_SEQUENCING == this ||
+                SINGLE_CELL_ANIMAL_SEQUENCING == this ||
                 CELL_LINE_SEQUENCING == this ||
                 SINGLE_CELL_CELL_LINE_SEQUENCING == this;
     }

@@ -21,11 +21,11 @@ import uk.ac.ebi.fg.annotare2.submission.model.Extract;
 import uk.ac.ebi.fg.annotare2.submission.model.Sample;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 
-import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.VERTEBRATE_TWO_COLOR_MICROARRAY;
+import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.ANIMAL_TWO_COLOR_MICROARRAY;
 
-public class VertebrateTwoColorMicroarrayUpdater extends BasicExperimentUpdater {
+public class AnimalTwoColorMicroarrayUpdater extends BasicExperimentUpdater {
 
-    public VertebrateTwoColorMicroarrayUpdater(ExperimentProfile exp) {
+    public AnimalTwoColorMicroarrayUpdater(ExperimentProfile exp) {
         super(exp);
     }
 
@@ -45,7 +45,7 @@ public class VertebrateTwoColorMicroarrayUpdater extends BasicExperimentUpdater 
 
     @Override
     public void updateSettings(ExperimentSettings settings) {
-        if (settings.getExperimentType() != VERTEBRATE_TWO_COLOR_MICROARRAY) {
+        if (settings.getExperimentType() != ANIMAL_TWO_COLOR_MICROARRAY) {
             return;
         }
         exp().setArrayDesign(settings.getArrayDesign());

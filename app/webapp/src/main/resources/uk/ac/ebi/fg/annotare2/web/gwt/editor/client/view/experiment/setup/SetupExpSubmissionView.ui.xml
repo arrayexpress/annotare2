@@ -194,8 +194,8 @@
             margin: 5%;
         }
 
-        .vertebrate label:before {
-            content:url(../../assets/images/vertebrate.svg);
+        .animal label:before {
+            content:url(../../assets/images/animal.svg);
             display:block;
             margin:5%;
         }
@@ -263,7 +263,7 @@
                         </div>
                         <g:RadioGroup ui:field="materialType" addStyleNames="{style.materialType}">
                             <g:RadioButton addStyleNames="{style.radio-inline},{style.human}" name="materialType" text="Human" value="true"/>
-                            <g:RadioButton addStyleNames="{style.radio-inline},{style.vertebrate}" name="materialType" text="Vertebrate" value="false"/>
+                            <g:RadioButton addStyleNames="{style.radio-inline},{style.animal}" name="materialType" text="Animal" value="false"/>
                             <g:RadioButton addStyleNames="{style.radio-inline},{style.cellLine}" name="materialType" text="Cell Line" value="false"/>
                             <g:RadioButton addStyleNames="{style.radio-inline},{style.plant}" name="materialType" text="Plant" value="false"/>
                             <g:RadioButton addStyleNames="{style.radio-inline},{style.other}" name="materialType" text="Other" value="false"/>
@@ -274,8 +274,8 @@
                         <!--g:Label ui:field="humanType">
                             <input type="radio" name="materialType" value="Human"/>
                         </g:Label>
-                        <g:Label ui:field="vertebrateType">
-                            <input type="radio" name="materialType" value="Vertebrate"/>
+                        <g:Label ui:field="AnimalType">
+                            <input type="radio" name="materialType" value="Animal"/>
                         </g:Label>
                         <g:Label ui:field="plantType">
                             <input type="radio" name="materialType" value="Plant"/>

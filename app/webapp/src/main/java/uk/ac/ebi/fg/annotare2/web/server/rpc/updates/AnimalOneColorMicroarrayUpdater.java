@@ -8,13 +8,13 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import java.util.Collection;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.VERTEBRATE_ONE_COLOR_MICROARRAY;
+import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.ANIMAL_ONE_COLOR_MICROARRAY;
 
-public class VertebrateOneColorMicroarrayUpdater extends BasicExperimentUpdater{
+public class AnimalOneColorMicroarrayUpdater extends BasicExperimentUpdater{
 
     private static final String DEFAULT_LABEL = "cy3";
 
-    public VertebrateOneColorMicroarrayUpdater(ExperimentProfile exp) {
+    public AnimalOneColorMicroarrayUpdater(ExperimentProfile exp) {
         super(exp);
     }
 
@@ -33,7 +33,7 @@ public class VertebrateOneColorMicroarrayUpdater extends BasicExperimentUpdater{
 
     @Override
     public void updateSettings(ExperimentSettings settings) {
-        if (settings.getExperimentType() != VERTEBRATE_ONE_COLOR_MICROARRAY) {
+        if (settings.getExperimentType() != ANIMAL_ONE_COLOR_MICROARRAY) {
             return;
         }
         exp().setArrayDesign(settings.getArrayDesign());

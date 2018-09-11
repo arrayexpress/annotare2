@@ -25,27 +25,27 @@ import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 
-import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.SINGLE_CELL_VERTEBRATE_SEQUENCING;
+import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.SINGLE_CELL_ANIMAL_SEQUENCING;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.ValidationUtils.integerValuesOnly;
 
 
-public class SingleCellVertebrateHighThroughputSeqSettings extends Composite implements HasSubmissionSettings {
+public class SingleCellAnimalHighThroughputSeqSettings extends Composite implements HasSubmissionSettings {
 
     @UiField
     TextBox numberOfSamples;
 
-    interface Binder extends UiBinder<Widget, SingleCellVertebrateHighThroughputSeqSettings> {
+    interface Binder extends UiBinder<Widget, SingleCellAnimalHighThroughputSeqSettings> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
-    public SingleCellVertebrateHighThroughputSeqSettings() {
+    public SingleCellAnimalHighThroughputSeqSettings() {
         initWidget(Binder.BINDER.createAndBindUi(this));
         integerValuesOnly(numberOfSamples);
     }
 
     @Override
     public ExperimentSetupSettings getSettings() {
-        ExperimentSetupSettings settings = new ExperimentSetupSettings(SINGLE_CELL_VERTEBRATE_SEQUENCING);
+        ExperimentSetupSettings settings = new ExperimentSetupSettings(SINGLE_CELL_ANIMAL_SEQUENCING);
         settings.setNumberOfHybs(intValue(numberOfSamples.getValue()));
         return settings;
     }

@@ -71,10 +71,10 @@ public class ExperimentBuilderFactory {
                 return exp;
             }
         },
-        VERTEBRATE_ONE_COLOR_EXPERIMENT_BUILDER(VERTEBRATE_ONE_COLOR_MICROARRAY) {
+        ANIMAL_ONE_COLOR_EXPERIMENT_BUILDER(ANIMAL_ONE_COLOR_MICROARRAY) {
             @Override
             ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
-                ExperimentProfile exp = new ExperimentProfile(VERTEBRATE_ONE_COLOR_MICROARRAY);
+                ExperimentProfile exp = new ExperimentProfile(ANIMAL_ONE_COLOR_MICROARRAY);
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
                 updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
@@ -135,10 +135,10 @@ public class ExperimentBuilderFactory {
                 return exp;
             }
         },
-        VERTEBRATE_TWO_COLOR_EXPERIMENT_BUILDER(VERTEBRATE_TWO_COLOR_MICROARRAY) {
+        ANIMAL_TWO_COLOR_EXPERIMENT_BUILDER(ANIMAL_TWO_COLOR_MICROARRAY) {
             @Override
             ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
-                ExperimentProfile exp = new ExperimentProfile(VERTEBRATE_TWO_COLOR_MICROARRAY);
+                ExperimentProfile exp = new ExperimentProfile(ANIMAL_TWO_COLOR_MICROARRAY);
                 exp.addLabel("Cy3");
                 exp.addLabel("Cy5");
 
@@ -199,10 +199,10 @@ public class ExperimentBuilderFactory {
                 return exp;
             }
         },
-        VERTEBRATE_SEQUENCING_EXPERIMENT_BUILDER(VERTEBRATE_SEQUENCING) {
+        ANIMAL_SEQUENCING_EXPERIMENT_BUILDER(ANIMAL_SEQUENCING) {
             @Override
             ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
-                ExperimentProfile exp = new ExperimentProfile(VERTEBRATE_SEQUENCING);
+                ExperimentProfile exp = new ExperimentProfile(ANIMAL_SEQUENCING);
 
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
@@ -271,10 +271,10 @@ public class ExperimentBuilderFactory {
                 return exp;
             }
         },
-        SINGLE_CELL_VERTEBRATE_SEQUENCING_EXPERIMENT_BUILDER(SINGLE_CELL_VERTEBRATE_SEQUENCING) {
+        SINGLE_CELL_ANIMAL_SEQUENCING_EXPERIMENT_BUILDER(SINGLE_CELL_ANIMAL_SEQUENCING) {
             @Override
             ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
-                ExperimentProfile exp = new ExperimentProfile(SINGLE_CELL_VERTEBRATE_SEQUENCING);
+                ExperimentProfile exp = new ExperimentProfile(SINGLE_CELL_ANIMAL_SEQUENCING);
 
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);

@@ -41,8 +41,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
 import java.util.*;
 
-import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromSafeConstant;
-
 /**
  * @author Olga Melnichuk
  */
@@ -312,14 +310,14 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
             case HUMAN_SEQUENCING:
                 return new HumanHighThroughputSeqSettings();
 
-            case VERTEBRATE_ONE_COLOR_MICROARRAY:
-                return new VertebrateOneColorMicroarraySettings(this);
+            case ANIMAL_ONE_COLOR_MICROARRAY:
+                return new AnimalOneColorMicroarraySettings(this);
 
-            case VERTEBRATE_TWO_COLOR_MICROARRAY:
-                return new VertebrateTwoColorMicroarraySettings(this);
+            case ANIMAL_TWO_COLOR_MICROARRAY:
+                return new AnimalTwoColorMicroarraySettings(this);
 
-            case VERTEBRATE_SEQUENCING:
-                return new VertebrateHighThroughputSeqSettings();
+            case ANIMAL_SEQUENCING:
+                return new AnimalHighThroughputSeqSettings();
 
             case CELL_LINE_ONE_COLOR_MICROARRAY:
                 return new CellLineOneColorMicroarraySettings(this);
@@ -339,8 +337,8 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
             case SINGLE_CELL_CELL_LINE_SEQUENCING:
                 return new SCCellLineHighThroughputSeqSettings();
 
-            case SINGLE_CELL_VERTEBRATE_SEQUENCING:
-                return new SingleCellVertebrateHighThroughputSeqSettings();
+            case SINGLE_CELL_ANIMAL_SEQUENCING:
+                return new SingleCellAnimalHighThroughputSeqSettings();
 
             case SINGLE_CELL_SEQUENCING:
                 return new SingleCellHighThroughputSeqSettings();
