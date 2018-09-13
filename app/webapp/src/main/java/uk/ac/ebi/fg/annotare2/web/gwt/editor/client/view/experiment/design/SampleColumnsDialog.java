@@ -148,7 +148,6 @@ public class SampleColumnsDialog extends DialogBox {
         this.experimentProfileType = experimentProfileType;
 
         addMandatoryColumns(experimentProfileType);
-        addSuggestedColumns(experimentProfileType);
     }
 
     private void setMandatoryColumn()
@@ -453,6 +452,7 @@ public class SampleColumnsDialog extends DialogBox {
                     public void onSuccess(SystemEfoTermMap systemEfoTermMap) {
                         addColumn(templates, systemEfoTermMap);
                         setMandatoryColumn();
+                        addSuggestedColumns(experimentProfileType);
                         updateTemplates();
 
                     }
