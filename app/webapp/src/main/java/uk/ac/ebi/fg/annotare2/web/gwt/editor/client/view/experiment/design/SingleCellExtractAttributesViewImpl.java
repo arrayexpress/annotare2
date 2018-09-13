@@ -262,7 +262,8 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
     private boolean is10xDropSeqLibrarySelected(String value){
         return "10xV1".equalsIgnoreCase(value) ||
                 "10xV2".equalsIgnoreCase(value) ||
-                "Drop-seq".equalsIgnoreCase(value);
+                "Drop-seq".equalsIgnoreCase(value) ||
+                "other".equalsIgnoreCase(value);
     }
 
     private boolean is10xSeqLibrarySelected(String value){
