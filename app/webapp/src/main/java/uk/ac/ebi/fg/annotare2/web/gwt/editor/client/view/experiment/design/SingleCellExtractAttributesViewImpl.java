@@ -33,6 +33,7 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
     public SingleCellExtractAttributesViewImpl(){
 
         gridView = new GridView<>();
+        gridView.setRowSelectionEnabled(false);
 
         Button button = new Button("Fill Down Value");
         button.addClickHandler(new ClickHandler() {

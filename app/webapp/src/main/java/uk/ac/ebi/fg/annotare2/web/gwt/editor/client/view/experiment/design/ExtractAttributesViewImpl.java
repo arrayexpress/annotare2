@@ -47,7 +47,8 @@ public class ExtractAttributesViewImpl extends Composite implements ExtractAttri
     private String aeExperimentType;
 
     public ExtractAttributesViewImpl() {
-        gridView = new GridView<ExtractAttributesRow>();
+        gridView = new GridView<>();
+        gridView.setRowSelectionEnabled(false);
 
         Button button = new Button("Fill Down Value");
         button.addClickHandler(new ClickHandler() {
