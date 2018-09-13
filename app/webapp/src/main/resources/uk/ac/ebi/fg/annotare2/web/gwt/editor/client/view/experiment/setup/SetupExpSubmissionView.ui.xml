@@ -151,6 +151,7 @@
 
         .radio-inline label:before{
             background-color: transparent;
+            padding-top: 3pt;
         }
 
         .radio-inline input[type=radio]:checked + label {
@@ -158,14 +159,18 @@
             color: #ffffff;
         }
 
-
+        .hts input[type="radio"]:checked+label:before {
+            content:url(../../assets/images/hts-white.svg);
+        }
         .hts label:before {
             content:url(../../assets/images/hts.svg);
             display:block;
             margin:5%;
         }
 
-
+        .oneColor input[type="radio"]:checked+label:before {
+            content:url(../../assets/images/onecolor-white.svg);
+        }
         .oneColor label:before {
             content:url(../../assets/images/onecolor.svg);
             display:block;
@@ -173,13 +178,18 @@
         }
 
 
+        .twoColor input[type="radio"]:checked+label:before {
+            content:url(../../assets/images/twocolor-white.svg);
+        }
         .twoColor label:before {
             content:url(../../assets/images/twocolor.svg);
             display:block;
             margin:5%;
         }
 
-
+        .singleCell input[type="radio"]:checked+label:before {
+            content:url(../../assets/images/cell-white.svg);
+        }
         .singleCell label:before {
             content:url(../../assets/images/cell.svg);
             display:block;
@@ -194,12 +204,20 @@
             margin: 5%;
         }
 
+        .animal input[type="radio"]:checked+label:before {
+            content:url(../../assets/images/animal-white.svg);
+        }
         .animal label:before {
             content:url(../../assets/images/animal.svg);
             display:block;
             margin:5%;
         }
 
+
+
+        .cellLine input[type="radio"]:checked+label:before {
+            content:url(../../assets/images/cellline-white.svg);
+        }
         .cellLine label:before {
             content:url(../../assets/images/cellline.svg);
             display: block;
@@ -236,6 +254,7 @@
 
         .materialType input + label:before {
             color: #aaa;
+            padding-top: 8pt;
         }
 
     </ui:style>
