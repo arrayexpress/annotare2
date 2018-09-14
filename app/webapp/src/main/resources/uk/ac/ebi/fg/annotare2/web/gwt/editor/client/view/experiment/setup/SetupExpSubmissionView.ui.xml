@@ -134,8 +134,6 @@
             content: '\f121';
         }
 
-
-
         .radio-inline label{
             display: inline-block;
             width: 100pt;
@@ -143,102 +141,10 @@
             border: 1px solid;
             vertical-align: middle;
             margin: 10pt;
-            border-color: #207a79;
+            border-color: #aaa;
             background-color: transparent;
             text-align: center;
             font-size: 15px;
-        }
-
-        .radio-inline label:before{
-            background-color: transparent;
-            padding-top: 3pt;
-        }
-
-        .radio-inline input[type=radio]:checked + label {
-            background-color: #207a79;
-            color: #ffffff;
-        }
-
-        .hts input[type="radio"]:checked+label:before {
-            content:url(../../assets/images/hts-white.svg);
-        }
-        .hts label:before {
-            content:url(../../assets/images/hts.svg);
-            display:block;
-            margin:5%;
-        }
-
-        .oneColor input[type="radio"]:checked+label:before {
-            content:url(../../assets/images/onecolor-white.svg);
-        }
-        .oneColor label:before {
-            content:url(../../assets/images/onecolor.svg);
-            display:block;
-            margin:5%;
-        }
-
-
-        .twoColor input[type="radio"]:checked+label:before {
-            content:url(../../assets/images/twocolor-white.svg);
-        }
-        .twoColor label:before {
-            content:url(../../assets/images/twocolor.svg);
-            display:block;
-            margin:5%;
-        }
-
-        .singleCell input[type="radio"]:checked+label:before {
-            content:url(../../assets/images/cell-white.svg);
-        }
-        .singleCell label:before {
-            content:url(../../assets/images/cell.svg);
-            display:block;
-            margin:5%;
-        }
-
-        .human label:before {
-            content: 'H';
-            font-family: 'EBI-Species';
-            display: block;
-            font-size: 44pt;
-            margin: 5%;
-        }
-
-        .animal input[type="radio"]:checked+label:before {
-            content:url(../../assets/images/animal-white.svg);
-        }
-        .animal label:before {
-            content:url(../../assets/images/animal.svg);
-            display:block;
-            margin:5%;
-        }
-
-
-
-        .cellLine input[type="radio"]:checked+label:before {
-            content:url(../../assets/images/cellline-white.svg);
-        }
-        .cellLine label:before {
-            content:url(../../assets/images/cellline.svg);
-            display: block;
-            margin: 5%;
-        }
-
-
-        .plant label:before {
-            content: 'P';
-            font-family: 'EBI-Species';
-            display: block;
-            font-size: 44pt;
-            margin: 5%;
-        }
-
-        .other label:before {
-            content: '?';
-            font-family: 'EBI-Generic';
-            display: block;
-            font-size: 44pt;
-            margin: 5%;
         }
 
         .radio-inline input  {
@@ -248,17 +154,116 @@
             cursor:pointer;
         }
 
-        .materialType input:checked + label:before {
-            color: white;
+        .radio-inline label:before {
+            content: ' ';
+            display: block;
+            margin: 10px 36px;
+            width: 64px;
+            height: 64px;
+            background: url(../../assets/images/expsprite.png);
+            background-size: 128px !important;
+            background-color: transparent;
+            padding-top: 3pt;
+        }
+
+        .radio-inline input[type=radio]:checked + label {
+            background-color: #207a79;
+            border-color: #207a79;
+            color: #ffffff;
+            background-size: 128px;
         }
 
         .materialType input + label:before {
+            margin-left: 34px;
+            margin-top: 22px;
             color: #aaa;
-            padding-top: 8pt;
         }
 
-    </ui:style>
+        .materialType input[type=radio]:checked + label:before {
+            color: white;
+        }
 
+        .hts label, .human label{
+            margin-left:0;
+        }
+        .hts input[type="radio"]:checked+label:before {
+            background-position: -100% 0;
+        }
+        .hts label:before {
+            background-position: 0 0;
+        }
+
+        .oneColor input[type="radio"]:checked+label:before {
+            background-position: -64px -64px;
+        }
+        .oneColor label:before {
+            background-position: 0 -64px;
+        }
+
+
+        .twoColor input[type="radio"]:checked+label:before {
+            background-position: -64px -128px;
+        }
+        .twoColor label:before {
+            background-position: 0px -128px;
+        }
+
+        .singleCell input[type="radio"]:checked+label:before {
+            background-position: -64px -196px;
+        }
+        .singleCell label:before {
+            background-position: 0px -196px;
+        }
+
+        .human label:before {
+            content: 'H';
+            font-family: 'EBI-Species';
+            display: block;
+            font-size: 44pt;
+            margin: 7px;
+            background: none;
+        }
+
+        .animal input[type="radio"]:checked+label:before {
+            background-position: -64px -256px;
+        }
+        .animal label:before {
+            background-position: 0px -256px;
+        }
+
+
+
+        .cellLine input[type="radio"]:checked+label:before {
+            background-position: -64px -311px;
+        }
+        .cellLine label:before {
+            background-position: 0px -311px;
+        }
+
+
+        .plant label:before {
+            content: 'P';
+            font-family: 'EBI-Species';
+            display: block;
+            font-size: 44pt;
+            margin: 7px;
+            background: none;
+        }
+
+        .other label:before {
+            content: '?';
+            font-family: 'EBI-Generic';
+            display: block;
+            font-size: 44pt;
+            margin: 7px;
+            background: none;
+        }
+
+
+
+
+
+    </ui:style>
     <g:ResizeLayoutPanel>
         <g:DockLayoutPanel addStyleNames="{style.padded}">
             <g:center>
