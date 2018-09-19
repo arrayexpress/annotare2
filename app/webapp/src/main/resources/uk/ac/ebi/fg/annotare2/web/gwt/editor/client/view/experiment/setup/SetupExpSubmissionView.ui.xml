@@ -145,6 +145,7 @@
             background-color: transparent;
             text-align: center;
             font-size: 15px;
+            user-select: none;
         }
 
         .radio-inline input  {
