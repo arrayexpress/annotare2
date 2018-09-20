@@ -54,48 +54,10 @@
             margin-top: 16pt;
         }
 
-        .help {
-            color: #b36363;
-            margin-top: 5px;
-            width: 500px;
-        }
-
         .question {
             color: #207A7A;
             font-size: 12pt;
             margin-right: 10px;
-        }
-
-        .plantImage {
-            display: inline-block;
-            vertical-align: top;
-            height: 100%;
-            margin-left: 100px;
-            margin-top: 50px;
-        }
-
-        .plantImageTextOneClr {
-            display: inline-block;
-            vertical-align: middle;
-            margin-top: -34%;
-            margin-left: 61%;
-            color: #93ce59;
-        }
-
-        .plantImageTextTwoClr {
-            display: inline-block;
-            vertical-align: middle;
-            margin-top: -16%;
-            margin-left: 65%;
-            color: #93ce59;
-        }
-
-        .plantImageTextSeq {
-            display: inline-block;
-            vertical-align: middle;
-            margin-top: -28%;
-            margin-left: 71%;
-            color: #93ce59;
         }
 
         .tooltip {
@@ -121,17 +83,6 @@
 
         .tooltip:hover .tooltiptext {
             visibility: visible;
-        }
-
-        .expDescription {
-            padding-top: 10px;
-            margin-top: 10px;
-            border-top: 1px solid #eeeeee;
-            color: #777;
-        }
-
-        .front-end {
-            content: '\f121';
         }
 
         .radio-inline label{
@@ -260,6 +211,9 @@
             background: none;
         }
 
+        .floatLeft{
+            float: left;
+        }
 
 
 
@@ -271,10 +225,18 @@
                 <g:VerticalPanel width="100%">
                     <g:HTMLPanel ui:field="techTypePanel" addStyleNames="{style.centerAlignTechType}">
                         <link rel="stylesheet" href="//ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.2/fonts.css"/>
+                        <div style="width: 100%; color: #b36363; margin-left: 10%;"><i aria-hidden="true" class="fa fa-exclamation-triangle" style="color: #b36363 !important;"></i>Please ensure you have selected the correct template as this cannot be changed later!</div>
                         <div>
-                            <p style="font-size: 16px;">Tech Type:</p>
+                            <p style="font-size: 16px;" class="{style.tooltip}">Tech Type
+                                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                <span class="{style.tooltiptext}">
+                                    Tooltip for tech type
+                                </span>
+                            </p>
+                            <p style="float: right;"><a style="float: right; font-size: 14px; padding-top: 5px;" target="blank" href="https://www.ebi.ac.uk/fg/annotare/help/getting_started.html#start_new_sub">What's this?</a>
+                            </p>
                         </div>
-                        <g:RadioGroup ui:field="techType">
+                        <g:RadioGroup ui:field="techType" styleName="{style.floatLeft}">
                             <g:RadioButton addStyleNames="{style.radio-inline},{style.hts}" name="techType" text="High-Throughput Sequencing" value="true"/>
                             <g:RadioButton addStyleNames="{style.radio-inline},{style.oneColor}" name="techType" text="One-color Microarray" value="false"/>
                             <g:RadioButton addStyleNames="{style.radio-inline},{style.twoColor}" name="techType" text="Two-color Microarray" value="false"/>
@@ -284,7 +246,12 @@
                     <g:HTMLPanel ui:field="materialTypePanel" addStyleNames="{style.centerAlignMaterialType}">
                         <link rel="stylesheet" href="//ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.2/fonts.css"/>
                         <div>
-                            <p style="font-size: 16px;">Material Type:</p>
+                            <p style="font-size: 16px;" class="{style.tooltip}">Material Type
+                                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                <span class="{style.tooltiptext}">
+                                    Tooltip for material type
+                                </span>
+                            </p>
                         </div>
                         <g:RadioGroup ui:field="materialType" addStyleNames="{style.materialType}">
                             <g:RadioButton addStyleNames="{style.radio-inline},{style.human}" name="materialType" text="Human" value="true"/>
@@ -293,24 +260,6 @@
                             <g:RadioButton addStyleNames="{style.radio-inline},{style.plant}" name="materialType" text="Plant" value="false"/>
                             <g:RadioButton addStyleNames="{style.radio-inline},{style.other}" name="materialType" text="Other" value="false"/>
                         </g:RadioGroup>
-                    </g:HTMLPanel>
-
-                    <g:HTMLPanel>
-                        <!--g:Label ui:field="humanType">
-                            <input type="radio" name="materialType" value="Human"/>
-                        </g:Label>
-                        <g:Label ui:field="AnimalType">
-                            <input type="radio" name="materialType" value="Animal"/>
-                        </g:Label>
-                        <g:Label ui:field="plantType">
-                            <input type="radio" name="materialType" value="Plant"/>
-                        </g:Label>
-                        <g:Label ui:field="cellLineType">
-                            <input type="radio" name="materialType" value="Cell Line"/>
-                        </g:Label>
-                        <g:Label ui:field="otherType">
-                            <input type="radio" name="materialType" value="Other"/>
-                        </g:Label-->
                     </g:HTMLPanel>
                     <g:HorizontalPanel addStyleNames="{style.top-padded}">
                         <g:VerticalPanel>
