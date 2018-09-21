@@ -79,6 +79,9 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
     HTMLPanel techTypePanel;
 
     @UiField
+    HTMLPanel warningText;
+
+    @UiField
     RadioGroup techType;
 
     @UiField
@@ -139,6 +142,7 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
                 nextButton.setVisible(false);
                 techTypePanel.setVisible(false);
                 materialTypePanel.setVisible(false);
+                warningText.setVisible(false);
 
                 setDetails(techType,materialType);
             }
@@ -158,6 +162,7 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
                 techTypePanel.setVisible(true);
                 materialTypePanel.setVisible(true);
                 nextButton.setVisible(true);
+                warningText.setVisible(true);
 
             }
         });
