@@ -228,13 +228,13 @@
                     <g:HTMLPanel ui:field="techTypePanel" addStyleNames="{style.alignTechType}">
                         <link rel="stylesheet" href="//ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.2/fonts.css"/>
                         <div>
-                            <p style="font-size: 16px;" class="{style.tooltip}">Technology
+                            <p style="font-size: 16px;" class="{style.tooltip}"> Select Technology
                                 <i style="font-size: 12px;" class="fa fa-info-circle" aria-hidden="true"></i>
                                 <span class="{style.tooltiptext}">
-                                    Tooltip for tech type
+                                    Select the microarray or sequencing template applicable to your experiment. If you have a mix of samples from different technologies, please create separate submissions.
                                 </span>
                             </p>
-                            <p style="float: right; margin-right:75%"><a style="float: right; font-size: 14px; padding-top: 5px;" target="blank" href="https://www.ebi.ac.uk/fg/annotare/help/getting_started.html#start_new_sub">Not sure?</a>
+                            <p style="float: right; margin-right:68%"><a style="float: right; font-size: 14px; padding-top: 5px;" target="blank" href="https://www.ebi.ac.uk/fg/annotare/help/getting_started.html#start_new_sub">Not sure?</a>
                             </p>
                         </div>
                         <g:RadioGroup ui:field="techType" styleName="{style.floatLeft}">
@@ -247,10 +247,10 @@
                     <g:HTMLPanel ui:field="materialTypePanel" addStyleNames="{style.alignMaterialType}">
                         <link rel="stylesheet" href="//ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.2/fonts.css"/>
                         <div>
-                            <p style="font-size: 16px;" class="{style.tooltip}">Material
+                            <p style="font-size: 16px;" class="{style.tooltip}">Select Material
                                 <i style="font-size: 12px;" class="fa fa-info-circle" aria-hidden="true"></i>
                                 <span class="{style.tooltiptext}">
-                                    Tooltip for material type
+                                    What was the source of the biological samples? This pre-selects suitable attributes to describe the samples.
                                 </span>
                             </p>
                         </div>
@@ -299,7 +299,7 @@
                             </td>
                             <td align="center">
                                 <g:HTMLPanel ui:field="warningText">
-                                <div style="color: #b36363; float: right;"><i aria-hidden="true" class="fa fa-exclamation-triangle" style="color: #b36363 !important;"></i>Please ensure you have selected the correct template as this cannot be changed later!</div>
+                                <div style="color: #b36363; float: right;"><i aria-hidden="true" class="fa fa-exclamation-triangle" style="color: #b36363 !important;"></i>Please ensure you have selected the correct technology and material type as this cannot be changed later!</div>
                                 </g:HTMLPanel>
                             </td>
                             <td align="right">
