@@ -36,13 +36,13 @@
             width: 250px;
         }
 
-        .centerAlignTechType{
-            margin: auto;
+        .alignTechType {
+            margin-left: 2%;
             width: 80%;
         }
 
-        .centerAlignMaterialType{
-            margin: auto;
+        .alignMaterialType {
+            margin-left: 2%;
             width: 96%;
         }
 
@@ -85,7 +85,7 @@
             visibility: visible;
         }
 
-        .radio-inline label{
+        .radio-inline label {
             display: inline-block;
             width: 100pt;
             height: 100pt;
@@ -99,11 +99,12 @@
             user-select: none;
         }
 
-        .radio-inline input  {
+        .radio-inline input {
             display: none;
         }
+
         .radio-inline label {
-            cursor:pointer;
+            cursor: pointer;
         }
 
         .radio-inline label:before {
@@ -135,34 +136,38 @@
             color: white;
         }
 
-        .hts label, .human label{
-            margin-left:0;
+        .hts label, .human label {
+            margin-left: 0;
         }
-        .hts input[type="radio"]:checked+label:before {
+
+        .hts input[type="radio"]:checked + label:before {
             background-position: -100% 0;
         }
+
         .hts label:before {
             background-position: 0 0;
         }
 
-        .oneColor input[type="radio"]:checked+label:before {
+        .oneColor input[type="radio"]:checked + label:before {
             background-position: -64px -64px;
         }
+
         .oneColor label:before {
             background-position: 0 -64px;
         }
 
-
-        .twoColor input[type="radio"]:checked+label:before {
+        .twoColor input[type="radio"]:checked + label:before {
             background-position: -64px -128px;
         }
+
         .twoColor label:before {
             background-position: 0px -128px;
         }
 
-        .singleCell input[type="radio"]:checked+label:before {
+        .singleCell input[type="radio"]:checked + label:before {
             background-position: -64px -196px;
         }
+
         .singleCell label:before {
             background-position: 0px -196px;
         }
@@ -176,22 +181,21 @@
             background: none;
         }
 
-        .animal input[type="radio"]:checked+label:before {
+        .animal input[type="radio"]:checked + label:before {
             background-position: -64px -256px;
         }
+
         .animal label:before {
             background-position: 0px -256px;
         }
 
-
-
-        .cellLine input[type="radio"]:checked+label:before {
+        .cellLine input[type="radio"]:checked + label:before {
             background-position: -64px -311px;
         }
+
         .cellLine label:before {
             background-position: 0px -311px;
         }
-
 
         .plant label:before {
             content: 'P';
@@ -211,11 +215,9 @@
             background: none;
         }
 
-        .floatLeft{
+        .floatLeft {
             float: left;
         }
-
-
 
 
     </ui:style>
@@ -223,17 +225,16 @@
         <g:DockLayoutPanel addStyleNames="{style.padded}">
             <g:center>
                 <g:VerticalPanel width="100%">
-                    <g:HTMLPanel ui:field="techTypePanel" addStyleNames="{style.centerAlignTechType}">
+                    <g:HTMLPanel ui:field="techTypePanel" addStyleNames="{style.alignTechType}">
                         <link rel="stylesheet" href="//ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.2/fonts.css"/>
-                        <div style="width: 100%; color: #b36363; margin-left: 10%;"><i aria-hidden="true" class="fa fa-exclamation-triangle" style="color: #b36363 !important;"></i>Please ensure you have selected the correct template as this cannot be changed later!</div>
                         <div>
-                            <p style="font-size: 16px;" class="{style.tooltip}">Tech Type
-                                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                            <p style="font-size: 16px;" class="{style.tooltip}">Technology
+                                <i style="font-size: 12px;" class="fa fa-info-circle" aria-hidden="true"></i>
                                 <span class="{style.tooltiptext}">
                                     Tooltip for tech type
                                 </span>
                             </p>
-                            <p style="float: right;"><a style="float: right; font-size: 14px; padding-top: 5px;" target="blank" href="https://www.ebi.ac.uk/fg/annotare/help/getting_started.html#start_new_sub">What's this?</a>
+                            <p style="float: right; margin-right:75%"><a style="float: right; font-size: 14px; padding-top: 5px;" target="blank" href="https://www.ebi.ac.uk/fg/annotare/help/getting_started.html#start_new_sub">Not sure?</a>
                             </p>
                         </div>
                         <g:RadioGroup ui:field="techType" styleName="{style.floatLeft}">
@@ -243,11 +244,11 @@
                             <g:RadioButton addStyleNames="{style.radio-inline},{style.singleCell}" name="techType" text="Single-cell Sequencing" value="false"/>
                         </g:RadioGroup>
                     </g:HTMLPanel>
-                    <g:HTMLPanel ui:field="materialTypePanel" addStyleNames="{style.centerAlignMaterialType}">
+                    <g:HTMLPanel ui:field="materialTypePanel" addStyleNames="{style.alignMaterialType}">
                         <link rel="stylesheet" href="//ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.2/fonts.css"/>
                         <div>
-                            <p style="font-size: 16px;" class="{style.tooltip}">Material Type
-                                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                            <p style="font-size: 16px;" class="{style.tooltip}">Material
+                                <i style="font-size: 12px;" class="fa fa-info-circle" aria-hidden="true"></i>
                                 <span class="{style.tooltiptext}">
                                     Tooltip for material type
                                 </span>
@@ -295,6 +296,11 @@
                         <tr>
                             <td align="left">
                                 <g:Button ui:field="prevButton">Prev</g:Button>
+                            </td>
+                            <td align="center">
+                                <g:HTMLPanel ui:field="warningText">
+                                <div style="color: #b36363; float: right;"><i aria-hidden="true" class="fa fa-exclamation-triangle" style="color: #b36363 !important;"></i>Please ensure you have selected the correct template as this cannot be changed later!</div>
+                                </g:HTMLPanel>
                             </td>
                             <td align="right">
                                 <g:Button ui:field="cancelButton">Cancel</g:Button>
