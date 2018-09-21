@@ -228,8 +228,8 @@
                     <g:HTMLPanel ui:field="techTypePanel" addStyleNames="{style.alignTechType}">
                         <link rel="stylesheet" href="//ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.2/fonts.css"/>
                         <div>
-                            <p style="font-size: 16px;" class="{style.tooltip}"> Select Technology
-                                <i style="font-size: 12px;" class="fa fa-info-circle" aria-hidden="true"></i>
+                            <p style="font-size: 16px; color: #197a78;" class="{style.tooltip}"> Select Technology
+                                <i style="font-size: 12px; color: #000" class="fa fa-info-circle" aria-hidden="true"></i>
                                 <span class="{style.tooltiptext}">
                                     Select the microarray or sequencing template applicable to your experiment. If you have a mix of samples from different technologies, please create separate submissions.
                                 </span>
@@ -247,8 +247,8 @@
                     <g:HTMLPanel ui:field="materialTypePanel" addStyleNames="{style.alignMaterialType}">
                         <link rel="stylesheet" href="//ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.2/fonts.css"/>
                         <div>
-                            <p style="font-size: 16px;" class="{style.tooltip}">Select Material
-                                <i style="font-size: 12px;" class="fa fa-info-circle" aria-hidden="true"></i>
+                            <p style="font-size: 16px; color: #197a78;" class="{style.tooltip}">Select Material
+                                <i style="font-size: 12px; color: #000" class="fa fa-info-circle" aria-hidden="true"></i>
                                 <span class="{style.tooltiptext}">
                                     What was the source of the biological samples? This pre-selects suitable attributes to describe the samples.
                                 </span>
