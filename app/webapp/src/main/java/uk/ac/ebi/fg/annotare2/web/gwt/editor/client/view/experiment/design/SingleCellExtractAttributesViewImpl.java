@@ -59,11 +59,13 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
         addColumn(SINGLE_CELL_ISOLATION);
         addColumn(LIBRARY_CONSTRUCTION);
         addColumn(END_BIAS);
+
+        addInputMoleculeColumn();
+
         addColumn(PRIMER);
         addColumn(SPIKE_IN);
         addColumn(SPIKE_IN_DILUTION);
 
-        addInputMoleculeColumn();
 
         addColumnForLibraryConstruction10xSeq(UMI_BARCODE_READ);
         addColumnForLibraryConstruction10xSeq(UMI_BARCODE_OFFSET);
