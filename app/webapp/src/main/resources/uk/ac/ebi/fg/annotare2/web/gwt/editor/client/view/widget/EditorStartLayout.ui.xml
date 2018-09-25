@@ -28,7 +28,7 @@
         </g:center>
         <g:south size="20">
             <g:HTMLPanel>
-                <div class="copy">2017 EMBL-EBI, Functional Genomics Group</div>
+                <div class="copy">2018 EMBL-EBI, Molecular Atlas Group</div>
             </g:HTMLPanel>
         </g:south>
     </g:DockLayoutPanel>

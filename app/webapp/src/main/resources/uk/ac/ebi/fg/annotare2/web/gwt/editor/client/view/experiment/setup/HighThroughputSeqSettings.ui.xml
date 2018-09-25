@@ -29,7 +29,7 @@
 
         .tooltip .tooltiptext {
             visibility: hidden;
-            width: 275px;
+            width: 220px;
             word-wrap: normal;
             background-color: #888;
             color: #fff;
@@ -48,7 +48,9 @@
 
         .expDetailLabel
         {
-            padding: 30px !important;
+            padding-top: 30px !important;
+            padding-left: 30px !important;
+            padding-bottom: 30px !important;
         }
     </ui:style>
 
@@ -56,7 +58,7 @@
         <table>
             <tr>
                 <td class="{style.expDetailLabel}">How many samples does your experiment have?
-                    <div class="{style.tooltip}"><i class="fa fa-info-circle" aria-hidden="true"></i>
+                    <div class="{style.tooltip}"><i class="fa fa-info-circle" style="font-size: 13px; color: #000" aria-hidden="true"></i>
                         <span class="{style.tooltiptext}">
                             1 sample = 1 biological replicate
                         </span>

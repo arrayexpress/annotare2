@@ -57,7 +57,7 @@
         .question {
             color: #207A7A;
             font-size: 12pt;
-            margin-right: 10px;
+            margin-right: 3px;
         }
 
         .tooltip {
@@ -79,6 +79,7 @@
             /* Position the tooltip */
             position: absolute;
             z-index: 1;
+            font-size: 13px;
         }
 
         .tooltip:hover .tooltiptext {
@@ -229,7 +230,7 @@
                         <link rel="stylesheet" href="//ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.2/fonts.css"/>
                         <div>
                             <p style="font-size: 16px; color: #197a78;" class="{style.tooltip}"> Select Technology
-                                <i style="font-size: 12px; color: #000" class="fa fa-info-circle" aria-hidden="true"></i>
+                                <i style="font-size: 13px; color: #000" class="fa fa-info-circle" aria-hidden="true"></i>
                                 <span class="{style.tooltiptext}">
                                     Select the microarray or sequencing template applicable to your experiment. If you have a mix of samples from different technologies, please create separate submissions.
                                 </span>
@@ -247,8 +248,8 @@
                     <g:HTMLPanel ui:field="materialTypePanel" addStyleNames="{style.alignMaterialType}">
                         <link rel="stylesheet" href="//ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.2/fonts.css"/>
                         <div>
-                            <p style="font-size: 16px; color: #197a78;" class="{style.tooltip}">Select Material
-                                <i style="font-size: 12px; color: #000" class="fa fa-info-circle" aria-hidden="true"></i>
+                            <p style="font-size: 16px; color: #197a78; margin-top: 8%;" class="{style.tooltip}">Select Material
+                                <i style="font-size: 13px; color: #000" class="fa fa-info-circle" aria-hidden="true"></i>
                                 <span class="{style.tooltiptext}">
                                     What was the source of the biological samples? This pre-selects suitable attributes to describe the samples.
                                 </span>
@@ -270,7 +271,7 @@
                                 </g:Label>
                                 <g:HTMLPanel ui:field="expDesignInfo">
                                     <div class="{style.tooltip}">
-                                        <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                        <i class="fa fa-info-circle" style="font-size: 13px; color: #000" aria-hidden="true"></i>
                                         <span class="{style.tooltiptext}">
                                             (Optional) Choose the designs types that best describe your experiment to
                                             pre-select the experimental variable(s) for your experiment. This can be
@@ -299,7 +300,7 @@
                             </td>
                             <td align="center">
                                 <g:HTMLPanel ui:field="warningText">
-                                <div style="color: #b36363; float: right;"><i aria-hidden="true" class="fa fa-exclamation-triangle" style="color: #b36363 !important;"></i>Please ensure you have selected the correct technology and material type as this cannot be changed later!</div>
+                                <div style="color: #b36363; float: left; margin-left: 1%"><i aria-hidden="true" class="fa fa-exclamation-triangle" style="color: #b36363 !important;"></i>Please ensure you have selected the correct technology and material type as this cannot be changed later!</div>
                                 </g:HTMLPanel>
                             </td>
                             <td align="right">
