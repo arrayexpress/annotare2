@@ -49,8 +49,12 @@
         .expDetailLabel
         {
             padding-top: 30px !important;
-            padding-left: 30px !important;
-            padding-bottom: 30px !important;
+            padding-left: 50px !important;
+        }
+
+        .expDetailAnswer
+        {
+            padding-left: 50px;
         }
     </ui:style>
 
@@ -64,7 +68,9 @@
                         </span>
                     </div>
                 </td>
-                <td width="200px">
+            </tr>
+            <tr>
+                <td width="200px" class="{style.expDetailAnswer}">
                     <g:TextBox ui:field="numberOfSamples" width="50px"/>
                 </td>
             </tr>

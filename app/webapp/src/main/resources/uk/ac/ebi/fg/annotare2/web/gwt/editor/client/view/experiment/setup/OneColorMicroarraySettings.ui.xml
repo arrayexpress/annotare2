@@ -18,7 +18,7 @@
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
-        >
+>
     <ui:style>
         .tooltip {
             position: relative;
@@ -48,13 +48,20 @@
         .expDetailLabel
         {
             padding-top: 30px !important;
-            padding-left: 30px !important;
-            padding-bottom: 30px !important;
+            padding-left: 50px !important;
+        }
+
+        .expDetailAnswer
+        {
+            padding-left: 50px;
         }
 
         div > i
         {
             color: #888;
+        }
+        .arrayHelp{
+            padding-left: 50px;
         }
     </ui:style>
     <g:HTMLPanel>
@@ -62,12 +69,14 @@
             <tr>
                 <td class="{style.expDetailLabel}">How many samples does your experiment have?
                     <div class="{style.tooltip}"><i class="fa fa-info-circle" style="font-size: 13px; color: #000" aria-hidden="true"></i>
-                    <span class="{style.tooltiptext}">
-                        1 sample = 1 biological replicate
-                    </span>
+                        <span class="{style.tooltiptext}">
+                            1 sample = 1 biological replicate
+                        </span>
                     </div>
                 </td>
-                <td width="200px">
+            </tr>
+            <tr>
+                <td width="200px" class="{style.expDetailAnswer}">
                     <g:TextBox ui:field="numberOfHybs" width="50px"/>
                 </td>
             </tr>
@@ -80,8 +89,10 @@
                         </span>
                     </div>
                 </td>
-                <td>
-                    <g:TextBox title="Chemicals (e.g. Cy3 fluorescent dye,  biotin) conjugated to nucleic acids to label them before microarray hybridisation" ui:field="label" width="100%"/>
+            </tr>
+            <tr>
+                <td class="{style.expDetailAnswer}">
+                    <g:TextBox title="Chemicals (e.g. Cy3 fluorescent dye,  biotin) conjugated to nucleic acids to label them before microarray hybridisation" ui:field="label" width="40%"/>
                 </td>
             </tr>
             <tr>
@@ -93,12 +104,14 @@
                         </span>
                     </div>
                 </td>
-                <td>
-                    <g:SuggestBox title="Start typing (e.g. manufacturer's name) and select your array from the drop down (Only the top 15 matches are shown)" ui:field="arrayDesign" width="100%"/>
+            </tr>
+            <tr>
+                <td class="{style.expDetailAnswer}">
+                    <g:SuggestBox title="Start typing (e.g. manufacturer's name) and select your array from the drop down (Only the top 15 matches are shown)" ui:field="arrayDesign" width="40%"/>
                 </td>
             </tr>
             <tr>
-                <td>
+                <td class="{style.arrayHelp}">
                     <p>If you cannot find your array design,
                         try searching <a href="https://www.ebi.ac.uk/arrayexpress/arrays/browse.html" target="_blank">here</a> or
                         <a href="https://www.ebi.ac.uk/arrayexpress/help/adf_submissions_overview.html"

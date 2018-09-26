@@ -31,9 +31,12 @@
         .expDesignPanel {
             border-style: solid !important;
             border-width: 1px;
-            margin: 10px;
             border-color: #207a7a;
             width: 250px;
+            margin-left: 50px;
+            margin-top: 10px;
+            margin-right: 10px;
+            margin-bottom: 10px
         }
 
         .alignTechType {
@@ -58,6 +61,7 @@
             color: #207A7A;
             font-size: 12pt;
             margin-right: 3px;
+            padding-left:50px;
         }
 
         .tooltip {
@@ -271,7 +275,7 @@
                                 </g:Label>
                                 <g:HTMLPanel ui:field="expDesignInfo">
                                     <div class="{style.tooltip}">
-                                        <i class="fa fa-info-circle" style="font-size: 13px; color: #000" aria-hidden="true"></i>
+                                        <i class="fa fa-info-circle" style="font-size: 13px; color: #000; padding-top: 6px;" aria-hidden="true"></i>
                                         <span class="{style.tooltiptext}">
                                             (Optional) Choose the designs types that best describe your experiment to
                                             pre-select the experimental variable(s) for your experiment. This can be
