@@ -609,3 +609,46 @@ a.wgt-button :hover {
 {
     padding-right: 15px !important;
 }
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 220px;
+    word-wrap: normal;
+    background-color: #888;
+    color: #fff;
+    text-align: left;
+    border-radius: 6px;
+    padding: 2px 5px;
+
+    /* Position the tooltip */
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -60px;
+    z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+.expDetailLabel
+{
+    padding-top: 30px !important;
+    padding-left: 50px !important;
+}
+
+.expDetailAnswer
+{
+    padding-left: 50px;
+}
+
+.arrayHelp{
+    padding-left: 50px;
+}

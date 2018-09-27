@@ -20,60 +20,20 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
 >
 
-    <ui:style>
-        .tooltip {
-            position: relative;
-            display: inline-block;
-            cursor: pointer;
-        }
-
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 220px;
-            word-wrap: normal;
-            background-color: #888;
-            color: #fff;
-            text-align: left;
-            border-radius: 6px;
-            padding: 2px 5px;
-
-            /* Position the tooltip */
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -60px;
-            z-index: 1;
-        }
-
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-        }
-
-        .expDetailLabel
-        {
-            padding-top: 30px !important;
-            padding-left: 50px !important;
-        }
-
-        .expDetailAnswer
-        {
-            padding-left: 50px;
-        }
-    </ui:style>
 
     <g:HTMLPanel>
         <table>
             <tr>
-                <td class="{style.expDetailLabel}">How many samples does your experiment have?
-                    <div class="{style.tooltip}"><i class="fa fa-info-circle" style="font-size: 13px; color: #000" aria-hidden="true"></i>
-                        <span class="{style.tooltiptext}">
+                <td class="expDetailLabel">How many samples does your experiment have?
+                    <div class="tooltip"><i class="fa fa-info-circle" style="font-size: 13px; color: #000" aria-hidden="true"></i>
+                        <span class="tooltiptext">
                             1 sample = 1 biological replicate
                         </span>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td width="200px" class="{style.expDetailAnswer}">
+                <td width="200px" class="expDetailAnswer">
                     <g:TextBox ui:field="numberOfSamples" width="50px"/>
                 </td>
             </tr>
