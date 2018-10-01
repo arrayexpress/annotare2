@@ -20,7 +20,7 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
 >
     <g:HTMLPanel>
-        <table>
+        <table class="detailTable">
             <tr>
                 <td class="expDetailLabel">How many samples does your experiment have?
                     <div class="tooltip"><i class="fa fa-info-circle" style="font-size: 13px; color: #000" aria-hidden="true"></i>

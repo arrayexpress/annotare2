@@ -652,3 +652,7 @@ a.wgt-button :hover {
 .arrayHelp{
     padding-left: 50px;
 }
+.detailTable{
+    width: 100%;
+    table-layout: fixed;
+}
