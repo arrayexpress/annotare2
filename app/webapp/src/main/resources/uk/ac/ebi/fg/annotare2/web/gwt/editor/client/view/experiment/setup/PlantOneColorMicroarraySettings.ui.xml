@@ -22,7 +22,7 @@
     <g:HTMLPanel>
         <table class="detailTable">
             <tr>
-                <td class="expDetailAnswer">How many samples does your experiment have?
+                <td class="expDetailLabel">How many samples does your experiment have?
                     <div class="tooltip"><i class="fa fa-info-circle" style="font-size: 13px; color: #000" aria-hidden="true"></i>
                         <span class="tooltiptext">
                             1 sample = 1 biological replicate
@@ -36,7 +36,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="expDetailAnswer">
+                <td class="expDetailLabel">
                     What label did you use?
                     <div class="tooltip"><i class="fa fa-info-circle" style="font-size: 13px; color: #000" aria-hidden="true"></i>
                         <span class="tooltiptext">
@@ -51,7 +51,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="expDetailAnswer">
+                <td class="expDetailLabel">
                     What array did you use?
                     <div class="tooltip"><i class="fa fa-info-circle" style="font-size: 13px; color: #000" aria-hidden="true"></i>
                         <span class="tooltiptext">
