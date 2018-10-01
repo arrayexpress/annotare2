@@ -25,6 +25,7 @@ public class SingleCellExtractAttributesActivity extends AbstractActivity implem
     private final ExperimentDataProxy expData;
     private final OntologyDataProxy efoTerms;
     private OntologyTerm inputMolecule;
+    private List<SingleCellExtractAttributesRow> dataRows;
 
     @Inject
     public SingleCellExtractAttributesActivity(SingleCellExtractAttributesView view,
@@ -35,15 +36,15 @@ public class SingleCellExtractAttributesActivity extends AbstractActivity implem
         this.efoTerms = efoTerms;
 
         inputMolecule = new OntologyTerm("EFO_0004446", "biological_macromolecule");
+        dataRows = new ArrayList<>();
     }
 
     @Override
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
         view.setPresenter(this);
         panel.setWidget(view);
-        getEfoTerms(inputMolecule);
         loadAsync();
-
+        getEfoTerms(inputMolecule);
     }
 
     public SingleCellExtractAttributesActivity withPlace(ExpDesignPlace designPlace) {
@@ -69,7 +70,7 @@ public class SingleCellExtractAttributesActivity extends AbstractActivity implem
                 new ReportingAsyncCallback<List<SingleCellExtractAttributesRow>>(ReportingAsyncCallback.FailureMessage.UNABLE_TO_LOAD_EXTRACT_ATTRIBUTES) {
                     @Override
                     public void onSuccess(List<SingleCellExtractAttributesRow> result) {
-                        view.setData(result);
+                        dataRows = result;
                     }
                 }
         );
@@ -84,7 +85,7 @@ public class SingleCellExtractAttributesActivity extends AbstractActivity implem
 
             @Override
             public void onSuccess(ArrayList<OntologyTerm> ontologyTerms) {
-                view.setEfoTerms(ontologyTerms);
+                view.setData(ontologyTerms, dataRows);
             }
         });
     }

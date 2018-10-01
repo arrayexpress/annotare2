@@ -49,8 +49,10 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
         initWidget(gridView);
     }
     @Override
-    public void setData(List<SingleCellExtractAttributesRow> rows) {
+    public void setData(ArrayList<OntologyTerm> efoTerms, List<SingleCellExtractAttributesRow> rows) {
+        this.efoTerms = efoTerms;
         gridView.setRows(rows);
+        setColumns();
     }
 
     private void setColumns() {
@@ -286,12 +288,6 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
     @Override
     public void setPresenter(SingleCellExtractAttributesView.Presenter presenter) {
         this.presenter = presenter;
-    }
-
-    @Override
-    public void setEfoTerms(ArrayList<OntologyTerm> efoTerms) {
-        this.efoTerms = efoTerms;
-        setColumns();
     }
 
     private void updateRow(SingleCellExtractAttributesRow row) {

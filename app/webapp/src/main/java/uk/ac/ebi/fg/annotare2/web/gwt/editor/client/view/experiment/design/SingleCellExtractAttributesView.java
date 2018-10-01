@@ -9,13 +9,11 @@ import java.util.List;
 
 public interface SingleCellExtractAttributesView extends IsWidget {
 
-    void setData(List<SingleCellExtractAttributesRow> rows);
+    void setData(ArrayList<OntologyTerm> efoTerms, List<SingleCellExtractAttributesRow> rows);
 
     void setAeExperimentType(String experimentType);
 
     void setPresenter(SingleCellExtractAttributesView.Presenter presenter);
-
-    void setEfoTerms(ArrayList<OntologyTerm> efoTerms);
 
     public interface Presenter {
 
