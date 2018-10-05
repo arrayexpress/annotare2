@@ -84,10 +84,25 @@ public class ExperimentSettingsPanel extends Composite implements SuggestService
                                 "<br/> - label: " + valueOrNone(settings.getLabel()))));
                 changeLink.setVisible(true);
                 break;
-            case TWO_COLOR_MICROARRAY:
+            case HUMAN_ONE_COLOR_MICROARRAY:
                 summary.setHTML(templates.div(fromTrustedString(
                         settings.getExperimentType().getTitle() +
-                                "<br/> - array design: " + aeArrayLinkOrNone(settings.getArrayDesign()))));
+                                "<br/> - array design: " + aeArrayLinkOrNone(settings.getArrayDesign()) +
+                                "<br/> - label: " + valueOrNone(settings.getLabel()))));
+                changeLink.setVisible(true);
+                break;
+            case ANIMAL_ONE_COLOR_MICROARRAY:
+                summary.setHTML(templates.div(fromTrustedString(
+                        settings.getExperimentType().getTitle() +
+                                "<br/> - array design: " + aeArrayLinkOrNone(settings.getArrayDesign()) +
+                                "<br/> - label: " + valueOrNone(settings.getLabel()))));
+                changeLink.setVisible(true);
+                break;
+            case CELL_LINE_ONE_COLOR_MICROARRAY:
+                summary.setHTML(templates.div(fromTrustedString(
+                        settings.getExperimentType().getTitle() +
+                                "<br/> - array design: " + aeArrayLinkOrNone(settings.getArrayDesign()) +
+                                "<br/> - label: " + valueOrNone(settings.getLabel()))));
                 changeLink.setVisible(true);
                 break;
             case PLANT_ONE_COLOR_MICROARRAY:
@@ -95,6 +110,30 @@ public class ExperimentSettingsPanel extends Composite implements SuggestService
                         settings.getExperimentType().getTitle() +
                                 "<br/> - array design: " + aeArrayLinkOrNone(settings.getArrayDesign()) +
                                 "<br/> - label: " + valueOrNone(settings.getLabel()))));
+                changeLink.setVisible(true);
+                break;
+            case TWO_COLOR_MICROARRAY:
+                summary.setHTML(templates.div(fromTrustedString(
+                        settings.getExperimentType().getTitle() +
+                                "<br/> - array design: " + aeArrayLinkOrNone(settings.getArrayDesign()))));
+                changeLink.setVisible(true);
+                break;
+            case HUMAN_TWO_COLOR_MICROARRAY:
+                summary.setHTML(templates.div(fromTrustedString(
+                        settings.getExperimentType().getTitle() +
+                                "<br/> - array design: " + aeArrayLinkOrNone(settings.getArrayDesign()))));
+                changeLink.setVisible(true);
+                break;
+            case ANIMAL_TWO_COLOR_MICROARRAY:
+                summary.setHTML(templates.div(fromTrustedString(
+                        settings.getExperimentType().getTitle() +
+                                "<br/> - array design: " + aeArrayLinkOrNone(settings.getArrayDesign()))));
+                changeLink.setVisible(true);
+                break;
+            case CELL_LINE_TWO_COLOR_MICROARRAY:
+                summary.setHTML(templates.div(fromTrustedString(
+                        settings.getExperimentType().getTitle() +
+                                "<br/> - array design: " + aeArrayLinkOrNone(settings.getArrayDesign()))));
                 changeLink.setVisible(true);
                 break;
             case PLANT_TWO_COLOR_MICROARRAY:
@@ -122,12 +161,24 @@ public class ExperimentSettingsPanel extends Composite implements SuggestService
         switch (settings.getExperimentType()) {
             case ONE_COLOR_MICROARRAY:
                 return new OneColorMicroarraySettingsEditor(this);
-            case TWO_COLOR_MICROARRAY:
-                return new TwoColorMicroarraySettingsEditor(this);
             case PLANT_ONE_COLOR_MICROARRAY:
                 return new PlantOneColorMicroarraySettingsEditor(this);
+            case HUMAN_ONE_COLOR_MICROARRAY:
+                return new HumanOneColorMicroarraySettingsEditor(this);
+            case ANIMAL_ONE_COLOR_MICROARRAY:
+                return new AnimalOneColorMicroarraySettingsEditor(this);
+            case CELL_LINE_ONE_COLOR_MICROARRAY:
+                return new CellLineOneColorMicroarraySettingsEditor(this);
+            case TWO_COLOR_MICROARRAY:
+                return new TwoColorMicroarraySettingsEditor(this);
             case PLANT_TWO_COLOR_MICROARRAY:
                 return new PlantTwoColorMicroarraySettingsEditor(this);
+            case HUMAN_TWO_COLOR_MICROARRAY:
+                return new HumanTwoColorMicroarraySettingsEditor(this);
+            case ANIMAL_TWO_COLOR_MICROARRAY:
+                return new AnimalTwoColorMicroarraySettingsEditor(this);
+            case CELL_LINE_TWO_COLOR_MICROARRAY:
+                return new CellLineTwoColorMicroarraySettingsEditor(this);
             default:
                 return new DummySettingsEditor();
         }
