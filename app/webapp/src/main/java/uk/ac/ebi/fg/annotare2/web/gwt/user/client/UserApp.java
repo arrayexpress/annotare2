@@ -93,20 +93,20 @@ public class UserApp implements EntryPoint {
         showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "Notice_090418_Shown"; // change name according to the cookie display date ddmmyy
+    private final static String NOTICE_COOKIE = "Notice_200818_Shown"; // change name according to the cookie display date ddmmyy
     private void showNotice() {
         Date stopNoticeDate = new Date();
-        stopNoticeDate.setTime(1523833199000L); // stop showing on 15 April (http://www.epochconverter.com/)
+        stopNoticeDate.setTime(1536188399000L); // stop showing on 5th Sep, 2018 (http://www.epochconverter.com/)
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE)) && (new Date().before(stopNoticeDate))) {
             Date expiryDate = new Date();
             expiryDate.setTime(8000000000000L);
             CookieDialog dialogBox = new CookieDialog(
-                    "Annotare Easter Downtime",
+                    "Summer Holiday Notice",
                     "<p>Dear Submitters,<p>" +
-                            "<p>Please be aware but sadly both curators will be away from the office over " +
-                            "the next week (9th-13th April 2018) so there will be a delay in submissions processing." +
-                            "We will do our best to reply and curate urgent submissions or those already in progress.</p>" +
-                            "<p>Apologies for any inconvenience</p>",
+                            "<p>We are away from August 20th to September 5th 2018.</p>" +
+                            "<p>During this period, response time will be longer than usual for curation and help requests. " +
+                            "For urgent submissions, please submit early!</p>" +
+                            "<p>Apologies for any inconvenience caused.</p>",
                     NOTICE_COOKIE, expiryDate
             );
             dialogBox.show();
