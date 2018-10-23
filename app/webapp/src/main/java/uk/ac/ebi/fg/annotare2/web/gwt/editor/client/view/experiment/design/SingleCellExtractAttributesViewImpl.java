@@ -30,6 +30,11 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
     private List<String> inputMoleculeOptions;
     private List<OntologyTerm> efoTerms;
 
+    private final static String _10xV1 = "10xV1";
+    private final static String _10xV2 = "10xV2";
+    private final static String DROP_SEQ = "drop-seq";
+    private final static String SMART_SEQ2 = "smart-seq2";
+
     public SingleCellExtractAttributesViewImpl(){
 
         gridView = new GridView<>();
@@ -143,6 +148,7 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
                     ((BackwardCompatibleSelectionCell)cell).updateOptions(oldValue);
                 }
                 row.setValue(attr.hasOptions() ? attr.getValue(value) : value, attr);
+                preFillValueInColumns(attr, value, row);
                 updateRow(row);
             }
         });
@@ -263,6 +269,63 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
             row.setValue("", UMI_BARCODE_SIZE);
         }
     }
+
+    private void preFillValueInColumns(SingleCellExtractAttribute attr, String value, SingleCellExtractAttributesRow row) {
+        if(LIBRARY_CONSTRUCTION.equals(attr)) {
+            if (value.equalsIgnoreCase(_10xV2) || value.equalsIgnoreCase(_10xV1)) {
+                preFill10xV1V2Values(row, value);
+            }
+            else if(value.equalsIgnoreCase(DROP_SEQ)){
+                preFillDropSeqValues(row);
+            }
+            else if(value.equalsIgnoreCase(SMART_SEQ2)){
+                preFillSmartSeqValues(row);
+            }
+        }
+    }
+
+    private void preFill10xV1V2Values(SingleCellExtractAttributesRow row, String value){
+        row.setValue("10x", SINGLE_CELL_ISOLATION);
+        row.setValue("polyA RNA", INPUT_MOLECULE);
+        row.setValue("oligo-dT", PRIMER);
+        row.setValue("3 prime tag", END_BIAS);
+        row.setValue(value.equalsIgnoreCase(_10xV1) ? "read 2" : "read 1" , UMI_BARCODE_READ);
+        row.setValue(value.equalsIgnoreCase(_10xV1) ? "0" : "16", UMI_BARCODE_OFFSET);
+        row.setValue("10", UMI_BARCODE_SIZE);
+        row.setValue(value.equalsIgnoreCase(_10xV1) ? "index 1" : "read 1", CELL_BARCODE_READ);
+        row.setValue("0", CELL_BARCODE_OFFSET);
+        row.setValue(value.equalsIgnoreCase(_10xV1) ? "14" : "16", CELL_BARCODE_SIZE);
+        row.setValue("read 2", cDNA_READ);
+        row.setValue("0", cDNA_READ_OFFSET);
+        row.setValue("98", cDNA_READ_SIZE);
+        row.setValue(value.equalsIgnoreCase(_10xV1) ? "index 2" : "index 1", SAMPLE_BARCODE_READ);
+        row.setValue("0", SAMPLE_BARCODE_OFFSET);
+        row.setValue("8", SAMPLE_BARCODE_SIZE);
+    }
+
+    private void preFillDropSeqValues(SingleCellExtractAttributesRow row){
+        row.setValue("Drop-seq", SINGLE_CELL_ISOLATION);
+        row.setValue("polyA RNA", INPUT_MOLECULE);
+        row.setValue("oligo-dT", PRIMER);
+        row.setValue("3 prime tag", END_BIAS);
+        row.setValue("read 1" , UMI_BARCODE_READ);
+        row.setValue("12", UMI_BARCODE_OFFSET);
+        row.setValue("8", UMI_BARCODE_SIZE);
+        row.setValue("read 1", CELL_BARCODE_READ);
+        row.setValue("0", CELL_BARCODE_OFFSET);
+        row.setValue("12", CELL_BARCODE_SIZE);
+        row.setValue("read 2", cDNA_READ);
+        row.setValue("0", cDNA_READ_OFFSET);
+        row.setValue("50", cDNA_READ_SIZE);
+    }
+
+    private void preFillSmartSeqValues(SingleCellExtractAttributesRow row){
+        row.setValue("FACS", SINGLE_CELL_ISOLATION);
+        row.setValue("polyA RNA", INPUT_MOLECULE);
+        row.setValue("oligo-dT", PRIMER);
+        row.setValue("none", END_BIAS);
+    }
+
 
     private boolean is10xDropSeqLibrarySelected(String value){
         return "10xV1".equalsIgnoreCase(value) ||
