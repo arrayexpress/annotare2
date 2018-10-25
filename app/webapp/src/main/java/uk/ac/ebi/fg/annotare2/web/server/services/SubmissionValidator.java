@@ -99,9 +99,16 @@ public class SubmissionValidator {
         Long userId = submission.getCreatedBy().getId();
         Long submissionId = submission.getId();
         ExperimentProfile exp = submission.getExperimentProfile();
-        ExperimentType type = exp.getType().isMicroarray() ? ExperimentType.MICRO_ARRAY : ExperimentType.HTS;
 
+        ExperimentType type;
 
+        if (exp.getType().isMicroarray()){
+            type = ExperimentType.MICRO_ARRAY;
+        } else if (exp.getType().isSingleCell()){
+            type = ExperimentType.SINGLE_CELL;
+        } else{
+            type = ExperimentType.HTS;
+        }
 
         MAGETABInvestigation mageTab = (new MageTabGenerator(exp, efoSearch, GenerateOption.REPLACE_NEWLINES_WITH_SPACES)).generate();
         mageTab.IDF.setLocation(dataFileConnector.getFileUrl(userId, submissionId, "idf.txt"));

@@ -84,4 +84,12 @@ public enum ExperimentProfileType {
                 CELL_LINE_SEQUENCING == this ||
                 SINGLE_CELL_CELL_LINE_SEQUENCING == this;
     }
+
+    public boolean isSingleCell() {
+        return SINGLE_CELL_SEQUENCING == this ||
+                SINGLE_CELL_PLANT_SEQUENCING == this ||
+                SINGLE_CELL_HUMAN_SEQUENCING == this ||
+                SINGLE_CELL_ANIMAL_SEQUENCING == this ||
+                SINGLE_CELL_CELL_LINE_SEQUENCING == this;
+    }
 }
