@@ -281,7 +281,29 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
             else if(value.equalsIgnoreCase(SMART_SEQ2)){
                 preFillSmartSeqValues(row);
             }
+            else {
+                removePreFillValues(row);
+            }
         }
+    }
+
+    private void removePreFillValues(SingleCellExtractAttributesRow row) {
+        row.setValue("", SINGLE_CELL_ISOLATION);
+        row.setValue("", INPUT_MOLECULE);
+        row.setValue("", PRIMER);
+        row.setValue("", END_BIAS);
+        row.setValue("", UMI_BARCODE_READ);
+        row.setValue("", UMI_BARCODE_OFFSET);
+        row.setValue("", UMI_BARCODE_SIZE);
+        row.setValue("", CELL_BARCODE_READ);
+        row.setValue("", CELL_BARCODE_OFFSET);
+        row.setValue("", CELL_BARCODE_SIZE);
+        row.setValue("", cDNA_READ);
+        row.setValue("", cDNA_READ_OFFSET);
+        row.setValue("", cDNA_READ_SIZE);
+        row.setValue("", SAMPLE_BARCODE_READ);
+        row.setValue("", SAMPLE_BARCODE_OFFSET);
+        row.setValue("", SAMPLE_BARCODE_SIZE);
     }
 
     private void preFill10xV1V2Values(SingleCellExtractAttributesRow row, String value){
