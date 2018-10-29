@@ -148,6 +148,7 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
                     ((BackwardCompatibleSelectionCell)cell).updateOptions(oldValue);
                 }
                 row.setValue(attr.hasOptions() ? attr.getValue(value) : value, attr);
+                removePreFillValues(row);
                 preFillValueInColumns(attr, value, row);
                 updateRow(row);
             }
@@ -317,7 +318,7 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
         row.setValue(value.equalsIgnoreCase(_10xV1) ? "index 1" : "read 1", CELL_BARCODE_READ);
         row.setValue("0", CELL_BARCODE_OFFSET);
         row.setValue(value.equalsIgnoreCase(_10xV1) ? "14" : "16", CELL_BARCODE_SIZE);
-        row.setValue("read 2", cDNA_READ);
+        row.setValue(value.equalsIgnoreCase(_10xV1) ? "read 1" : "read 2", cDNA_READ);
         row.setValue("0", cDNA_READ_OFFSET);
         row.setValue("98", cDNA_READ_SIZE);
         row.setValue(value.equalsIgnoreCase(_10xV1) ? "index 2" : "index 1", SAMPLE_BARCODE_READ);

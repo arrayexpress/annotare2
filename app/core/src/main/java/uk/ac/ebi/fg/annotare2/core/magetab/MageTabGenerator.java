@@ -149,18 +149,7 @@ public class MageTabGenerator {
 
     private String[] relatedAccessionNumberList(String relatedAccessionNumber)
     {
-        String[] rAccessionNumbers = relatedAccessionNumber.split(",");
-        return rAccessionNumbers;
-    }
-
-    private String convertToString(String[] rAccessionNumbers) {
-        StringBuilder sb = new StringBuilder();
-        for (String str: rAccessionNumbers
-             ) {
-            sb.append(str);
-            sb.append("\t");
-        }
-        return sb.toString();
+        return relatedAccessionNumber.split(",");
     }
 
     private void generateIdf(IDF idf) {
