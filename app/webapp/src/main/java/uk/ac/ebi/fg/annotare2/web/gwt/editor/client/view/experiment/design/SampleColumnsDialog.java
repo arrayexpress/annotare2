@@ -233,6 +233,13 @@ public class SampleColumnsDialog extends DialogBox {
             return;
         }
 
+        if(column.getTerm() != null){
+            if(column.getTerm().getLabel().equalsIgnoreCase("obsolete_cell line")){
+                OntologyTerm term = new OntologyTerm("EFO_0000322","cell line");
+                column.setTerm(term);
+            }
+        }
+
         SampleColumnEditor editor = new SampleColumnEditor(column, efoSuggest);
         updateColumnTitles();
         editor.addValueChangeHandler(new ValueChangeHandler<SampleColumn>() {
