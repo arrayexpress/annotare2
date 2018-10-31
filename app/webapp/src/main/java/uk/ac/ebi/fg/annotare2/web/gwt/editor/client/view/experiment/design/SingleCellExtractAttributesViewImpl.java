@@ -148,7 +148,6 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
                     ((BackwardCompatibleSelectionCell)cell).updateOptions(oldValue);
                 }
                 row.setValue(attr.hasOptions() ? attr.getValue(value) : value, attr);
-                removePreFillValues(row);
                 preFillValueInColumns(attr, value, row);
                 updateRow(row);
             }
@@ -273,6 +272,7 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
 
     private void preFillValueInColumns(SingleCellExtractAttribute attr, String value, SingleCellExtractAttributesRow row) {
         if(LIBRARY_CONSTRUCTION.equals(attr)) {
+            removePreFillValues(row);
             if (value.equalsIgnoreCase(_10xV2) || value.equalsIgnoreCase(_10xV1)) {
                 preFill10xV1V2Values(row, value);
             }
