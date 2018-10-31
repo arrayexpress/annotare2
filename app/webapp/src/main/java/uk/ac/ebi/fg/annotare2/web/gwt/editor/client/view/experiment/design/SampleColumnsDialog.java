@@ -233,12 +233,7 @@ public class SampleColumnsDialog extends DialogBox {
             return;
         }
 
-        if(column.getTerm() != null){
-            if(column.getTerm().getLabel().equalsIgnoreCase("obsolete_cell line")){
-                OntologyTerm term = new OntologyTerm("EFO_0000322","cell line");
-                column.setTerm(term);
-            }
-        }
+        updateColumnTerm(column);
 
         SampleColumnEditor editor = new SampleColumnEditor(column, efoSuggest);
         updateColumnTitles();
@@ -250,6 +245,22 @@ public class SampleColumnsDialog extends DialogBox {
         });
 
         columnEditor.setWidget(editor);
+    }
+
+    private void updateColumnTerm(SampleColumn column) {
+        if(column.getTerm() != null) {
+            if (column.getTerm().getLabel().equalsIgnoreCase("obsolete_cell line")) {
+                OntologyTerm term = new OntologyTerm("CL_0000010", "cell line");
+                column.setTerm(term);
+            } if (column.getTerm().getLabel().equalsIgnoreCase("chemical entity")) {
+                OntologyTerm term = new OntologyTerm("CHEBI_24431", "compound");
+                column.setTerm(term);
+            } if (column.getTerm().getLabel().equalsIgnoreCase("infection")) {
+                OntologyTerm term = new OntologyTerm("EFO_0000544", "infect");
+                column.setTerm(term);
+            }
+
+        }
     }
 
     @UiHandler("addButton")

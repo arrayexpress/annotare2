@@ -33,6 +33,7 @@ public enum SystemEfoTerm {
     CULTIVAR("Cultivar","cultivar"),
     DIET("Diet","diet"),
     INFECT("Infect","infect"),
+    COMPOUND("Compound","compound"),
     INJURY("Injury","injury"),
     SAMPLING_SITE("Sampling site","sampling_site"),
     ENVIRONMENTAL_STRESS("Environmental stress","environmental_stress"),
