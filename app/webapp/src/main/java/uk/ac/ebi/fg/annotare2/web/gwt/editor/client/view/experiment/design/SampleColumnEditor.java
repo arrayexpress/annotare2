@@ -18,9 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.logical.shared.*;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -216,6 +214,22 @@ public class SampleColumnEditor extends Composite implements HasValueChangeHandl
 
     private void validateEfoTerm(final SuggestBox suggestBox, final AsyncCallback<OntologyTerm> asyncCallback) {
         suggestBox.removeStyleName(INVALID_TEXT_BOX_STYLE);
+
+        suggestBox.addSelectionHandler(new SelectionHandler<SuggestOracle.Suggestion>() {
+            @Override
+            public void onSelection(SelectionEvent<SuggestOracle.Suggestion> selectionEvent) {
+                suggestBox.setValue(selectionEvent.getSelectedItem().getReplacementString());
+                ValueChangeEvent.fire(suggestBox,selectionEvent.getSelectedItem().getReplacementString());
+            }
+        });
+
+        suggestBox.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(final ValueChangeEvent<String> valueChangeEvent) {
+                suggestBox.setValue(valueChangeEvent.getValue());
+            }
+        });
+
         String value = suggestBox.getValue();
         value = value.trim();
         if (value.isEmpty()) {
