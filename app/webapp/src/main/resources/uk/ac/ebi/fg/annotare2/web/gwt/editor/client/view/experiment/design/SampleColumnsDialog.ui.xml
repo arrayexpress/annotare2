@@ -87,7 +87,7 @@
                                     </g:center>
                                 </g:DockLayoutPanel>
                             </g:center>
-                            <g:south size="375">
+                            <g:south size="250">
                                 <g:SimpleLayoutPanel ui:field="columnEditor"/>
                             </g:south>
                         </g:SplitLayoutPanel>
