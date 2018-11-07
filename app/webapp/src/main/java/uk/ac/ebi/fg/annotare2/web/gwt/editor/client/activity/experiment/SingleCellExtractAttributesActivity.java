@@ -43,8 +43,8 @@ public class SingleCellExtractAttributesActivity extends AbstractActivity implem
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
         view.setPresenter(this);
         panel.setWidget(view);
-        loadAsync();
         getEfoTerms(inputMolecule);
+        loadAsync();
     }
 
     public SingleCellExtractAttributesActivity withPlace(ExpDesignPlace designPlace) {
@@ -71,6 +71,7 @@ public class SingleCellExtractAttributesActivity extends AbstractActivity implem
                     @Override
                     public void onSuccess(List<SingleCellExtractAttributesRow> result) {
                         dataRows = result;
+                        view.setDataRows(dataRows);
                     }
                 }
         );

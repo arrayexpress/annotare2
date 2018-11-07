@@ -60,6 +60,11 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
         setColumns();
     }
 
+    @Override
+    public void setDataRows(List<SingleCellExtractAttributesRow> rows) {
+        gridView.setRows(rows);
+    }
+
     private void setColumns() {
         addNameColumn();
 

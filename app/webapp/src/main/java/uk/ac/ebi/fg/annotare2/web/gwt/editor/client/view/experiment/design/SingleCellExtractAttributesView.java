@@ -11,6 +11,8 @@ public interface SingleCellExtractAttributesView extends IsWidget {
 
     void setData(ArrayList<OntologyTerm> efoTerms, List<SingleCellExtractAttributesRow> rows);
 
+    void setDataRows(List<SingleCellExtractAttributesRow> rows);
+
     void setAeExperimentType(String experimentType);
 
     void setPresenter(SingleCellExtractAttributesView.Presenter presenter);
