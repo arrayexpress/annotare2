@@ -41,7 +41,6 @@
 
         .alignTechType {
             margin-left: 2%;
-            width: 80%;
         }
 
         .alignMaterialType {
@@ -169,6 +168,15 @@
             background-position: 0px -128px;
         }
 
+
+        .twoColorMe input[type="radio"]:checked + label:before {
+            background-position: -64px -380px;
+        }
+
+        .twoColorMe label:before {
+            background-position: 0px -380px;
+        }
+
         .singleCell input[type="radio"]:checked + label:before {
             background-position: -64px -196px;
         }
@@ -246,6 +254,7 @@
                             <g:RadioButton addStyleNames="{style.radio-inline},{style.hts}" name="techType" text="High-Throughput Sequencing" value="true"/>
                             <g:RadioButton addStyleNames="{style.radio-inline},{style.oneColor}" name="techType" text="One-color Microarray" value="false"/>
                             <g:RadioButton addStyleNames="{style.radio-inline},{style.twoColor}" name="techType" text="Two-color Microarray" value="false"/>
+                            <g:RadioButton addStyleNames="{style.radio-inline},{style.twoColorMe}" name="techType" text="Methylation Microarray" value="false"/>
                             <g:RadioButton addStyleNames="{style.radio-inline},{style.singleCell}" name="techType" text="Single-cell Sequencing" value="false"/>
                         </g:RadioGroup>
                     </g:HTMLPanel>
@@ -260,10 +269,10 @@
                             </p>
                         </div>
                         <g:RadioGroup ui:field="materialType" addStyleNames="{style.materialType}">
-                            <g:RadioButton addStyleNames="{style.radio-inline},{style.human}" name="materialType" text="Human" value="true"/>
-                            <g:RadioButton addStyleNames="{style.radio-inline},{style.animal}" name="materialType" text="Animal" value="false"/>
-                            <g:RadioButton addStyleNames="{style.radio-inline},{style.cellLine}" name="materialType" text="Cell Line" value="false"/>
-                            <g:RadioButton addStyleNames="{style.radio-inline},{style.plant}" name="materialType" text="Plant" value="false"/>
+                            <g:RadioButton addStyleNames="{style.radio-inline},{style.cellLine}" name="materialType" text="Cell Line" value="true"/>
+                            <g:RadioButton addStyleNames="{style.radio-inline},{style.human}" name="materialType" text="Human Tissue" value="false"/>
+                            <g:RadioButton addStyleNames="{style.radio-inline},{style.animal}" name="materialType" text="Animal Tissue" value="false"/>
+                            <g:RadioButton addStyleNames="{style.radio-inline},{style.plant}" name="materialType" text="Plant Tissue" value="false"/>
                             <g:RadioButton addStyleNames="{style.radio-inline},{style.other}" name="materialType" text="Other" value="false"/>
                         </g:RadioGroup>
                     </g:HTMLPanel>
