@@ -1,0 +1,64 @@
+<!--
+  ~ Copyright 2009-2016 European Molecular Biology Laboratory
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+        xmlns:ui="urn:ui:com.google.gwt.uibinder"
+        xmlns:g="urn:import:com.google.gwt.user.client.ui"
+>
+
+    <g:HTMLPanel>
+        <table class="detailTable">
+            <tr>
+                <td class="expDetailLabel">How many samples does your experiment have?
+                    <div class="tooltip"><i class="fa fa-info-circle" style="font-size: 13px; color: #000" aria-hidden="true"></i>
+                        <span class="tooltiptext">
+                            1 sample = 1 biological replicate
+                        </span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td width="200px" class="expDetailAnswer">
+                    <g:TextBox ui:field="numberOfHybs" width="50px"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="expDetailLabel">
+                    What array did you use?
+                    <div class="tooltip"><i class="fa fa-info-circle" style="font-size: 13px; color: #000" aria-hidden="true"></i>
+                        <span class="tooltiptext">
+                            Start typing (e.g. manufacturer’s name) and select your array from the list. Only the top 15 matches are shown.
+                        </span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="expDetailAnswer">
+                    <g:SuggestBox title="Start typing (e.g. manufacturer's name) and select your array from the drop down (Only the top 15 matches are shown)" ui:field="arrayDesign" width="40%"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="arrayHelp">
+                    <p>If you cannot find your array design,
+                        try searching <a href="https://www.ebi.ac.uk/arrayexpress/arrays/browse.html" target="_blank">here</a> or
+                        <a href="https://www.ebi.ac.uk/arrayexpress/help/adf_submissions_overview.html"
+                           target="_blank">submit your array design</a> to ArrayExpress.</p>
+                </td>
+            </tr>
+        </table>
+    </g:HTMLPanel>
+</ui:UiBinder>
