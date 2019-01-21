@@ -140,7 +140,7 @@
             color: white;
         }
 
-        .hts label, .human label {
+        .hts label, .cellLine label {
             margin-left: 0;
         }
 
@@ -247,7 +247,7 @@
                                     Select the microarray or sequencing template applicable to your experiment. If you have a mix of samples from different technologies, please create separate submissions.
                                 </span>
                             </p>
-                            <p style="float: right; margin-right:68%"><a style="float: right; font-size: 14px; padding-top: 5px;" target="blank" href="https://www.ebi.ac.uk/fg/annotare/help/getting_started.html#start_new_sub">Not sure?</a>
+                            <p style="float: right; margin-right:74%"><a style="float: right; font-size: 14px; padding-top: 5px;" target="blank" href="https://www.ebi.ac.uk/fg/annotare/help/getting_started.html#start_new_sub">Not sure?</a>
                             </p>
                         </div>
                         <g:RadioGroup ui:field="techType" styleName="{style.floatLeft}">

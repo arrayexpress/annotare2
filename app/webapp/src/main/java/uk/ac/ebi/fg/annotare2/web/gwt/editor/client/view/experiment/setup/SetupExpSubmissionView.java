@@ -179,7 +179,7 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
 
     private ExperimentProfileType getExperimentType(RadioGroup techType, RadioGroup materialType){
         if(!materialType.getValue().equalsIgnoreCase("other")){
-            String expTitle = materialType.getValue() + " - " +techType.getValue();
+            String expTitle = materialType.getValue().replace(" Tissue", "") + " - " +techType.getValue(); //have to do it because of difference in Material Type name on UI and on backend
             return getExpProfileType(expTitle);
         }
         else {
@@ -294,6 +294,9 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
             case TWO_COLOR_MICROARRAY:
                 return new TwoColorMicroarraySettings(this);
 
+            case METHYLATION_MICROARRAY:
+                return new MethylationMicroarraySettings(this);
+
             case SEQUENCING:
                 return new HighThroughputSeqSettings();
 
@@ -306,11 +309,17 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
             case PLANT_TWO_COLOR_MICROARRAY:
                 return new PlantTwoColorMicroarraySettings(this);
 
+            case PLANT_METHYLATION_MICROARRAY:
+                return new PlantMethylationMicroarraySettings(this);
+
             case HUMAN_ONE_COLOR_MICROARRAY:
                 return new HumanOneColorMicroarraySettings(this);
 
             case HUMAN_TWO_COLOR_MICROARRAY:
                 return new HumanTwoColorMicroarraySettings(this);
+
+            case HUMAN_METHYLATION_MICROARRAY:
+                return new HumanMethylationMicroarraySettings(this);
 
             case HUMAN_SEQUENCING:
                 return new HumanHighThroughputSeqSettings();
@@ -321,6 +330,9 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
             case ANIMAL_TWO_COLOR_MICROARRAY:
                 return new AnimalTwoColorMicroarraySettings(this);
 
+            case ANIMAL_METHYLATION_MICROARRAY:
+                return new AnimalMethylationMicroarraySettings(this);
+
             case ANIMAL_SEQUENCING:
                 return new AnimalHighThroughputSeqSettings();
 
@@ -329,6 +341,9 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
 
             case CELL_LINE_TWO_COLOR_MICROARRAY:
                 return new CellLineTwoColorMicroarraySettings(this);
+
+            case CELL_LINE_METHYLATION_MICROARRAY:
+                return new CellLineMethylationMicroarraySettings(this);
 
             case CELL_LINE_SEQUENCING:
                 return new CellLineHighThroughputSeqSettings();
