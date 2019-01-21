@@ -173,7 +173,7 @@ public class ExperimentBuilderFactory {
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
                 updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
-                exp.setAeExperimentType("transcription profiling by array");
+                exp.setAeExperimentType("methylation profiling by array");
                 return exp;
             }
         },
@@ -187,7 +187,7 @@ public class ExperimentBuilderFactory {
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
                 updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
-                exp.setAeExperimentType("transcription profiling by array");
+                exp.setAeExperimentType("methylation profiling by array");
                 return exp;
             }
         },
@@ -201,7 +201,7 @@ public class ExperimentBuilderFactory {
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
                 updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
-                exp.setAeExperimentType("transcription profiling by array");
+                exp.setAeExperimentType("methylation profiling by array");
                 return exp;
             }
         },
@@ -215,7 +215,7 @@ public class ExperimentBuilderFactory {
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
                 updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
-                exp.setAeExperimentType("transcription profiling by array");
+                exp.setAeExperimentType("methylation profiling by array");
                 return exp;
             }
         },
@@ -229,7 +229,7 @@ public class ExperimentBuilderFactory {
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
                 updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
-                exp.setAeExperimentType("transcription profiling by array");
+                exp.setAeExperimentType("methylation profiling by array");
                 return exp;
             }
         },
