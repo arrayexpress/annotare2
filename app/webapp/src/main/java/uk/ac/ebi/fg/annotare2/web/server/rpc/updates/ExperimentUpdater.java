@@ -68,6 +68,16 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
                 return new CellLineTwoColorMicroarrayUpdater(exp);
             case ANIMAL_TWO_COLOR_MICROARRAY:
                 return new AnimalTwoColorMicroarrayUpdater(exp);
+            case METHYLATION_MICROARRAY:
+                return new MethylationMicroarrayUpdater(exp);
+            case ANIMAL_METHYLATION_MICROARRAY:
+                return new AnimalMethylationMicroarrayUpdater(exp);
+            case CELL_LINE_METHYLATION_MICROARRAY:
+                return new CellLineMethylationMicroarrayUpdater(exp);
+            case HUMAN_METHYLATION_MICROARRAY:
+                return new HumanMethylationMicroarrayUpdater(exp);
+            case PLANT_METHYLATION_MICROARRAY:
+                return new HumanMethylationMicroarrayUpdater(exp);
             case SEQUENCING:
             case PLANT_SEQUENCING:
             case SINGLE_CELL_HUMAN_SEQUENCING:
