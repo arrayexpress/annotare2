@@ -163,6 +163,76 @@ public class ExperimentBuilderFactory {
                 return exp;
             }
         },
+        METHYLATION_MICROARRAY_EXPERIMENT_BUILDER(METHYLATION_MICROARRAY) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(METHYLATION_MICROARRAY);
+                exp.addLabel("Cy3");
+                exp.addLabel("Cy5");
+
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                exp.setAeExperimentType("transcription profiling by array");
+                return exp;
+            }
+        },
+        ANIMAL_METHYLATION_MICROARRAY_EXPERIMENT_BUILDER(ANIMAL_METHYLATION_MICROARRAY) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(ANIMAL_METHYLATION_MICROARRAY);
+                exp.addLabel("Cy3");
+                exp.addLabel("Cy5");
+
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                exp.setAeExperimentType("transcription profiling by array");
+                return exp;
+            }
+        },
+        CELL_LINE_METHYLATION_MICROARRAY_EXPERIMENT_BUILDER(CELL_LINE_METHYLATION_MICROARRAY) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(CELL_LINE_METHYLATION_MICROARRAY);
+                exp.addLabel("Cy3");
+                exp.addLabel("Cy5");
+
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                exp.setAeExperimentType("transcription profiling by array");
+                return exp;
+            }
+        },
+        HUMAN_METHYLATION_MICROARRAY_EXPERIMENT_BUILDER(HUMAN_METHYLATION_MICROARRAY) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(HUMAN_METHYLATION_MICROARRAY);
+                exp.addLabel("Cy3");
+                exp.addLabel("Cy5");
+
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                exp.setAeExperimentType("transcription profiling by array");
+                return exp;
+            }
+        },
+        PLANT_METHYLATION_MICROARRAY_EXPERIMENT_BUILDER(PLANT_METHYLATION_MICROARRAY) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(PLANT_METHYLATION_MICROARRAY);
+                exp.addLabel("Cy3");
+                exp.addLabel("Cy5");
+
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                exp.setAeExperimentType("transcription profiling by array");
+                return exp;
+            }
+        },
         SEQUENCING_EXPERIMENT_BUILDER(SEQUENCING) {
             @Override
             ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
