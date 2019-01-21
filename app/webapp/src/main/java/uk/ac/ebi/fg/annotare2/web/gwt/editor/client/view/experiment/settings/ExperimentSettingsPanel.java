@@ -118,6 +118,36 @@ public class ExperimentSettingsPanel extends Composite implements SuggestService
                                 "<br/> - array design: " + aeArrayLinkOrNone(settings.getArrayDesign()))));
                 changeLink.setVisible(true);
                 break;
+            case METHYLATION_MICROARRAY:
+                summary.setHTML(templates.div(fromTrustedString(
+                        settings.getExperimentType().getTitle() +
+                                "<br/> - array design: " + aeArrayLinkOrNone(settings.getArrayDesign()))));
+                changeLink.setVisible(true);
+                break;
+            case ANIMAL_METHYLATION_MICROARRAY:
+                summary.setHTML(templates.div(fromTrustedString(
+                        settings.getExperimentType().getTitle() +
+                                "<br/> - array design: " + aeArrayLinkOrNone(settings.getArrayDesign()))));
+                changeLink.setVisible(true);
+                break;
+            case CELL_LINE_METHYLATION_MICROARRAY:
+                summary.setHTML(templates.div(fromTrustedString(
+                        settings.getExperimentType().getTitle() +
+                                "<br/> - array design: " + aeArrayLinkOrNone(settings.getArrayDesign()))));
+                changeLink.setVisible(true);
+                break;
+            case HUMAN_METHYLATION_MICROARRAY:
+                summary.setHTML(templates.div(fromTrustedString(
+                        settings.getExperimentType().getTitle() +
+                                "<br/> - array design: " + aeArrayLinkOrNone(settings.getArrayDesign()))));
+                changeLink.setVisible(true);
+                break;
+            case PLANT_METHYLATION_MICROARRAY:
+                summary.setHTML(templates.div(fromTrustedString(
+                        settings.getExperimentType().getTitle() +
+                                "<br/> - array design: " + aeArrayLinkOrNone(settings.getArrayDesign()))));
+                changeLink.setVisible(true);
+                break;
             case HUMAN_TWO_COLOR_MICROARRAY:
                 summary.setHTML(templates.div(fromTrustedString(
                         settings.getExperimentType().getTitle() +
@@ -179,6 +209,16 @@ public class ExperimentSettingsPanel extends Composite implements SuggestService
                 return new AnimalTwoColorMicroarraySettingsEditor(this);
             case CELL_LINE_TWO_COLOR_MICROARRAY:
                 return new CellLineTwoColorMicroarraySettingsEditor(this);
+            case METHYLATION_MICROARRAY:
+                return new MethylationMicroarraySettingsEditor(this);
+            case ANIMAL_METHYLATION_MICROARRAY:
+                return new AnimalMethylationMicroarraySettingsEditor(this);
+            case CELL_LINE_METHYLATION_MICROARRAY:
+                return new CellLineMethylationMicroarraySettingsEditor(this);
+            case HUMAN_METHYLATION_MICROARRAY:
+                return new HumanMethylationMicroarraySettingsEditor(this);
+            case PLANT_METHYLATION_MICROARRAY:
+                return new PlantMethylationMicroarraySettingsEditor(this);
             default:
                 return new DummySettingsEditor();
         }
