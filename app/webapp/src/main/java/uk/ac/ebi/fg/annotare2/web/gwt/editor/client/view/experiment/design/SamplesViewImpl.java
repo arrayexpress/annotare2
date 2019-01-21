@@ -169,7 +169,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
 
     @Override
     public void setExperimentType(ExperimentProfileType type) {
-        if (ExperimentProfileType.TWO_COLOR_MICROARRAY == type || ExperimentProfileType.PLANT_TWO_COLOR_MICROARRAY == type) {
+        if (type.isTwoColorMicroarray() || type.isMethylationMicroarray()) {
             maxSamplesLimit = 500;
         }
     }
