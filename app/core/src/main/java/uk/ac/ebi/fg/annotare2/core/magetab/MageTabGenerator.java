@@ -157,7 +157,7 @@ public class MageTabGenerator {
             idf.addComment("AEExperimentType", exp.getAeExperimentType());
         }
 
-        idf.addComment("ExperimentType", exp.getType().getTitle());
+        idf.addComment("TemplateType", exp.getType().getTitle());
 
         if (exp.getAnonymousReview()) {
             idf.addComment("AEAnonymousReview", "yes");
