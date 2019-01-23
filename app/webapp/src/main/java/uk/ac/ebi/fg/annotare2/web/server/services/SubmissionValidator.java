@@ -102,7 +102,9 @@ public class SubmissionValidator {
 
         ExperimentType type;
 
-        if (exp.getType().isMicroarray()){
+        if (exp.getType().isMethylationMicroarray()){
+            type = ExperimentType.METHYLATION_MICROARRAY;
+        } else if (exp.getType().isMicroarray()){
             type = ExperimentType.MICRO_ARRAY;
         } else if (exp.getType().isSingleCell()){
             type = ExperimentType.SINGLE_CELL;

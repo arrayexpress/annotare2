@@ -7,7 +7,7 @@ genotyping by array
 methylation profiling by array
 microRNA profiling by array
 proteomic profiling by array
-RIP-Chip by array
+RIP-chip by array
 tiling path by array
 transcription profiling by array
 transcription profiling by RT-PCR
