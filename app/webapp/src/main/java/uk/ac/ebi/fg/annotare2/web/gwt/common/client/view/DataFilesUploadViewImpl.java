@@ -47,6 +47,8 @@ import uk.ac.ebi.fg.gwt.resumable.client.ResumableFile;
 import uk.ac.ebi.fg.gwt.resumable.client.ResumableFileCallback;
 import uk.ac.ebi.fg.gwt.resumable.client.ResumableUploader;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -90,6 +92,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     private String asperaUrl;
 
     private ExperimentProfileType experimentProfileType;
+    private List<String> blockedFileExtensions;
 
     interface Binder extends UiBinder<Widget, DataFilesUploadViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
@@ -134,11 +137,42 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
         progressPanel.getElement().appendChild(errorElement);
 
+        blockedFileExtensions = new ArrayList<>(Arrays.asList("doc","docx","rtf","xls","xlsx","ppt","ppdt","pptx","pdf","tiff","gif","jpg","jpeg","png","bmp","rar","zip","tar","tar.gz","fastq","fq","fq_gz","fastq_gz","fq_bz2","fastq_bz2"));
+
     }
 
     @Override
     public boolean isDuplicateFile(String fileName) {
         return fileListPanel.isDuplicated(fileName);
+    }
+
+    private String getExtension(String filename) {
+        if (filename == null) {
+            return null;
+        } else {
+            int index = indexOfExtension(filename);
+            return index == -1 ? "" : filename.substring(index + 1);
+        }
+    }
+
+    private int indexOfExtension(String filename) {
+        if (filename == null) {
+            return -1;
+        } else {
+            int extensionPos = filename.lastIndexOf(46);
+            int lastSeparator = indexOfLastSeparator(filename);
+            return lastSeparator > extensionPos ? -1 : extensionPos;
+        }
+    }
+
+    private int indexOfLastSeparator(String filename) {
+        if (filename == null) {
+            return -1;
+        } else {
+            int lastUnixPos = filename.lastIndexOf(47);
+            int lastWindowsPos = filename.lastIndexOf(92);
+            return Math.max(lastUnixPos, lastWindowsPos);
+        }
     }
 
     private void showProgress() {
@@ -381,16 +415,28 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
         @Override
         public void onFilesAdded(ResumableUploader uploader, JsArray<ResumableFile> files) {
             boolean shouldUpload = true;
+            boolean fileBlocked = false;
             StringBuilder sb = new StringBuilder();
             sb.append("The file(s) already exist.<br/>To re-upload, please delete and upload again.<br/><br/>"); //<br/> added here because Notification panel display this as HTML so simple new line character won't work.
 
+            StringBuilder blockedFiles = new StringBuilder();
+            blockedFiles.append("The file(s) are not allowed. <br/> Please upload again with correct file extension.<br/><br/>");
+
             for (int i = 0; i < files.length(); ++i) {
                 ResumableFile file = files.get(i);
-                if (!isDuplicateFile(file.getFileName())) {
-                    logger.info("Batch added file " + file.getFileName() + ", size " + file.getSize());
+
+                if(!blockedFileExtensions.contains(getExtension(file.getFileName()).toLowerCase())){
+                    if (!isDuplicateFile(file.getFileName())) {
+                        logger.info("Batch added file " + file.getFileName() + ", size " + file.getSize());
+                    } else {
+                        sb.append(" - ").append(file.getFileName()).append("<br/>");
+                        shouldUpload = false;
+                        uploader.removeFile(file);
+                    }
                 } else {
-                    sb.append(" - ").append(file.getFileName()).append("<br/>");
+                    blockedFiles.append(" - ").append(file.getFileName()).append("<br/>");
                     shouldUpload = false;
+                    fileBlocked = true;
                     uploader.removeFile(file);
                 }
             }
@@ -398,7 +444,11 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
             if (shouldUpload) {
                 uploader.upload();
             } else {
-                NotificationPopupPanel.error(sb.toString(), true, false);
+                if(fileBlocked){
+                    NotificationPopupPanel.error(blockedFiles.toString(), true, false);
+                } else {
+                    NotificationPopupPanel.error(sb.toString(), true, false);
+                }
             }
         }
 
