@@ -420,7 +420,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
             sb.append("The file(s) already exist.<br/>To re-upload, please delete and upload again.<br/><br/>"); //<br/> added here because Notification panel display this as HTML so simple new line character won't work.
 
             StringBuilder blockedFiles = new StringBuilder();
-            blockedFiles.append("The file(s) are not allowed. <br/> Please upload again with correct file extension.<br/><br/>");
+            blockedFiles.append("File extension(s) not allowed. <br/> Please upload again with correct file format.<br/><br/>");
 
             for (int i = 0; i < files.length(); ++i) {
                 ResumableFile file = files.get(i);
