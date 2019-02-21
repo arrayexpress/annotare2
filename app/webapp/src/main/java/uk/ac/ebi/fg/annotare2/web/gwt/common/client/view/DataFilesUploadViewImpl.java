@@ -137,7 +137,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
         progressPanel.getElement().appendChild(errorElement);
 
-        blockedFileExtensions = new ArrayList<>(Arrays.asList("doc","docx","rtf","xls","xlsx","ppt","ppdt","pptx","pdf","tiff","gif","jpg","jpeg","png","bmp","rar","zip","tar","tar.gz","fastq","fq","fq_gz","fastq_gz","fq_bz2","fastq_bz2"));
+        blockedFileExtensions = new ArrayList<>(Arrays.asList("doc","docx","rtf","xls","xlsx","ppt","ppdt","pptx","pdf","tiff","gif","jpg","jpeg","png","bmp","rar","zip","tar","gz","fastq","fq","fq_gz","fastq_gz","fq_bz2","fastq_bz2","7z"));
 
     }
 
