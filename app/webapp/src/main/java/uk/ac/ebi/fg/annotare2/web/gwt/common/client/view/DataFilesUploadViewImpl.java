@@ -137,7 +137,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
         progressPanel.getElement().appendChild(errorElement);
 
-        blockedFileExtensions = new ArrayList<>(Arrays.asList("doc","docx","rtf","xls","xlsx","ppt","ppdt","pptx","pdf","tiff","gif","jpg","jpeg","png","bmp","rar","zip","tar","gz","fastq","fq","fq_gz","fastq_gz","fq_bz2","fastq_bz2","7z"));
+        blockedFileExtensions = new ArrayList<>(Arrays.asList("doc","docx","rtf","xls","xlsx","ppt","ppdt","pptx","pdf","tiff","gif","jpg","jpeg","png","bmp","rar","zip","tar","tar.gz","fastq","fq","fq_gz","fastq_gz","fq_bz2","fastq_bz2","7z"));
 
     }
 
@@ -425,7 +425,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
             for (int i = 0; i < files.length(); ++i) {
                 ResumableFile file = files.get(i);
 
-                if(!blockedFileExtensions.contains(getExtension(file.getFileName()).toLowerCase())){
+                if(!blockedFileExtensions.contains(getExtension(file.getFileName()).toLowerCase()) && !file.getFileName().contains("tar.gz")){
                     if (!isDuplicateFile(file.getFileName())) {
                         logger.info("Batch added file " + file.getFileName() + ", size " + file.getSize());
                     } else {
