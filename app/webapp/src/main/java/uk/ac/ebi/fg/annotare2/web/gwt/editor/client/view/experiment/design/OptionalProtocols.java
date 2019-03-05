@@ -16,7 +16,8 @@ import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.*;
 public enum OptionalProtocols {
 
     GROWTH_PROTOCOL("growth protocol", PLANT_ONE_COLOR_MICROARRAY, PLANT_TWO_COLOR_MICROARRAY, PLANT_SEQUENCING,
-                                        PLANT_METHYLATION_MICROARRAY, SINGLE_CELL_PLANT_SEQUENCING),
+                                        PLANT_METHYLATION_MICROARRAY, SINGLE_CELL_PLANT_SEQUENCING), //for templates mentioned here growth protocol is treated
+                                                                                                        // as a mandatory protocol
     TREATMENT_PROTOCOL("treatment protocol"),
     NORMALIZATION_DATA_TRANSFORMATION_PROTOCOL("normalization data transformation protocol"),
     CONVERSION_PROTOCOL("conversion protocol"),

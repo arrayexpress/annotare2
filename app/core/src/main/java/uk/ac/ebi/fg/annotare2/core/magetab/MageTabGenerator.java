@@ -109,6 +109,8 @@ public class MageTabGenerator {
 
     private final EfoSearch efoSearch;
 
+    private List<SampleAttribute> emptyAttributeColumns;
+
     public enum GenerateOption {
         REPLACE_NEWLINES_WITH_SPACES
     }
@@ -130,6 +132,9 @@ public class MageTabGenerator {
         this.exp = exp;
         this.unassignedValue = new UnassignedValue();
         this.uniqueNameValue = new UniqueNameValue();
+
+        emptyAttributeColumns = new ArrayList<>();
+        emptyAttributeColumns = findEmptyAttributeColumns();
     }
 
     public MAGETABInvestigation generate() throws ParseException {
@@ -302,6 +307,24 @@ public class MageTabGenerator {
             layer.put(sample.getId(), createSourceNode(sample));
         }
         return layer;
+    }
+
+    private List<SampleAttribute> findEmptyAttributeColumns() {
+        List<SampleAttribute> emptyColumns = new ArrayList<>();
+
+        for (SampleAttribute attribute: exp.getSampleAttributes()){
+            boolean flag = true;
+            for (Sample sample : exp.getSamples()){
+                if(!isNullOrEmpty(sample.getValue(attribute))){
+                    flag = false;
+                }
+            }
+            if(flag){
+                emptyColumns.add(attribute);
+            }
+        }
+
+        return emptyColumns;
     }
 
     private Map<Integer, SDRFNode> generateExtractNodes(Map<Integer, SDRFNode> sampleLayer) {
@@ -765,7 +788,9 @@ public class MageTabGenerator {
 
     private List<CharacteristicsAttribute> extractCharacteristicsAttributes(Sample sample) {
         List<CharacteristicsAttribute> attributes = new ArrayList<CharacteristicsAttribute>();
-        for (SampleAttribute attribute : exp.getSampleAttributes()) {
+        List<SampleAttribute> nonEmptySampleAttributes = getNonEmptyAttributesColumns();
+
+        for (SampleAttribute attribute : nonEmptySampleAttributes) {
             if (attribute.getType().isCharacteristic()) {
                 CharacteristicsAttribute attr = new CharacteristicsAttribute();
                 attr.type = getName(attribute);
@@ -778,6 +803,17 @@ public class MageTabGenerator {
             }
         }
         return attributes;
+    }
+
+    private List<SampleAttribute> getNonEmptyAttributesColumns(){
+        List<SampleAttribute> nonEmptyAttributeColumns = new ArrayList<>();
+
+        for (SampleAttribute attribute : exp.getSampleAttributes()){
+            if(!emptyAttributeColumns.contains(attribute)){
+                nonEmptyAttributeColumns.add(attribute);
+            }
+        }
+        return nonEmptyAttributeColumns;
     }
 
     private static Set<String> ROOT_UNIT_TYPES = Sets.newHashSet("uo_0000000", "uo_0000045", "uo_0000046");
