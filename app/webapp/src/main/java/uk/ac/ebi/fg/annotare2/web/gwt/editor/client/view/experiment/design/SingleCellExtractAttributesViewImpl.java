@@ -320,7 +320,7 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
         row.setValue("3 prime tag", END_BIAS);
         row.setValue(value.equalsIgnoreCase(_10xV1) ? "read 2" : "read 1" , UMI_BARCODE_READ);
         row.setValue(value.equalsIgnoreCase(_10xV1) ? "0" : "16", UMI_BARCODE_OFFSET);
-        row.setValue("10", UMI_BARCODE_SIZE);
+        row.setValue(value.equalsIgnoreCase(_10xV3) ? "12" : "10", UMI_BARCODE_SIZE);
         row.setValue(value.equalsIgnoreCase(_10xV1) ? "index 1" : "read 1", CELL_BARCODE_READ);
         row.setValue("0", CELL_BARCODE_OFFSET);
         row.setValue(value.equalsIgnoreCase(_10xV1) ? "14" : "16", CELL_BARCODE_SIZE);
