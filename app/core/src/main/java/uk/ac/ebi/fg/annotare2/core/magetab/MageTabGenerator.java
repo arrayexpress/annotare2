@@ -788,9 +788,8 @@ public class MageTabGenerator {
 
     private List<CharacteristicsAttribute> extractCharacteristicsAttributes(Sample sample) {
         List<CharacteristicsAttribute> attributes = new ArrayList<CharacteristicsAttribute>();
-        List<SampleAttribute> nonEmptySampleAttributes = getNonEmptyAttributesColumns();
 
-        for (SampleAttribute attribute : nonEmptySampleAttributes) {
+        for (SampleAttribute attribute : getNonEmptyAttributesColumns()) {
             if (attribute.getType().isCharacteristic()) {
                 CharacteristicsAttribute attr = new CharacteristicsAttribute();
                 attr.type = getName(attribute);

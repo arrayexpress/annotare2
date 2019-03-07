@@ -24,6 +24,7 @@ public enum  SingleCellExtractAttribute {
             "",
             "10xV1",
             "10xV2",
+            "10xV3",
             "CEL-seq",
             "CEL-seq2",
             "Drop-seq",

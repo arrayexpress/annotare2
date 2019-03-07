@@ -32,6 +32,7 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
 
     private final static String _10xV1 = "10xV1";
     private final static String _10xV2 = "10xV2";
+    private final static String _10xV3 = "10xV3";
     private final static String DROP_SEQ = "drop-seq";
     private final static String SMART_SEQ2 = "smart-seq2";
 
@@ -278,8 +279,8 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
     private void preFillValueInColumns(SingleCellExtractAttribute attr, String value, SingleCellExtractAttributesRow row) {
         if(LIBRARY_CONSTRUCTION.equals(attr)) {
             removePreFillValues(row);
-            if (value.equalsIgnoreCase(_10xV2) || value.equalsIgnoreCase(_10xV1)) {
-                preFill10xV1V2Values(row, value);
+            if (value.equalsIgnoreCase(_10xV2) || value.equalsIgnoreCase(_10xV1) || value.equalsIgnoreCase(_10xV3)) {
+                preFill10xV1V2V3Values(row, value);
             }
             else if(value.equalsIgnoreCase(DROP_SEQ)){
                 preFillDropSeqValues(row);
@@ -312,7 +313,7 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
         row.setValue("", SAMPLE_BARCODE_SIZE);
     }
 
-    private void preFill10xV1V2Values(SingleCellExtractAttributesRow row, String value){
+    private void preFill10xV1V2V3Values(SingleCellExtractAttributesRow row, String value){
         row.setValue("10x", SINGLE_CELL_ISOLATION);
         row.setValue("polyA RNA", INPUT_MOLECULE);
         row.setValue("oligo-dT", PRIMER);
@@ -325,7 +326,7 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
         row.setValue(value.equalsIgnoreCase(_10xV1) ? "14" : "16", CELL_BARCODE_SIZE);
         row.setValue(value.equalsIgnoreCase(_10xV1) ? "read 1" : "read 2", cDNA_READ);
         row.setValue("0", cDNA_READ_OFFSET);
-        row.setValue("98", cDNA_READ_SIZE);
+        row.setValue(value.equalsIgnoreCase(_10xV3) ? "91" : "98", cDNA_READ_SIZE);
         row.setValue(value.equalsIgnoreCase(_10xV1) ? "index 2" : "index 1", SAMPLE_BARCODE_READ);
         row.setValue("0", SAMPLE_BARCODE_OFFSET);
         row.setValue("8", SAMPLE_BARCODE_SIZE);
