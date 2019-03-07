@@ -33,7 +33,7 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
     private final static String _10xV1 = "10xV1";
     private final static String _10xV2 = "10xV2";
     private final static String _10xV3 = "10xV3";
-    private final static String DROP_SEQ = "drop-seq";
+    private final static String DROP_SEQ = "Drop-seq";
     private final static String SMART_SEQ2 = "smart-seq2";
 
     public SingleCellExtractAttributesViewImpl(){
@@ -357,9 +357,10 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
 
 
     private boolean is10xDropSeqLibrarySelected(String value){
-        return "10xV1".equalsIgnoreCase(value) ||
-                "10xV2".equalsIgnoreCase(value) ||
-                "Drop-seq".equalsIgnoreCase(value) ||
+        return _10xV1.equalsIgnoreCase(value) ||
+                _10xV2.equalsIgnoreCase(value) ||
+                _10xV3.equalsIgnoreCase(value) ||
+                DROP_SEQ.equalsIgnoreCase(value) ||
                 "other".equalsIgnoreCase(value);
     }
 
