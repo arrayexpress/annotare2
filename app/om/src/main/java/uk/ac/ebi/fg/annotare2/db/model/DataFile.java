@@ -16,6 +16,8 @@
 package uk.ac.ebi.fg.annotare2.db.model;
 
 import org.hibernate.annotations.FilterDef;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 
 import javax.persistence.*;
@@ -66,6 +68,8 @@ public class DataFile {
     @Column(name = "fileSize", nullable = false, columnDefinition = "BIGINT(20)")
     private long fileSize;
 
+    private static final Logger logger = LoggerFactory.getLogger(DataFile.class);
+
     public DataFile() {
         this(null);
         fileSize = 0;
@@ -110,6 +114,7 @@ public class DataFile {
     }
 
     public void setStatus(DataFileStatus status) {
+        logger.info("Changing status for data file {} of submission {} from {} to {}", this.getName(), this.getOwnedBy().getId(), this.getStatus(), status);
         this.status = status;
     }
 

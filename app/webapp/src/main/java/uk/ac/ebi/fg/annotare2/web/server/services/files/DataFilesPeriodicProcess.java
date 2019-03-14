@@ -36,6 +36,8 @@ import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -46,8 +48,6 @@ import static uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus.*;
 public class DataFilesPeriodicProcess {
 
     private static final Logger logger = LoggerFactory.getLogger(DataFilesPeriodicProcess.class);
-
-    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 //    private final ScheduledExecutorService poolScheduler = Executors.newScheduledThreadPool(10);
 
     private final DataFileStore fileStore;
@@ -55,6 +55,8 @@ public class DataFilesPeriodicProcess {
     private final HibernateSessionFactory sessionFactory;
     private final AnnotareProperties properties;
     private final Messenger messenger;
+    private BlockingQueue<Long> fileCopyingSet;
+    private final ScheduledExecutorService scheduler;
 
     @Inject
     public DataFilesPeriodicProcess(DataFileStore fileStore,
@@ -67,6 +69,8 @@ public class DataFilesPeriodicProcess {
         this.sessionFactory = sessionFactory;
         this.properties = properties;
         this.messenger = messenger;
+        this.scheduler = Executors.newScheduledThreadPool(properties.getWatchdogThreadCount());
+        this.fileCopyingSet = new ArrayBlockingQueue<>(properties.getFileCopyingThreadCount());
 
     }
 
@@ -87,7 +91,9 @@ public class DataFilesPeriodicProcess {
             }
         };
 
-        scheduler.scheduleWithFixedDelay(periodicProcess, 0, 5, SECONDS);
+        for (int i = 0; i < properties.getFileCopyingThreadCount(); i++) {
+            scheduler.scheduleAtFixedRate(periodicProcess, i * 20, 30, SECONDS);
+        }
     }
 
     @PreDestroy
@@ -102,29 +108,56 @@ public class DataFilesPeriodicProcess {
     }
 
     private void periodicRun() throws Exception {
+        logger.info("Thread {} for file copying started", Thread.currentThread().getId());
         final FileAvailabilityChecker availabilityChecker = new FileAvailabilityChecker();
         for (final DataFile file : fileDao.getFilesByStatus(TO_BE_STORED, TO_BE_ASSOCIATED, ASSOCIATED)) {
-            // FTP files will not be processed if FTP is not enabled
-            if (!file.isDeleted() &&
-                    (properties.isFtpEnabled() || !file.getSourceUri().contains(properties.getFtpPickUpDir()))) {
-                switch (file.getStatus()) {
-                    case TO_BE_STORED:
-                        copyFile(file, availabilityChecker);
-                        break;
 
-                    case TO_BE_ASSOCIATED:
-                        verifyFile(file, availabilityChecker);
-                        break;
+            if (addFileToFileCopyingSet(file)) {
+                try {
+                    // FTP files will not be processed if FTP is not enabled
+                    if (!file.isDeleted() &&
+                            (properties.isFtpEnabled() || !file.getSourceUri().contains(properties.getFtpPickUpDir()))) {
+                        switch (file.getStatus()) {
+                            case TO_BE_STORED:
+                                copyFile(file, availabilityChecker);
+                                break;
 
-                    case ASSOCIATED:
-                        maintainAssociation(file, availabilityChecker);
-                        break;
+                            case TO_BE_ASSOCIATED:
+                                verifyFile(file, availabilityChecker);
+                                break;
 
-                    //case FILE_NOT_FOUND_ERROR:
-                    //    attemptToRestoreAssociation(file, availabilityChecker);
+                            case ASSOCIATED:
+                                maintainAssociation(file, availabilityChecker);
+                                break;
+
+                            //case FILE_NOT_FOUND_ERROR:
+                            //    attemptToRestoreAssociation(file, availabilityChecker);
+                        }
+                    }
+                } finally {
+                    removeDataFileFromDataFileCopyingSet(file);
+                    logger.info("Thread {} removed file {}: {} for submission {} to current file copying set.", Thread.currentThread().getId(), file.getName(), file.getStatus(), file.getOwnedBy().getId());
                 }
             }
         }
+    }
+
+    private synchronized boolean addFileToFileCopyingSet(DataFile file) {
+        sessionFactory.getCurrentSession().refresh(file);
+
+        if (file.getStatus() == TO_BE_STORED) {
+            if (!fileCopyingSet.contains(file.getId()) && fileCopyingSet.remainingCapacity() > 0) {
+                logger.info("Thread {} is adding file {}: {} for submission {} to current file copying set.", Thread.currentThread().getId(), file.getName(), file.getStatus(), file.getOwnedBy().getId());
+                fileCopyingSet.add(file.getId());
+                logger.info("Thread {} added file {}: {} for submission {} to current file copying set.", Thread.currentThread().getId(), file.getName(), file.getStatus(), file.getOwnedBy().getId());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private synchronized void removeDataFileFromDataFileCopyingSet(DataFile file) {
+        fileCopyingSet.remove(file.getId());
     }
 
     @Transactional

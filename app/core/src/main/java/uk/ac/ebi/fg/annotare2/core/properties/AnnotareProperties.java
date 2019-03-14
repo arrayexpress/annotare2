@@ -71,6 +71,8 @@ public class AnnotareProperties implements DataFileStoreProperties {
 
     public Integer getWatchdogThreadCount() { return getIntegerProperty("watchdog.thread.count"); }
 
+    public Integer getFileCopyingThreadCount() { return getIntegerProperty("fileCopying.thread.count"); }
+
     public File getEfoIndexDir() {
         return getDirProperty("efo.index.dir");
     }
