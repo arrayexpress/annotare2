@@ -60,7 +60,7 @@
             <div>
                 <c:choose>
                     <c:when test="${email != ''}">
-                        <input type="text" id="email" name="email" value="${email}" onblur="fixEmail()"/>
+                        <input type="text" id="email" name="email" value="${f:escapeXml(email)}" onblur="fixEmail()"/>
                     </c:when>
                     <c:otherwise>
                         <input type="text" id="email" name="email" autofocus="autofocus" onblur="fixEmail()"/>
