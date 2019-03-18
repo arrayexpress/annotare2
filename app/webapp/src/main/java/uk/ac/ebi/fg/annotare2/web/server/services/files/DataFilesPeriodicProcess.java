@@ -111,12 +111,10 @@ public class DataFilesPeriodicProcess {
         logger.info("Thread {} for file copying started", Thread.currentThread().getId());
         final FileAvailabilityChecker availabilityChecker = new FileAvailabilityChecker();
         for (final DataFile file : fileDao.getFilesByStatus(TO_BE_STORED, TO_BE_ASSOCIATED, ASSOCIATED)) {
-
-            if (addFileToFileCopyingSet(file)) {
-                try {
-                    // FTP files will not be processed if FTP is not enabled
-                    if (!file.isDeleted() &&
-                            (properties.isFtpEnabled() || !file.getSourceUri().contains(properties.getFtpPickUpDir()))) {
+// FTP files will not be processed if FTP is not enabled
+            if (!file.isDeleted() && (properties.isFtpEnabled() || !file.getSourceUri().contains(properties.getFtpPickUpDir()))) {
+                if (addFileToFileCopyingSet(file)) {
+                    try {
                         switch (file.getStatus()) {
                             case TO_BE_STORED:
                                 copyFile(file, availabilityChecker);
@@ -133,10 +131,10 @@ public class DataFilesPeriodicProcess {
                             //case FILE_NOT_FOUND_ERROR:
                             //    attemptToRestoreAssociation(file, availabilityChecker);
                         }
+                    } finally {
+                        removeDataFileFromDataFileCopyingSet(file);
+                        logger.info("Thread {} removed file {}: {} for submission {} to current file copying set.", Thread.currentThread().getId(), file.getName(), file.getStatus(), file.getOwnedBy().getId());
                     }
-                } finally {
-                    removeDataFileFromDataFileCopyingSet(file);
-                    logger.info("Thread {} removed file {}: {} for submission {} to current file copying set.", Thread.currentThread().getId(), file.getName(), file.getStatus(), file.getOwnedBy().getId());
                 }
             }
         }
