@@ -57,6 +57,8 @@ public class MageTabUtils {
         return obsoleteErrors.contains(code);
     }
 
+    public static boolean isObsoleteWarning(String code) { return obsoleteWarnings.contains(code); }
+
     public static String getErrorString(CheckResult cr) {
         String ref = cr.getReference();
         if (!errorMap.containsKey(ref)) return cr.getTitle();
@@ -67,8 +69,20 @@ public class MageTabUtils {
         return sb.toString();
     }
 
+    public static String getWarningString(CheckResult cr) {
+        String ref = cr.getReference();
+        if(!warningMap.containsKey(ref)) return cr.getTitle();
+        StringBuilder sb = new StringBuilder(warningMap.get(ref));
+        if(cr.getDynamicDetail() != null) {
+            return String.format(sb.toString(), cr.getDynamicDetail());
+        }
+        return sb.toString();
+    }
+
     private static final Map<String, String> errorMap = new HashMap<>();
     private static final HashSet obsoleteErrors = new HashSet<>();
+    private static final Map<String, String> warningMap = new HashMap<>();
+    private static final HashSet obsoleteWarnings = new HashSet<>();
     static {
         errorMap.put("ADMN01", "[<a href=\"#DESIGN:FILES\">Assign Files</a>] The 'Raw Data Matrix File' column has not been filled in (completely). See <a target=\"_blank\" href=\"../../help/assign_files.html\">Assign files to samples (Annotare Help)</a> for more details.");
         errorMap.put("ADMN02", "[<a href=\"#DESIGN:FILES\">Assign Files</a>] An array data matrix file name can only contain alphanumeric characters, underscores and dots. Click on the file name in the upload panel to rename, then press 'Enter' to save the changes.");
@@ -111,6 +125,11 @@ public class MageTabUtils {
         errorMap.put("SR04", "[<a href=\"#DESIGN:SAMPLES\">Sample annotation</a>] 'Organism' is a mandatory attribute for the source material and must be filled in.");
         errorMap.put("SR08", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] (%s) A 'growth protocol', 'treatment protocol' or 'sample collection protocol' must be included. To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
 
+        warningMap.put("C08", "[<a href=\"#DESIGN:CONTACTS\">Contacts</a>] A contact should have first name specified");
+        warningMap.put("UN01", "[<a href=\"#DESIGN:SAMPLES\">Sample annotation</a>] Age attribute should have units specified.");
+        warningMap.put("UN02", "[<a href=\"#DESIGN:SAMPLES\">Sample annotation</a>] Time factor value should have units specified.");
+        warningMap.put("UN03", "[<a href=\"#DESIGN:SAMPLES\">Sample annotation</a>] Dose factor value should have units specified.");
+
         obsoleteErrors.add("ADMN03");
         obsoleteErrors.add("DADMN03");
         obsoleteErrors.add("DADN03");
@@ -152,5 +171,64 @@ public class MageTabUtils {
         obsoleteErrors.add("UA03");
         obsoleteErrors.add("PN01");
         obsoleteErrors.add("PR02");
+
+        obsoleteWarnings.add("AD02");
+        obsoleteWarnings.add("ADMN04");
+        obsoleteWarnings.add("ADN04");
+        obsoleteWarnings.add("C09");
+        obsoleteWarnings.add("C10");
+        obsoleteWarnings.add("CA01");
+        obsoleteWarnings.add("CA02");
+        obsoleteWarnings.add("ED01");
+        obsoleteWarnings.add("ED02");
+        obsoleteWarnings.add("ED03");
+        obsoleteWarnings.add("EF03");
+        obsoleteWarnings.add("EF04");
+        obsoleteWarnings.add("EX02");
+        obsoleteWarnings.add("FV01");
+        obsoleteWarnings.add("FV02");
+        obsoleteWarnings.add("G03");
+        obsoleteWarnings.add("G09");
+        obsoleteWarnings.add("L01");
+        obsoleteWarnings.add("L02");
+        obsoleteWarnings.add("LE03");
+        obsoleteWarnings.add("MT01");
+        obsoleteWarnings.add("MT02");
+        obsoleteWarnings.add("NN01");
+        obsoleteWarnings.add("NT01");
+        obsoleteWarnings.add("NT02");
+        obsoleteWarnings.add("NT03");
+        obsoleteWarnings.add("PB01");
+        obsoleteWarnings.add("PB03");
+        obsoleteWarnings.add("PB04");
+        obsoleteWarnings.add("PB05");
+        obsoleteWarnings.add("PB06");
+        obsoleteWarnings.add("PN04");
+        obsoleteWarnings.add("PN07");
+        obsoleteWarnings.add("PR04");
+        obsoleteWarnings.add("PR06");
+        obsoleteWarnings.add("PR07");
+        obsoleteWarnings.add("PV01");
+        obsoleteWarnings.add("PV02");
+        obsoleteWarnings.add("QC01");
+        obsoleteWarnings.add("QC02");
+        obsoleteWarnings.add("QC03");
+        obsoleteWarnings.add("RT01");
+        obsoleteWarnings.add("RT02");
+        obsoleteWarnings.add("RT03");
+        obsoleteWarnings.add("SC01");
+        obsoleteWarnings.add("SM02");
+        obsoleteWarnings.add("SM03");
+        obsoleteWarnings.add("SR03");
+        obsoleteWarnings.add("SR05");
+        obsoleteWarnings.add("TS03");
+        obsoleteWarnings.add("TS04");
+        obsoleteWarnings.add("TT02");
+        obsoleteWarnings.add("UA01");
+        obsoleteWarnings.add("UA02");
+        obsoleteWarnings.add("SR02");
+        obsoleteWarnings.add("REF01");
+        obsoleteWarnings.add("DF01");
+
     }
 }

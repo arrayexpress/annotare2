@@ -108,7 +108,6 @@ public class DataFilesPeriodicProcess {
     }
 
     private void periodicRun() throws Exception {
-        logger.info("Thread {} for file copying started", Thread.currentThread().getId());
         final FileAvailabilityChecker availabilityChecker = new FileAvailabilityChecker();
         for (final DataFile file : fileDao.getFilesByStatus(TO_BE_STORED, TO_BE_ASSOCIATED, ASSOCIATED)) {
 // FTP files will not be processed if FTP is not enabled
@@ -145,7 +144,6 @@ public class DataFilesPeriodicProcess {
 
         if (file.getStatus() == TO_BE_STORED) {
             if (!fileCopyingSet.contains(file.getId()) && fileCopyingSet.remainingCapacity() > 0) {
-                logger.info("Thread {} is adding file {}: {} for submission {} to current file copying set.", Thread.currentThread().getId(), file.getName(), file.getStatus(), file.getOwnedBy().getId());
                 fileCopyingSet.add(file.getId());
                 logger.info("Thread {} added file {}: {} for submission {} to current file copying set.", Thread.currentThread().getId(), file.getName(), file.getStatus(), file.getOwnedBy().getId());
                 return true;

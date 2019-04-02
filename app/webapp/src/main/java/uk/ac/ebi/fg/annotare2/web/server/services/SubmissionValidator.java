@@ -157,7 +157,7 @@ public class SubmissionValidator {
                                     , CheckModality.WARNING
                                     , CheckPosition.undefinedPosition()
                                     , null
-                                    , null
+                                    , "DF01"
                             )
                     );
                 }
