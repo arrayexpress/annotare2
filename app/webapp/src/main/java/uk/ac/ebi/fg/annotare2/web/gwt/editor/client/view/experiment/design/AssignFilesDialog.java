@@ -29,9 +29,7 @@ import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.submission.model.EnumWithHelpText;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +40,7 @@ public class AssignFilesDialog<T extends EnumWithHelpText> extends DialogBox {
         Binder BINDER = GWT.create(Binder.class);
     }
 
-    private DialogCallback<T> callback;
+    private DialogCallback<Map.Entry<FileType, Integer>> callback;
 
     @UiField
     Button okButton;
@@ -54,11 +52,14 @@ public class AssignFilesDialog<T extends EnumWithHelpText> extends DialogBox {
     ListBox columnListBox;
 
     @UiField
+    TextBox noOfColumns;
+
+    @UiField
     HTML columnListHelp;
 
-    private Map<String, T> map = new HashMap<>();
+    private Map<String, FileType> map = new HashMap<>();
 
-    public AssignFilesDialog(DialogCallback<T> callback, final List<T> values) {
+    public AssignFilesDialog(DialogCallback<Map.Entry<FileType,Integer>> callback, final List<FileType> values) {
         this.callback = callback;
         setModal(true);
         setGlassEnabled(true);
@@ -66,7 +67,7 @@ public class AssignFilesDialog<T extends EnumWithHelpText> extends DialogBox {
 
         setWidget(Binder.BINDER.createAndBindUi(this));
 
-        for (T t : values) {
+        for (FileType t : values) {
             if (t.getClass().isEnum()) {
                 columnListBox.addItem(t.getTitle());
                 map.put(t.getTitle(), t);
@@ -86,7 +87,23 @@ public class AssignFilesDialog<T extends EnumWithHelpText> extends DialogBox {
 
     @UiHandler("okButton")
     void okButtonClicked(ClickEvent event) {
-        T selection = getSelection();
+        //Pair<T, Integer> selection = new Pair<T, Integer>()getSelection(), Integer.parseInt(noOfColumns.getText());
+        Map.Entry<FileType, Integer> selection = new Map.Entry<FileType, Integer>() {
+            @Override
+            public FileType getKey() {
+                return getSelection();
+            }
+
+            @Override
+            public Integer getValue() {
+                return Integer.parseInt(noOfColumns.getText());
+            }
+
+            @Override
+            public Integer setValue(Integer value) {
+                return null;
+            }
+        };
         if (null == selection) {
             return;
         }
@@ -118,7 +135,7 @@ public class AssignFilesDialog<T extends EnumWithHelpText> extends DialogBox {
         }
     }
 
-    private T getSelection() {
+    private FileType getSelection() {
         int index = columnListBox.getSelectedIndex();
         return index >= 0 ? map.get(columnListBox.getValue(index)) : null;
     }

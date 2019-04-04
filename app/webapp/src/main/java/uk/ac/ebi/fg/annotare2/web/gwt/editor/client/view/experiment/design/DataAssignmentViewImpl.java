@@ -59,10 +59,12 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                new AssignFilesDialog(new DialogCallback<FileType>() {
+                new AssignFilesDialog(new DialogCallback<Map.Entry<FileType, Integer>>() {
                     @Override
-                    public boolean onOk(FileType type) {
-                        createColumn(type);
+                    public boolean onOk(Map.Entry<FileType, Integer> type) {
+                        for(int i=0; i<type.getValue(); i++){
+                            createColumn(type.getKey());
+                        }
                         return true;
                     }
                 }, getAllowedColumnTypes());
