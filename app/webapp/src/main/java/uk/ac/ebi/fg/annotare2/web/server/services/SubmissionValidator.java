@@ -40,6 +40,8 @@ import uk.ac.ebi.fg.annotare2.magetabcheck.MageTabChecker;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.*;
 import uk.ac.ebi.fg.annotare2.magetabcheck.modelimpl.limpopo.LimpopoBasedExperiment;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.FileColumn;
+import uk.ac.ebi.fg.annotare2.submission.model.FileType;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileConnector;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.FileAvailabilityChecker;
@@ -127,6 +129,19 @@ public class SubmissionValidator {
 
         Set<DataFile> allFiles = submission.getFiles();
         Set<DataFile> assignedFiles = dataFileManager.getAssignedFiles(submission);
+
+        Collection<FileColumn> rawDataFileColumns = exp.getFileColumns(FileType.RAW_FILE);
+        Collection<FileColumn> rawMatrixDataFileColumns = exp.getFileColumns(FileType.RAW_MATRIX_FILE);
+
+        if(exp.getType().isMicroarray()) {
+            if(rawMatrixDataFileColumns.isEmpty()) {
+                addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one raw matrix data file column must be added");
+            }
+        } else {
+            if(rawDataFileColumns.isEmpty()) {
+                addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one raw data file column must be added");
+            }
+        }
 
         if(!isNullOrEmpty(exp.getRelatedAccessionNumber())) {
             if (!validateRelatedAccessionNumber(exp.getRelatedAccessionNumber())) {
