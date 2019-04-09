@@ -59,7 +59,7 @@ public class AssignFilesDialog<T extends EnumWithHelpText> extends DialogBox {
 
     private Map<String, FileType> map = new HashMap<>();
 
-    public AssignFilesDialog(DialogCallback<Map.Entry<FileType,Integer>> callback, final List<FileType> values) {
+    public AssignFilesDialog(DialogCallback<Map.Entry<FileType, Integer>> callback, final List<FileType> values) {
         this.callback = callback;
         setModal(true);
         setGlassEnabled(true);
@@ -74,10 +74,15 @@ public class AssignFilesDialog<T extends EnumWithHelpText> extends DialogBox {
             }
         }
 
+        if(columnListBox.getItemCount() != 0) {
+            columnListBox.setSelectedIndex(0);
+            columnListHelp.setHTML(values.get(0).getHelpText());
+        }
+
         columnListBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
-                columnListHelp.setHTML ( values.get(columnListBox.getSelectedIndex()).getHelpText() );
+                columnListHelp.setHTML(values.get(columnListBox.getSelectedIndex()).getHelpText());
             }
         });
 
@@ -96,7 +101,13 @@ public class AssignFilesDialog<T extends EnumWithHelpText> extends DialogBox {
 
             @Override
             public Integer getValue() {
-                return Integer.parseInt(noOfColumns.getText());
+                if (!noOfColumns.getText().equalsIgnoreCase("")) {
+                    return Integer.parseInt(noOfColumns.getText());
+                } else if(columnListBox.getItemCount() != 0){
+                    return 1;
+                } else {
+                    return 0;
+                }
             }
 
             @Override
@@ -104,7 +115,7 @@ public class AssignFilesDialog<T extends EnumWithHelpText> extends DialogBox {
                 return null;
             }
         };
-        if (null == selection) {
+        if (null == selection || selection.getValue() == 0) {
             return;
         }
 
