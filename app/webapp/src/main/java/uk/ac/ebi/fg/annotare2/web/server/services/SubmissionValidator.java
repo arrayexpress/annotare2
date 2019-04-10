@@ -134,13 +134,11 @@ public class SubmissionValidator {
         Collection<FileColumn> rawMatrixDataFileColumns = exp.getFileColumns(FileType.RAW_MATRIX_FILE);
 
         if(exp.getType().isMicroarray()) {
-            if(rawMatrixDataFileColumns.isEmpty()) {
-                addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one raw matrix data file column must be added");
+            if(rawMatrixDataFileColumns.isEmpty() && rawDataFileColumns.isEmpty()) {
+                addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one raw matrix data file OR one raw data file column must be added");
             }
-        } else {
-            if(rawDataFileColumns.isEmpty()) {
-                addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one raw data file column must be added");
-            }
+        } else if(rawDataFileColumns.isEmpty()) {
+            addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one raw data file column must be added");
         }
 
         if(!isNullOrEmpty(exp.getRelatedAccessionNumber())) {
