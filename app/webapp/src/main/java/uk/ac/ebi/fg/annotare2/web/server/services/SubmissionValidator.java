@@ -141,6 +141,12 @@ public class SubmissionValidator {
             addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one raw data file column must be added");
         }
 
+        if(exp.getType().isSequencing() || exp.getType().isOneColorMicroarray()) {
+            if (assignedFiles.size() != exp.getSamples().size()) {
+                addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] One file cannot be assigned to multiple samples.");
+            }
+        }
+
         if(!isNullOrEmpty(exp.getRelatedAccessionNumber())) {
             if (!validateRelatedAccessionNumber(exp.getRelatedAccessionNumber())) {
                 addError(results, "[<a href=\"#INFO:GENERAL_INFO\">General Info</a>] Enter the accession number of related experiments in ArrayExpress or PRIDE e.g. E-MTAB-4688, PXD123456");

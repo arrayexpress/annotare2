@@ -82,6 +82,14 @@ public enum ExperimentProfileType {
                 CELL_LINE_TWO_COLOR_MICROARRAY == this;
     }
 
+    public boolean isOneColorMicroarray() {
+        return ONE_COLOR_MICROARRAY == this ||
+                PLANT_ONE_COLOR_MICROARRAY == this ||
+                HUMAN_ONE_COLOR_MICROARRAY == this ||
+                ANIMAL_ONE_COLOR_MICROARRAY == this ||
+                CELL_LINE_ONE_COLOR_MICROARRAY == this;
+    }
+
     public boolean isMethylationMicroarray() {
         return METHYLATION_MICROARRAY == this ||
                 PLANT_METHYLATION_MICROARRAY == this ||
