@@ -20,6 +20,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.inject.Inject;
+import javafx.util.Pair;
 import org.mged.magetab.error.ErrorItem;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
@@ -135,14 +136,15 @@ public class SubmissionValidator {
 
         if(exp.getType().isMicroarray()) {
             if(rawMatrixDataFileColumns.isEmpty() && rawDataFileColumns.isEmpty()) {
-                addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one raw matrix data file OR one raw data file column must be added");
+                addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one 'Raw Matrix Data File' OR one 'Raw Data File' column must be added");
             }
         } else if(rawDataFileColumns.isEmpty()) {
-            addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one raw data file column must be added");
+            addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one 'Raw Data File' column must be added");
         }
 
-        if(exp.getType().isSequencing() || exp.getType().isOneColorMicroarray()) {
-            if (assignedFiles.size() != exp.getSamples().size()) {
+        if(exp.getType().isSequencing() || exp.getType().isSingleCell()) {
+            Collection<DataFile> rawAssignedFiles = dataFileManager.getAssignedFiles(submission, FileType.RAW_FILE);
+            if(rawAssignedFiles.size() != 0 && rawAssignedFiles.size() != exp.getSamples().size()) {
                 addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] One file cannot be assigned to multiple samples.");
             }
         }

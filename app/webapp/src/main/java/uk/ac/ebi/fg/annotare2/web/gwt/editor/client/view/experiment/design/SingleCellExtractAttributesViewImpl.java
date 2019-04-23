@@ -292,13 +292,12 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
             else if(value.equalsIgnoreCase(SMART_SEQ2)){
                 preFillSmartSeqValues(row);
             }
-            else {
-                removePreFillValues(row);
-            }
         }
     }
 
-    private void removePreFillValues(SingleCellExtractAttributesRow row) {
+    //This function can be used in future if there is need to remove the prefill values
+
+    /*private void removePreFillValues(SingleCellExtractAttributesRow row) {
         row.setValue("", SINGLE_CELL_ISOLATION);
         row.setValue("", INPUT_MOLECULE);
         row.setValue("", PRIMER);
@@ -315,7 +314,7 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
         row.setValue("", SAMPLE_BARCODE_READ);
         row.setValue("", SAMPLE_BARCODE_OFFSET);
         row.setValue("", SAMPLE_BARCODE_SIZE);
-    }
+    }*/
 
     private void preFill10xV1V2V3Values(SingleCellExtractAttributesRow row, String value){
         setAttributeValue(row, SINGLE_CELL_ISOLATION,"10x");
