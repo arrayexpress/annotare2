@@ -27,7 +27,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.submission.model.EnumWithHelpText;
-import uk.ac.ebi.fg.annotare2.submission.model.FileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
 
 import java.util.HashMap;
@@ -40,7 +39,7 @@ public class AssignFilesDialog<T extends EnumWithHelpText> extends DialogBox {
         Binder BINDER = GWT.create(Binder.class);
     }
 
-    private DialogCallback<Map.Entry<FileType, Integer>> callback;
+    private DialogCallback<T> callback;
 
     @UiField
     Button okButton;
@@ -52,14 +51,11 @@ public class AssignFilesDialog<T extends EnumWithHelpText> extends DialogBox {
     ListBox columnListBox;
 
     @UiField
-    TextBox noOfColumns;
-
-    @UiField
     HTML columnListHelp;
 
-    private Map<String, FileType> map = new HashMap<>();
+    private Map<String, T> map = new HashMap<>();
 
-    public AssignFilesDialog(DialogCallback<Map.Entry<FileType, Integer>> callback, final List<FileType> values) {
+    public AssignFilesDialog(DialogCallback<T> callback, final List<T> values) {
         this.callback = callback;
         setModal(true);
         setGlassEnabled(true);
@@ -67,22 +63,17 @@ public class AssignFilesDialog<T extends EnumWithHelpText> extends DialogBox {
 
         setWidget(Binder.BINDER.createAndBindUi(this));
 
-        for (FileType t : values) {
+        for (T t : values) {
             if (t.getClass().isEnum()) {
                 columnListBox.addItem(t.getTitle());
                 map.put(t.getTitle(), t);
             }
         }
 
-        if(columnListBox.getItemCount() != 0) {
-            columnListBox.setSelectedIndex(0);
-            columnListHelp.setHTML(values.get(0).getHelpText());
-        }
-
         columnListBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
-                columnListHelp.setHTML(values.get(columnListBox.getSelectedIndex()).getHelpText());
+                columnListHelp.setHTML ( values.get(columnListBox.getSelectedIndex()).getHelpText() );
             }
         });
 
@@ -92,30 +83,8 @@ public class AssignFilesDialog<T extends EnumWithHelpText> extends DialogBox {
 
     @UiHandler("okButton")
     void okButtonClicked(ClickEvent event) {
-        //Pair<T, Integer> selection = new Pair<T, Integer>()getSelection(), Integer.parseInt(noOfColumns.getText());
-        Map.Entry<FileType, Integer> selection = new Map.Entry<FileType, Integer>() {
-            @Override
-            public FileType getKey() {
-                return getSelection();
-            }
-
-            @Override
-            public Integer getValue() {
-                if (!noOfColumns.getText().equalsIgnoreCase("")) {
-                    return Integer.parseInt(noOfColumns.getText());
-                } else if(columnListBox.getItemCount() != 0){
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-
-            @Override
-            public Integer setValue(Integer value) {
-                return null;
-            }
-        };
-        if (null == selection || selection.getValue() == 0) {
+        T selection = getSelection();
+        if (null == selection) {
             return;
         }
 
@@ -146,7 +115,7 @@ public class AssignFilesDialog<T extends EnumWithHelpText> extends DialogBox {
         }
     }
 
-    private FileType getSelection() {
+    private T getSelection() {
         int index = columnListBox.getSelectedIndex();
         return index >= 0 ? map.get(columnListBox.getValue(index)) : null;
     }
