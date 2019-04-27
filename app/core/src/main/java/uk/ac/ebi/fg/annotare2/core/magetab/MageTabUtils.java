@@ -127,9 +127,9 @@ public class MageTabUtils {
         errorMap.put("SR08", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] (%s) A 'growth protocol', 'treatment protocol' or 'sample collection protocol' must be included. To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
 
         warningMap.put("C08", "[<a href=\"#DESIGN:CONTACTS\">Contacts</a>] A contact should have first name specified");
-        warningMap.put("UN01", "[<a href=\"#DESIGN:SAMPLES\">Sample annotation</a>] Attribute 'Age' should have a units specified. Go to \"Add Sample Attributes and Variables\", select the attribute/variable and enter the measurement unit.");
-        warningMap.put("UN02", "[<a href=\"#DESIGN:SAMPLES\">Sample annotation</a>] Experimental variable 'Time' should have a units specified. Go to \"Add Sample Attributes and Variables\", select the attribute/variable and enter the measurement unit.");
-        warningMap.put("UN03", "[<a href=\"#DESIGN:SAMPLES\">Sample annotation</a>] Experimental variable 'Dose' should have a units specified. Go to \"Add Sample Attributes and Variables\", select the attribute/variable and enter the measurement unit.");
+        warningMap.put("UN01", "[<a href=\"#DESIGN:SAMPLES\">Sample annotation</a>] Attribute 'Age' should have a unit specified. Go to 'Add Sample Attributes and Variables', select the attribute/variable and enter the measurement unit.");
+        warningMap.put("UN02", "[<a href=\"#DESIGN:SAMPLES\">Sample annotation</a>] Experimental variable 'Time' should have a unit specified. Go to 'Add Sample Attributes and Variables', select the attribute/variable and enter the measurement unit.");
+        warningMap.put("UN03", "[<a href=\"#DESIGN:SAMPLES\">Sample annotation</a>] Experimental variable 'Dose' should have a unit specified. Go to 'Add Sample Attributes and Variables', select the attribute/variable and enter the measurement unit.");
 
         obsoleteErrors.add("ADMN03");
         obsoleteErrors.add("DADMN03");
