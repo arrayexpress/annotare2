@@ -36,6 +36,8 @@ import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileStore;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -106,6 +108,18 @@ public class DataFileManagerImpl implements DataFileManager {
                 if (assignedFiles.contains(new FileRef(file.getName(), file.getDigest()))) {
                     result.add(file);
                 }
+            }
+        }
+        return result;
+    }
+
+    public Collection<FileRef> getColumnFiles(Submission submission, FileType fileType) throws DataSerializationException {
+        Collection<FileRef> result = new ArrayList<>();
+
+        if (submission instanceof ExperimentSubmission) {
+            ExperimentProfile exp = ((ExperimentSubmission) submission).getExperimentProfile();
+            for (FileColumn col : exp.getFileColumns(fileType)) {
+                result.addAll(col.getFileRefs());
             }
         }
         return result;

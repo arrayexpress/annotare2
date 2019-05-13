@@ -41,6 +41,7 @@ import uk.ac.ebi.fg.annotare2.magetabcheck.checker.*;
 import uk.ac.ebi.fg.annotare2.magetabcheck.modelimpl.limpopo.LimpopoBasedExperiment;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.model.FileColumn;
+import uk.ac.ebi.fg.annotare2.submission.model.FileRef;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileConnector;
@@ -50,7 +51,9 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -135,16 +138,19 @@ public class SubmissionValidator {
 
         if(exp.getType().isMicroarray()) {
             if(rawMatrixDataFileColumns.isEmpty() && rawDataFileColumns.isEmpty()) {
-                addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one 'Raw Matrix Data File' OR one 'Raw Data File' column must be added");
+                addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one 'Raw Matrix Data File' OR one 'Raw Data File' column must be added.");
             }
         } else if(rawDataFileColumns.isEmpty()) {
-            addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one 'Raw Data File' column must be added");
+            addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one 'Raw Data File' column must be added.");
         }
 
         if(exp.getType().isSequencing() || exp.getType().isSingleCell()) {
             Collection<DataFile> rawAssignedFiles = dataFileManager.getAssignedFiles(submission, FileType.RAW_FILE);
+
             if(rawAssignedFiles.size() != 0 && rawAssignedFiles.size() != exp.getSamples().size()) {
-                addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] One file cannot be assigned to multiple samples.");
+                String duplicateFiles = getDuplicateAssignedFiles(dataFileManager.getColumnFiles(submission, FileType.RAW_FILE));
+
+                addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] (Duplicate Files: "+ duplicateFiles + ") One file cannot be assigned to multiple samples.");
             }
         }
 
@@ -154,9 +160,9 @@ public class SubmissionValidator {
             }
         }
         if (null == allFiles || 0 == allFiles.size()) {
-            addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one data file must be uploaded and assigned");
+            addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one data file must be uploaded and assigned.");
         } else if (null == assignedFiles || 0 == assignedFiles.size()) {
-            addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one uploaded data file must be assigned");
+            addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one uploaded data file must be assigned.");
         } else {
             for (DataFile dataFile : allFiles) {
                 if (!dataFile.getStatus().isOk()) {
@@ -173,7 +179,7 @@ public class SubmissionValidator {
                 } else if (!assignedFiles.contains(dataFile)) {
                     results.add(
                             CheckResult.checkFailed(
-                                    "[<a href=\"#DESIGN:FILES\">Assign Files</a>] File " + dataFile.getName() + " should be assigned to at least one labeled extract"
+                                    "[<a href=\"#DESIGN:FILES\">Assign Files</a>] File " + dataFile.getName() + " should be assigned to at least one labeled extract."
                                     , CheckModality.WARNING
                                     , CheckPosition.undefinedPosition()
                                     , null
@@ -186,13 +192,28 @@ public class SubmissionValidator {
             for (DataFile dataFile : assignedFiles) {
                 DataFileHandle source = dataFileManager.getFileHandle(dataFile);
                 if (null == source || !fileChecker.isAvailable(source)) {
-                    addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] File " + dataFile.getName() + " is not accessible"
+                    addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] File " + dataFile.getName() + " is not accessible."
                             + ((source instanceof RemoteFileHandle) ? " on FTP" : ""));
                 }
             }
         }
 
         return natural().sortedCopy(results);
+    }
+
+    private String getDuplicateAssignedFiles(Collection<FileRef> rawAssignedFiles) {
+        StringBuilder result = new StringBuilder();
+        HashSet<FileRef> assignedFiles = new HashSet<>();
+        for (FileRef file: rawAssignedFiles) {
+            if(!assignedFiles.add(file)) {
+                result.append(file.getName());
+                result.append(", ");
+            }
+        }
+        if(!result.toString().isEmpty()) {
+            result.setLength(result.length() - 2);
+        }
+        return result.toString();
     }
 
     private Collection<CheckResult> validateImportedExperimentSubmission(ImportedExperimentSubmission submission)
