@@ -144,13 +144,13 @@ public class SubmissionValidator {
             addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one 'Raw Data File' column must be added.");
         }
 
-        if(exp.getType().isSequencing() || exp.getType().isSingleCell()) {
+        if(exp.getType().isSequencing() || exp.getType().isSingleCell() || exp.getType().isMethylationMicroarray()) {
             Collection<DataFile> rawAssignedFiles = dataFileManager.getAssignedFiles(submission, FileType.RAW_FILE);
 
             if(rawAssignedFiles.size() != 0 && rawAssignedFiles.size() != exp.getSamples().size()) {
                 String duplicateFiles = getDuplicateAssignedFiles(dataFileManager.getColumnFiles(submission, FileType.RAW_FILE));
 
-                addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] (Duplicate Files: "+ duplicateFiles + ") One file cannot be assigned to multiple samples.");
+                addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] (Duplicate Files: "+ duplicateFiles + ") A raw data file cannot be assigned to multiple samples.");
             }
         }
 
@@ -204,14 +204,18 @@ public class SubmissionValidator {
     private String getDuplicateAssignedFiles(Collection<FileRef> rawAssignedFiles) {
         StringBuilder result = new StringBuilder();
         HashSet<FileRef> assignedFiles = new HashSet<>();
+        HashSet<String> duplicateFiles = new HashSet<>();
         for (FileRef file: rawAssignedFiles) {
             if(!assignedFiles.add(file)) {
-                result.append(file.getName());
-                result.append(", ");
+                duplicateFiles.add(file.getName());
             }
         }
+        for(String fileName : duplicateFiles) {
+            result.append(fileName);
+            result.append(", ");
+        }
         if(!result.toString().isEmpty()) {
-            result.setLength(result.length() - 2);
+            result.setLength(result.length() - 2);  // added to remove ending comma
         }
         return result.toString();
     }
