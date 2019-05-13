@@ -150,7 +150,7 @@ public class SubmissionValidator {
             if(rawAssignedFiles.size() != 0 && rawAssignedFiles.size() != exp.getSamples().size()) {
                 String duplicateFiles = getDuplicateAssignedFiles(dataFileManager.getColumnFiles(submission, FileType.RAW_FILE));
 
-                addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] (Duplicate Files: "+ duplicateFiles + ") A raw data file cannot be assigned to multiple samples.");
+                addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] (Duplicate File(s): "+ duplicateFiles + ") A raw data file cannot be assigned to multiple samples.");
             }
         }
 
