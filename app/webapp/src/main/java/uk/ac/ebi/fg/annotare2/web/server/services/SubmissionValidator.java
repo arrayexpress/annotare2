@@ -146,11 +146,15 @@ public class SubmissionValidator {
 
         if(exp.getType().isSequencing() || exp.getType().isSingleCell() || exp.getType().isMethylationMicroarray()) {
             Collection<DataFile> rawAssignedFiles = dataFileManager.getAssignedFiles(submission, FileType.RAW_FILE);
+            Collection<FileRef> columnFiles = dataFileManager.getColumnFiles(submission, FileType.RAW_FILE);
 
-            if(rawAssignedFiles.size() != 0 && rawAssignedFiles.size() != exp.getSamples().size()) {
-                String duplicateFiles = getDuplicateAssignedFiles(dataFileManager.getColumnFiles(submission, FileType.RAW_FILE));
-
-                addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] (Duplicate File(s): "+ duplicateFiles + ") A raw data file cannot be assigned to multiple samples.");
+            if(exp.getType().isSequencing() || exp.getType().isSingleCell()) {
+                if (rawAssignedFiles.size() != 0 && columnFiles.size() == exp.getSamples().size()) {
+                    addDuplicateFilesError(columnFiles, results);
+                }
+            } else if(exp.getType().isMethylationMicroarray()) {
+                if(rawAssignedFiles.size() != 0 && columnFiles.size() == exp.getLabeledExtracts().size()){
+                    addDuplicateFilesError(columnFiles, results);                }
             }
         }
 
@@ -199,6 +203,12 @@ public class SubmissionValidator {
         }
 
         return natural().sortedCopy(results);
+    }
+
+    private void addDuplicateFilesError(Collection<FileRef> columnFiles, Collection<CheckResult> results) {
+        String duplicateFiles = getDuplicateAssignedFiles(columnFiles);
+
+        addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] (Duplicate File(s): " + duplicateFiles + ") A raw data file cannot be assigned to multiple samples.");
     }
 
     private String getDuplicateAssignedFiles(Collection<FileRef> rawAssignedFiles) {
