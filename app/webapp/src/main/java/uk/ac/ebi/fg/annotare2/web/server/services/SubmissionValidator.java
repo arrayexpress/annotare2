@@ -149,7 +149,7 @@ public class SubmissionValidator {
             Collection<FileRef> columnFiles = dataFileManager.getColumnFiles(submission, FileType.RAW_FILE);
 
             if(exp.getType().isSequencing() || exp.getType().isSingleCell()) {
-                if (rawAssignedFiles.size() != 0 && columnFiles.size() == exp.getSamples().size()) {
+                if (rawAssignedFiles.size() != 0 && columnFiles.size() >= exp.getSamples().size()) {
                     addDuplicateFilesError(columnFiles, results);
                 }
             } else if(exp.getType().isMethylationMicroarray()) {
