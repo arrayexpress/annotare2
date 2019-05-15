@@ -74,8 +74,8 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
     private void setColumns() {
         addNameColumn();
 
-        addColumn(SINGLE_CELL_ISOLATION);
         addColumn(LIBRARY_CONSTRUCTION);
+        addColumn(SINGLE_CELL_ISOLATION);
         addColumn(END_BIAS);
 
         addInputMoleculeColumn();
