@@ -32,6 +32,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.SelectionChangeEvent;
@@ -288,6 +289,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
             public void onSuccess(Void result) {
                 w.hide();
                 deleteFilesBtn.setEnabled(true);
+                Window.Location.reload();
             }
         });
     }
