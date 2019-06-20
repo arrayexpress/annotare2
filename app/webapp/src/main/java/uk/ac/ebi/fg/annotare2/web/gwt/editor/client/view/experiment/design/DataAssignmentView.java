@@ -24,6 +24,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentRow
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Olga Melnichuk
@@ -39,6 +40,8 @@ public interface DataAssignmentView extends IsWidget {
     void setPresenter(Presenter presenter);
 
     void setDataFiles(List<DataFileRow> dataFiles);
+
+    void setDeletedFiles(Set<DataFileRow> dataFiles);
 
     public static interface Presenter {
 

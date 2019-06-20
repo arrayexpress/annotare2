@@ -1,12 +1,10 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 
-import com.google.common.base.Function;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.place.shared.Place;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
@@ -20,22 +18,18 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumnsAndRows;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.UploadedFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFileDeletedEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFileDeletedEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFileRenamedEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFileRenamedEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ApplicationDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.DataAssignmentView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.DataUploadAndAssignmentView;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import static com.google.common.collect.Collections2.transform;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
 
@@ -53,6 +47,7 @@ public class DataFileAssignmentActivity extends AbstractActivity implements Data
     private HandlerRegistration criticalUpdateHandler;
     private HandlerRegistration dataUpdateHandler;
     private HandlerRegistration dataFileRenamedHandler;
+    private HandlerRegistration dataFileDeletedHandler;
 
     @Inject
     public DataFileAssignmentActivity(DataAssignmentView view,
@@ -94,6 +89,13 @@ public class DataFileAssignmentActivity extends AbstractActivity implements Data
             }
         });
 
+        dataFileDeletedHandler = eventBus.addHandler(DataFileDeletedEvent.getType(), new DataFileDeletedEventHandler() {
+            @Override
+            public void onDelete(DataFileDeletedEvent event) {
+                view.setDeletedFiles(event.getDeletedFiles());
+            }
+        });
+
         dataUpdateHandler = eventBus.addHandler(DataFilesUpdateEvent.getType(), new DataFilesUpdateEventHandler() {
             @Override
             public void onDataFilesUpdate() {
@@ -111,6 +113,7 @@ public class DataFileAssignmentActivity extends AbstractActivity implements Data
         criticalUpdateHandler.removeHandler();
         dataFileRenamedHandler.removeHandler();
         dataUpdateHandler.removeHandler();
+        dataFileDeletedHandler.removeHandler();
         super.onStop();
     }
 

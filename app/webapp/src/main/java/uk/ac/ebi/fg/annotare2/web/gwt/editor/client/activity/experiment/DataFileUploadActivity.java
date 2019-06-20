@@ -24,6 +24,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.UploadedFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFileDeletedEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFileDeletedEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFileRenamedEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFileRenamedEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ApplicationDataProxy;
@@ -201,12 +203,23 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
     }
 
     @Override
-    public void removeFiles(Set<DataFileRow> dataFiles, AsyncCallback<Void> callback) {
+    public void removeFiles(final Set<DataFileRow> dataFiles, final AsyncCallback<Void> callback) {
         filesService.deleteFiles(getSubmissionId(), new ArrayList<Long>(transform(dataFiles, new Function<DataFileRow, Long>() {
             public Long apply(@Nullable DataFileRow input) {
                 return null != input ? input.getId() : null;
             }
-        })), callback);
+        })), new AsyncCallback<Void>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+
+            }
+
+            @Override
+            public void onSuccess(Void aVoid) {
+                eventBus.fireEvent(new DataFileDeletedEvent(dataFiles));
+                callback.onSuccess(aVoid);
+            }
+        });
     }
 
 }

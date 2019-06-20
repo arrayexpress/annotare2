@@ -289,7 +289,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
             public void onSuccess(Void result) {
                 w.hide();
                 deleteFilesBtn.setEnabled(true);
-                Window.Location.reload();
+                //Window.Location.reload();
             }
         });
     }

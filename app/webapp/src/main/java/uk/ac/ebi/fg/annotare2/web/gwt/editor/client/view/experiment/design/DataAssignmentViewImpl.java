@@ -22,6 +22,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
@@ -50,6 +51,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     private DataAssignment dataAssignment = new DataAssignment();
     private ExperimentProfileType experimentType;
     private Presenter presenter;
+    private static final List<String> deletedFileNames = new ArrayList<>();
 
     public DataAssignmentViewImpl() {
         gridView = new GridView<>();
@@ -134,6 +136,14 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     }
 
     @Override
+    public void setDeletedFiles(Set<DataFileRow> deletedFiles) {
+        Window.alert("deletedFiles were called" + deletedFiles.iterator().next().getName());
+        for (DataFileRow row: deletedFiles) {
+            deletedFileNames.add(row.getName());
+        }
+    }
+
+    @Override
     public void setExperimentType(ExperimentProfileType type) {
         experimentType = type;
     }
@@ -215,7 +225,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
                                     }
                                 };
                             }
-                        })) {
+                        }, deletedFileNames)) {
             @Override
             public String getValue(DataAssignmentRow row) {
                 FileRef file = columns.get(columnIndex).getFileRef(row);

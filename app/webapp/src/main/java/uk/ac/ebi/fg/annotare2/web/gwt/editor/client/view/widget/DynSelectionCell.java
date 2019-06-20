@@ -27,6 +27,7 @@ import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.Window;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,6 +65,8 @@ public class DynSelectionCell<C> extends AbstractInputCell<C, C> {
 
     protected final ListProvider<C> optionsProvider;
 
+    private static List<String> deletedFileNames;
+
     public DynSelectionCell(ListProvider<C> optionsProvider) {
         super(BrowserEvents.CHANGE);
         if (template == null) {
@@ -72,6 +75,20 @@ public class DynSelectionCell<C> extends AbstractInputCell<C, C> {
         this.options = new ArrayList<Option<C>>();
         this.indexForOption = new HashMap<C, Integer>();
         this.optionsProvider = optionsProvider;
+        updateOptions();
+    }
+
+    public DynSelectionCell(ListProvider<C> optionsProvider, List<String> deletedFileNames) {
+        super(BrowserEvents.CHANGE);
+        if (template == null) {
+            template = GWT.create(Template.class);
+        }
+        this.options = new ArrayList<Option<C>>();
+        this.deletedFileNames = new ArrayList<>();
+        this.indexForOption = new HashMap<C, Integer>();
+        this.optionsProvider = optionsProvider;
+
+        this.deletedFileNames = deletedFileNames;
         updateOptions();
     }
 
@@ -121,6 +138,10 @@ public class DynSelectionCell<C> extends AbstractInputCell<C, C> {
             Object key = context.getKey();
             SelectElement select = parent.getFirstChild().cast();
             C newValue = options.get(select.getSelectedIndex()).getValue();
+            Window.alert("New selected value: "+ newValue);
+            if(deletedFileNames.contains(newValue)) {
+                deletedFileNames.remove(newValue);
+            }
             setViewData(key, newValue);
             finishEditing(parent, newValue, key, valueUpdater);
             if (valueUpdater != null) {
@@ -140,6 +161,7 @@ public class DynSelectionCell<C> extends AbstractInputCell<C, C> {
         }
 
         int selectedIndex = getSelectedIndex(viewData == null ? value : viewData);
+
         sb.appendHtmlConstant("<select tabindex=\"-1\">");
         int index = 0;
         for (Option<C> option : options) {
@@ -155,11 +177,16 @@ public class DynSelectionCell<C> extends AbstractInputCell<C, C> {
     protected int getSelectedIndex(C value) {
         updateOptions();
 
-        Integer index = indexForOption.get(value);
-        if (null == index) {
-            return indexForOption.get(optionsProvider.getDefault().getValue());
-        } else {
-            return index;
+        if(!deletedFileNames.contains(value)) {
+            Integer index = indexForOption.get(value);
+            if (null == index) {
+                return indexForOption.get(optionsProvider.getDefault().getValue());
+            } else {
+                return index;
+            }
+        }
+        else {
+            return 0;
         }
     }
 
