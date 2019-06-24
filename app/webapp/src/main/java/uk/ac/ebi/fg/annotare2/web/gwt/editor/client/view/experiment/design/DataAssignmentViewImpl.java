@@ -137,7 +137,6 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
 
     @Override
     public void setDeletedFiles(Set<DataFileRow> deletedFiles) {
-        Window.alert("deletedFiles were called" + deletedFiles.iterator().next().getName());
         for (DataFileRow row: deletedFiles) {
             deletedFileNames.add(row.getName());
         }
