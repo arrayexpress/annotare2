@@ -27,7 +27,6 @@ import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.Window;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -138,7 +137,6 @@ public class DynSelectionCell<C> extends AbstractInputCell<C, C> {
             Object key = context.getKey();
             SelectElement select = parent.getFirstChild().cast();
             C newValue = options.get(select.getSelectedIndex()).getValue();
-            Window.alert("New selected value: "+ newValue);
             if(deletedFileNames.contains(newValue)) {
                 deletedFileNames.remove(newValue);
             }
