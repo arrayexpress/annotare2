@@ -64,7 +64,7 @@ public class DynSelectionCell<C> extends AbstractInputCell<C, C> {
 
     protected final ListProvider<C> optionsProvider;
 
-    private static List<String> deletedFileNames;
+    protected static List<String> deletedFileNames;
 
     public DynSelectionCell(ListProvider<C> optionsProvider) {
         super(BrowserEvents.CHANGE);
@@ -73,6 +73,7 @@ public class DynSelectionCell<C> extends AbstractInputCell<C, C> {
         }
         this.options = new ArrayList<Option<C>>();
         this.indexForOption = new HashMap<C, Integer>();
+        this.deletedFileNames = new ArrayList<>();
         this.optionsProvider = optionsProvider;
         updateOptions();
     }
@@ -98,6 +99,7 @@ public class DynSelectionCell<C> extends AbstractInputCell<C, C> {
         }
         this.options = new ArrayList<Option<C>>();
         this.indexForOption = new HashMap<C, Integer>();
+        this.deletedFileNames = new ArrayList<>();
         this.optionsProvider = new ListProvider<C>() {
             List<Option<C>> list;
             @Override
