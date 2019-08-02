@@ -92,7 +92,7 @@ public class SubmissionValidator {
     }
 
     private boolean validateRelatedAccessionNumber(String relatedAccessionNumber) {
-        RegExp regex = RegExp.compile("^\\t*\\s*(?:(?:[E]-[A-Z]{4}-\\d+,\\t*\\s*)|(?:[A-Z]{3}\\d{6},\\t*\\s*))*(?:(?:[E]-[A-Z]{4}-\\d+)|(?:[A-Z]{3}\\d{6}))$");
+        RegExp regex = RegExp.compile("^\\t*\\s*(?:(?:[E]-[A-Z]{4}-\\d+,\\t*\\s*)|(?:[A-Z]{3}\\d{6},\\t*\\s*)|(EGAS\\d{11},\\t*\\s*))*(?:(?:[E]-[A-Z]{4}-\\d+)|(?:[A-Z]{3}\\d{6})|(EGAS\\d{11}))$");
         return regex.test(relatedAccessionNumber);
     }
 
