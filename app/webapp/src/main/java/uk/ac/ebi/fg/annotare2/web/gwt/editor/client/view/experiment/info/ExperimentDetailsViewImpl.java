@@ -270,7 +270,6 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
 
     private String getAeExperimentType() {
         int index = aeExperimentType.getSelectedIndex();
-        //dummy
         if (index == -1) {
             return null;
         }
