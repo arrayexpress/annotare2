@@ -59,6 +59,7 @@ public class DatabaseDataSource {
         ds.setUsername(properties.getDbConnectionUser());
         ds.setPassword(properties.getDbConnectionPassword());
         ds.setConnectionTestQuery("SELECT 1");
+        ds.setMaximumPoolSize(30);
         ds.addDataSourceProperty("dataSource.cachePrepStmts", "true");
         ds.addDataSourceProperty("dataSource.prepStmtCacheSize", "250");
         ds.addDataSourceProperty("dataSource.prepStmtCacheSqlLimit", "2048");
