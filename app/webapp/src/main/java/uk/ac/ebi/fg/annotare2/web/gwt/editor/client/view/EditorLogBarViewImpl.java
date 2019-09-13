@@ -45,7 +45,7 @@ public class EditorLogBarViewImpl extends Composite implements EditorLogBarView 
             if (result.getErrors().isEmpty() && result.getWarnings().isEmpty()) {
                 panel.add(new Label("Validation has been successful"));
             } else if(result.getErrors().isEmpty() && !result.getWarnings().isEmpty()) {
-                panel.add(new Label("Validation has been successfull with " + result.getWarnings().size() + " warnings, please review:"));
+                panel.add(new Label("Validation has been successful with " + result.getWarnings().size() + " warnings, please review:"));
                 addAll(result.getWarnings());
             } else if(!result.getErrors().isEmpty() && result.getWarnings().isEmpty()) {
                 panel.add(new HTML("Validation failed with " + result.getErrors().size() + " errors, please fix:"));
