@@ -26,6 +26,12 @@
             font-size: 15px;
             line-height: 160%;
         }
+        .noOfColumns {
+            margin-bottom: 2%;
+        }
+        .columnList {
+            margin-bottom: 10%;
+        }
     </ui:style>
     <g:ResizeLayoutPanel height="350px" width="650px">
         <g:DockLayoutPanel>
@@ -37,7 +43,11 @@
                                 <g:Label>Please choose the file type for this column:</g:Label>
                             </g:north>
                             <g:center>
-                                <g:ListBox ui:field="columnListBox" visibleItemCount="10" width="100%"/>
+                                <g:VerticalPanel width="100%">
+                                    <g:ListBox ui:field="columnListBox" visibleItemCount="10" width="100%" addStyleNames="{style.columnList}"/>
+                                    <g:Label ui:field="noOfColumnsLabel" addStyleNames="{style.noOfColumns}" visible="false" text="Enter the number of columns to add:"/>
+                                    <g:TextBox ui:field="noOfColumns" width="20%" visible="false"/>
+                                </g:VerticalPanel>
                             </g:center>
                         </g:DockLayoutPanel>
                     </g:west>
