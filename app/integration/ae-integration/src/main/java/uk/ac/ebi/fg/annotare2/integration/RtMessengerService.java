@@ -152,12 +152,11 @@ public class RtMessengerService extends EmailMessengerService {
             BufferedReader inp = new BufferedReader(new InputStreamReader(r.getContent()));
             String line;
             try {
-                Pattern p = Pattern.compile("RT/4.2.12 200 Ok");
                 while ((line = inp.readLine()) != null) {
                     logger.debug(line);
-                    Matcher m = p.matcher(line);
-                    if (m.find()) {
+                    if (line.contains("200 Ok")) {
                         serverStatus = true;
+                        break;
                     }
                 }
             } catch (Exception e) {
@@ -211,12 +210,11 @@ public class RtMessengerService extends EmailMessengerService {
         String line;
         try
         {
-            Pattern p = Pattern.compile("RT/4.2.12 200 Ok");
             while ((line = inp.readLine()) != null) {
                 logger.debug(line);
-                Matcher m = p.matcher(line);
-                if (m.find()) {
+                if (line.contains("200 Ok")) {
                     ticketUpdated = true;
+                    break;
                 }
             }
             if (!ticketUpdated) {
@@ -440,12 +438,11 @@ public class RtMessengerService extends EmailMessengerService {
         String line;
         try
         {
-            Pattern p = Pattern.compile("RT/4.2.12 200 Ok");
             while ((line = inp.readLine()) != null) {
                 logger.debug(line);
-                Matcher m = p.matcher(line);
-                if (m.find()) {
+                if (line.contains("200 Ok")) {
                     messageSent = true;
+                    break;
                 }
             }
             if (!messageSent) {
