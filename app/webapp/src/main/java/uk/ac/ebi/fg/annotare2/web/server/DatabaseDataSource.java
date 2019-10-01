@@ -58,6 +58,9 @@ public class DatabaseDataSource {
         ds.setJdbcUrl(properties.getDbConnectionUrl());
         ds.setUsername(properties.getDbConnectionUser());
         ds.setPassword(properties.getDbConnectionPassword());
+        ds.setConnectionTimeout(30000);
+        ds.setIdleTimeout(600000);
+        ds.setMaxLifetime(3600000);
         ds.setConnectionTestQuery("SELECT 1");
         ds.setMaximumPoolSize(30);
         ds.addDataSourceProperty("dataSource.cachePrepStmts", "true");
