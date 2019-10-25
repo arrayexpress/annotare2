@@ -55,6 +55,7 @@ public class ExperimentProfileSerializer12  extends JsonSerializer<ExperimentPro
             "protocolId2LabeledExtractIds",
             "protocolId2FileRefs",
             "anonymousReview",
+            "atlasConsideration",
             "relatedAccessionNumber"
     );
 
@@ -184,6 +185,12 @@ public class ExperimentProfileSerializer12  extends JsonSerializer<ExperimentPro
                     @Override
                     public Object getValue(ExperimentProfile obj) {
                         return obj.getAnonymousReview();
+                    }
+                },
+                new ValueGetter<ExperimentProfile>("atlasConsideration") {
+                    @Override
+                    public Object getValue(ExperimentProfile obj) {
+                        return obj.getAtlasConsideration();
                     }
                 }
         );
