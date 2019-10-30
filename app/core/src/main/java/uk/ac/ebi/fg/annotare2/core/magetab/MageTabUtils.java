@@ -217,7 +217,6 @@ public class MageTabUtils {
         obsoleteWarnings.add("RT01");
         obsoleteWarnings.add("RT02");
         obsoleteWarnings.add("RT03");
-        obsoleteWarnings.add("SC01");
         obsoleteWarnings.add("SM02");
         obsoleteWarnings.add("SM03");
         obsoleteWarnings.add("SR03");
