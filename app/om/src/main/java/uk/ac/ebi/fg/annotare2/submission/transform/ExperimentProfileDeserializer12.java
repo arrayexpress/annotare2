@@ -152,6 +152,13 @@ class ExperimentProfileDeserializer12 extends JsonDeserializer<ExperimentProfile
                     public void setValue(ExperimentProfile obj, Object value) {
                         obj.setAnonymousReview(null != value && (Boolean)value);
                     }
+                },
+                new ValueSetter<ExperimentProfile>("atlasConsideration", new TypeReference<Boolean>() {
+                }) {
+                    @Override
+                    public void setValue(ExperimentProfile obj, Object value) {
+                        obj.setAtlasConsideration(null != value && (Boolean)value);
+                    }
                 }
         );
 

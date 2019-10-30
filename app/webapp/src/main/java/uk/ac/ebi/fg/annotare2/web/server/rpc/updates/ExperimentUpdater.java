@@ -102,6 +102,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         exp.setAeExperimentType(details.getAeExperimentType());
         exp.setExperimentalDesigns(details.getExperimentalDesigns());
         exp.setAnonymousReview(details.isAnonymousReviewEnabled());
+        exp.setAtlasConsideration(details.isAtlasConsiderationEnabled());
         exp.setRelatedAccessionNumber(removeDuplicateAccessionNumber(details.getRelatedAccessionNumber()));
     }
 

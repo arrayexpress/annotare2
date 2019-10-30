@@ -126,6 +126,14 @@
                     </tr>
                     <tr>
                         <td class="{style.title}">
+                            Please consider this experiment for Expression Atlas
+                        </td>
+                        <td>
+                            <g:CheckBox title="Select for Expression Atlas consideration" width="200px" ui:field="atlasConsideration"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="{style.title}">
                             Related Accession Number
                         </td>
                         <td>

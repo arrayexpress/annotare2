@@ -59,6 +59,8 @@ public class ExperimentProfile implements Serializable {
 
     private Boolean anonymousReview;
 
+    private Boolean atlasConsideration;
+
     private List<OntologyTerm> experimentalDesigns;
 
     private Map<Integer, Label> labelMap;
@@ -195,6 +197,10 @@ public class ExperimentProfile implements Serializable {
     public void setAnonymousReview(boolean anonymousReview) {
         this.anonymousReview = anonymousReview;
     }
+
+    public boolean getAtlasConsideration() { return null != atlasConsideration && atlasConsideration; }
+
+    public void setAtlasConsideration(boolean atlasConsideration) { this.atlasConsideration = atlasConsideration; }
 
     public Collection<OntologyTerm> getExperimentalDesigns() {
         return unmodifiableCollection(experimentalDesigns);
