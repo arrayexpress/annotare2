@@ -46,7 +46,7 @@ public class ServerWatchdog {
                 if (!isPaused) {
                     try {
                         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, Urls.getContextUrl() + "status");
-                        builder.setTimeoutMillis(3000);
+                        builder.setTimeoutMillis(30000);
                         builder.sendRequest(null, new RequestCallback() {
                             @Override
                             public void onResponseReceived(Request request, Response response) {
@@ -87,7 +87,7 @@ public class ServerWatchdog {
                 }
                 return true;
             }
-        }, 5000);
+        }, 60000);
     }
 
     public static void pause() {
