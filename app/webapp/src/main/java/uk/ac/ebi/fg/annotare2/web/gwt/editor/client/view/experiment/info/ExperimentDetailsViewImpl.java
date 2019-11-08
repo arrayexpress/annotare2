@@ -88,9 +88,6 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
     @UiField
     CheckBox anonymousReview;
 
-    @UiField
-    CheckBox atlasConsideration;
-
     private Presenter presenter;
 
     private Map<String, OntologyTerm> experimentalDesigns;
@@ -144,7 +141,6 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
         addExperimentalDesigns(details.getExperimentalDesigns());
 
         anonymousReview.setValue(details.isAnonymousReviewEnabled());
-        atlasConsideration.setValue(details.isAtlasConsiderationEnabled());
         relatedAccessionNumber.setText(details.getRelatedAccessionNumber());
     }
 
@@ -308,7 +304,6 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
                 getAeExperimentType(),
                 experimentalDesigns.values(),
                 anonymousReview.getValue(),
-                atlasConsideration.getValue(),
                 relatedAccessionNumber.getValue());
     }
 

@@ -31,8 +31,6 @@ public class ExperimentDetailsDto implements IsSerializable {
 
     private boolean isAnonymousReviewEnabled;
 
-    private boolean isAtlasConsiderationEnabled;
-
     ExperimentDetailsDto() {
         /*used by GWT serialization*/
     }
@@ -44,7 +42,6 @@ public class ExperimentDetailsDto implements IsSerializable {
                                 String aeExperimentType,
                                 Collection<OntologyTerm> experimentalDesigns,
                                 boolean isAnonymousReviewEnabled,
-                                boolean isAtlasConsiderationEnabled,
                                 String relatedAccessionNumber) {
         this.title = title;
         this.description = description;
@@ -53,7 +50,6 @@ public class ExperimentDetailsDto implements IsSerializable {
         this.aeExperimentType = aeExperimentType;
         this.experimentalDesigns = new ArrayList<>(experimentalDesigns);
         this.isAnonymousReviewEnabled = isAnonymousReviewEnabled;
-        this.isAtlasConsiderationEnabled = isAtlasConsiderationEnabled;
         this.relatedAccessionNumber = relatedAccessionNumber;
     }
 
@@ -86,6 +82,4 @@ public class ExperimentDetailsDto implements IsSerializable {
     public boolean isAnonymousReviewEnabled() {
         return isAnonymousReviewEnabled;
     }
-
-    public boolean isAtlasConsiderationEnabled() { return isAtlasConsiderationEnabled; }
 }

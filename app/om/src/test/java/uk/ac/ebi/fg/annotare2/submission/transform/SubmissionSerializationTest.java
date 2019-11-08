@@ -108,7 +108,6 @@ public class SubmissionSerializationTest {
         fileColumn.setFileRef(le4.getId(), file1);
 
         profileIn.setAnonymousReview(true);
-        profileIn.setAtlasConsideration(true);
 
         String jsonString = JsonCodec.writeExperiment(profileIn, ModelVersion.CURRENT_VERSION);
         log.debug("experimentProfile=" + jsonString);

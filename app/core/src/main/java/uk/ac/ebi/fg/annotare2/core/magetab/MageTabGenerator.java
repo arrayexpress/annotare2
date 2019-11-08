@@ -168,10 +168,6 @@ public class MageTabGenerator {
             idf.addComment("AEAnonymousReview", "yes");
         }
 
-        if (exp.getAtlasConsideration()) {
-            idf.addComment("Consider for Expression Atlas", "yes");
-        }
-
         if(!isNullOrEmpty(exp.getRelatedAccessionNumber())) {
             List<String> accessionNumbers = Arrays.asList(relatedAccessionNumberList(exp.getRelatedAccessionNumber()));
             for (String accessionNumber:accessionNumbers
