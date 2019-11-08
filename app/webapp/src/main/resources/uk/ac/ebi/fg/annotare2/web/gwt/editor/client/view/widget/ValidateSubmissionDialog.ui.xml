@@ -85,6 +85,7 @@
                 <g:RadioButton text="Journal Editor/Reviewer" name="referrer" ui:field="rbJournal"/>
                 <g:RadioButton text="Search Engine" name="referrer" ui:field="rbSearch"/>
                 <g:RadioButton text="ArrayExpress Help" name="referrer" ui:field="rbArrayExpress"/>
+                <g:RadioButton text="Expression Atlas" name="referrer" ui:field="rbExpressionAtlas"/>
                 <g:RadioButton text="Word of Mouth" name="referrer" ui:field="rbWordOfMouth"/>
                 <g:RadioButton text="Other" name="referrer" ui:field="rbOther"/>
                 <g:TextBox maxLength="100" ui:field="tbOther"/>

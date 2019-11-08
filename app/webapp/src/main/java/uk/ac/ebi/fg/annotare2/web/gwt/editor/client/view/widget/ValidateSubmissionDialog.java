@@ -72,6 +72,8 @@ public class ValidateSubmissionDialog extends DialogBox {
     @UiField
     RadioButton rbArrayExpress;
     @UiField
+    RadioButton rbExpressionAtlas;
+    @UiField
     RadioButton rbWordOfMouth;
     @UiField
     RadioButton rbOther;
@@ -146,6 +148,7 @@ public class ValidateSubmissionDialog extends DialogBox {
         if (rbChecklist.getValue()) return "Checklist";
         if (rbJournal.getValue()) return "Journal";
         if (rbArrayExpress.getValue()) return "ArrayExpress";
+        if (rbExpressionAtlas.getValue()) return "Expression Atlas";
         if (rbWordOfMouth.getValue()) return "Word of Mouth";
         if (rbSearch.getValue()) return "Search Engine";
         return tbOther.getValue();
