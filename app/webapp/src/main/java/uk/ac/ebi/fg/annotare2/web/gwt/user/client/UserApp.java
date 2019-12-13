@@ -101,7 +101,7 @@ public class UserApp implements EntryPoint {
             Date expiryDate = new Date();
             expiryDate.setTime(8000000000000L);
             CookieDialog dialogBox = new CookieDialog(
-                    "Annotare Christmas Downtime",
+                    "Christmas Holidays Notice",
                     "<p>Due to reduced staffing levels over the holiday period (19 Dec 2019 - 9 Jan 2020), please " +
                             "allow extra time for your submission or update requests to be processed.</p>" +
                             "<p>For new submisisons, please try to get your new submission in the best possible shape" +
