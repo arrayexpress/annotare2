@@ -34,7 +34,7 @@
         </g:center>
         <g:south size="2">
             <g:HTML>
-                <div class="copy">2018 EMBL-EBI, Molecular Atlas Group</div>
+                <div class="copy">2020 EMBL-EBI, Molecular Atlas Group</div>
             </g:HTML>
         </g:south>
     </g:DockLayoutPanel>
