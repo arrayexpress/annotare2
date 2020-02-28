@@ -44,6 +44,8 @@ public enum SystemEfoTerm {
     AGE("Age", "age"),
     CELL_LINE("Cell Line", "cell_line"),
     CELL_TYPE("Cell Type", "cell_type"),
+    INFERRED_CELL_TYPE("Inferred Cell Type", "inferred_cell_type"),
+    SINGLE_CELL_IDENTIFIER("Single Cell Identifier", "single_cell_identifier"),
     DEVELOPMENTAL_STAGE("Developmental Stage", "developmental_stage"),
     INDIVIDUAL("Individual", "individual"),
     SEX("Sex", "sex"),
