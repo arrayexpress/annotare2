@@ -96,20 +96,19 @@ public class UserApp implements EntryPoint {
     private final static String NOTICE_COOKIE = "Notice_200818_Shown"; // change name according to the cookie display date ddmmyy
     private void showNotice() {
         Date stopNoticeDate = new Date();
-        stopNoticeDate.setTime(1578614399000L); // stop showing on 9th Jan 2020 (http://www.epochconverter.com/)
+        stopNoticeDate.setTime(1585007940000L); // stop showing on 9th Jan 2020 (http://www.epochconverter.com/)
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE)) && (new Date().before(stopNoticeDate))) {
             Date expiryDate = new Date();
             expiryDate.setTime(8000000000000L);
             CookieDialog dialogBox = new CookieDialog(
-                    "Christmas Holidays Notice",
-                    "<p>Due to reduced staffing levels over the holiday period (19 Dec 2019 - 9 Jan 2020), please " +
-                            "allow extra time for your submission or update requests to be processed.</p>" +
-                            "<p>For new submisisons, please try to get your new submission in the best possible shape" +
-                            " by following our " +
-                            "<a href=\"https://www.ebi.ac.uk/arrayexpress/submit/overview.html\" target=\"_blank\">" +
-                            "submission guidelines</a>, as that would greatly speed " +
-                            "up our curation efforts.</p>" +
-                            "<p>Happy Holidays!</p>",
+                    "Maintenance notice and new FTP upload server",
+                    "<p>Annotare will be running reduced service from 16th to 23rd of March 2020\n" +
+                            "due to essential systems maintenance. During this time, it will not be possible to submit" +
+                            "or upload data via FTP/Aspera. You may still upload data via browser and save data" +
+                            "in the forms but the submit button will be deactivated.</p>" +
+                            "<p>Please also note that there is a new FTP server ftp-private-2.ebi.ac.uk that can " +
+                            "already be tested. Only the name of the server will change, all other steps will remain" +
+                            "the same: \"<a href=\\\"https://www.ebi.ac.uk/arrayexpress/help/ftp_upload.html\\\" target=\\\"_blank\\\">\"FTP upload instructions</a>.</p>",
                     NOTICE_COOKIE, expiryDate
             );
             dialogBox.show();
