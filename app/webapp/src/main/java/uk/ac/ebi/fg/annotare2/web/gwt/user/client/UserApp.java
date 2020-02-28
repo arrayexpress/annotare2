@@ -102,13 +102,15 @@ public class UserApp implements EntryPoint {
             expiryDate.setTime(8000000000000L);
             CookieDialog dialogBox = new CookieDialog(
                     "Maintenance notice and new FTP upload server",
-                    "<p>Annotare will be running reduced service from 16th to 23rd of March 2020\n" +
-                            "due to essential systems maintenance. During this time, it will not be possible to submit" +
-                            "or upload data via FTP/Aspera. You may still upload data via browser and save data" +
-                            "in the forms but the submit button will be deactivated.</p>" +
-                            "<p>Please also note that there is a new FTP server ftp-private-2.ebi.ac.uk that can " +
-                            "already be tested. Only the name of the server will change, all other steps will remain" +
-                            "the same: \"<a href=\\\"https://www.ebi.ac.uk/arrayexpress/help/ftp_upload.html\\\" target=\\\"_blank\\\">\"FTP upload instructions</a>.</p>",
+                    "<p>Dear submitter,</p>" +
+                            "<p>There will be a <mark><b>reduced Annotare service from 16th to 23rd of March 2020</b></mark> " +
+                            "due to essential systems maintenance. File upload via FTP/Aspera will be unavailable " +
+                            "during this time. You may still upload data via browser and save data in the forms " +
+                            "but the submit button will be deactivated. We are sorry for any inconvenience!</p> " +
+                            "<p>Please note: the FTP server is changing to <mark><b>ftp-private-2.ebi.ac.uk</b></mark> (all other steps " +
+                            "will remain the same, see <a href=https://www.ebi.ac.uk/arrayexpress/help/ftp_upload.html " +
+                            "target=_blank>FTP upload instructions</a>)</p>" +
+                            "<p>Regards,<br>Annotare Team",
                     NOTICE_COOKIE, expiryDate
             );
             dialogBox.show();
