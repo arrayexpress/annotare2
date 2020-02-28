@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head><title>Pre-submission checklist &lt; ArrayExpress &lt; EMBL-EBI</title>
+  <link rel="stylesheet" type="text/css" href="../assets/stylesheets/help/ae-help-submit-1.0.160617.css" />
+  <script type="text/javascript">
+    function HideContent(d) {
+    document.getElementById(d).style.display = "none";
+    }
+    function ShowContent(d) {
+    document.getElementById(d).style.display = "block";
+    }
+    function ReverseDisplay(d) {
+    if(document.getElementById(d).style.display == "block") { document.getElementById(d).style.display = "none"; }
+    else { document.getElementById(d).style.display = "block"; }
+    }
+  </script>
+</head>
+
+<body class="level2">
+    <div id="content" role="main" class="columns medium-12 clearfix">
+        <section id="ae-help" class="columns medium-9">
+          <div class="columns medium-12">
+
+          <h2>Pre-submission checklist</h2>
+          <br>
+          <p>There are a few types of submissions that need special instructions. Please check this list to see if it applies to your experiment before you start the submission in Annotare.</p>
+
+          <ul>
+            <li><a href="javascript:ReverseDisplay('twocol')">Two-colour microarray experiment</a></li>
+            <li><a href="single-cell_submission_guide.html">Single-cell sequencing experiment</a></li>
+            <li><a href="javascript:ReverseDisplay('moresamp')">More than 1000 samples</a></li>
+            <li><a href="javascript:ReverseDisplay('moretech')">More than one technology per experiment</a></li>
+            <li><a href="javascript:ReverseDisplay('humid')">Sequencing of potentially identifiable human material</a></li>
+          </ul>
+
+          <p>If none of this applies to your submission, you can
+            <a href="/fg/annotare/">start your submission (Annotare)</a>.</p>
+          <p><a href="submissions_overview.html">Back</a> to Submissions Overview</p>
+
+        </div>
+
+        <div class="columns medium-12">
+          <div class="ae-help_mainboxleft-hide" id="twocol">
+            <h3>Two-colour microarray experiment (including Illumina methylation arrays)</h3>
+
+            <p>At the moment Annotare only supports one type of two-colour workflow (see graphic <a href="/fg/annotare/help/two_color_ma.html">here</a>), where two samples are connected with one common raw data file, which includes both channels. If you select two-colour for your Annotare submission, it will expect that you provide one file for the two samples that were hybridised together. Some recent two-colour microarray technologies generate two separate raw data files (usually one for each channel), which will cause Annotare validation to fail (if you connect a single file per sample).<br>
+            If you have <strong>separate files for each channel</strong>, please complete the Annotare form, and connect the files and samples as it makes sense for your experiment. When you only see the error message <i>"[Assign Files] The assignment between files and samples contains errors."</i> after validation, contact a curator, by clicking on <code>Contact Us</code> from within your submission. We will then be able to submit the experiment for you, overriding the validation error.</p>
+            <a href="javascript:HideContent('twocol')" class="hide_button">Hide</a>
+          </div>
+        </div>
+
+
+        <div class="columns medium-12">
+          <div class="ae-help_mainboxleft-hide" id="moresamp">
+            <h3>More than 1000 samples</h3>
+
+            <p>Currently Annotare does not handle more than 1000 samples per submission and such submissions need a workaround. Please provide as much information as possible in the Annotare form, including the protocols and experiment description. You don't need to create 1000 samples, just 4-10, with sample attributes. Upload all data files <a href="ftp_upload.html">via the FTP server</a> and <a href="/fg/annotare/help/file_upload.html#ftp">connect the uploaded files</a> to the first few samples that you've created. This should let you pass validation and submit normally. Let us know in the feedback box that you have more samples to add to this submission. We will then send you the samples and data relationship format (SDRF) spreadsheet for you to fill in the rest of the sample information.</p>
+            <a href="javascript:HideContent('moresamp')" class="hide_button">Hide</a>
+          </div>
+        </div>
+
+        <div class="columns medium-12">
+          <div class="ae-help_mainboxleft-hide" id="moretech">
+            <h3>More than one technology per experiment (e.g. different arrays or microarray plus sequencing)</h3>
+
+            <p>Annotare will ask you for the technology and name of the array, and applies it to the whole submission. If you have used different types of technologies for the same set of samples, we ask you to <strong>create separate submissions</strong> in Annotare. Please make sure that the submissions have <strong>distinct titles</strong> (even though they may belong to the same study), in order to avoid mistakes.<br>
+            If you have samples from more than one array design in your experiment, it is possible to submit only one experiment. If you wish to to this, please indicate the array type in the sample annotation by creating a custom attribute called "array design" and fill in the array design reference (e.g. A-AFFY-44) for each sample individually.</p>
+            <a href="javascript:HideContent('moretech')" class="hide_button">Hide</a>
+          </div>
+        </div>
+
+        <div class="columns medium-12">
+          <div class="ae-help_mainboxleft-hide" id="humid">
+            <h3>Sequencing of potentially identifiable human material</h3>
+
+            <p>Data from human samples and individuals that can potentially lead to the identification of the donors (e.g. genomic DNA sequences) can be submitted to ArrayExpress if the data has been consented for public release. Such approvals typically would be given by the relevant ethics committees and ensuring this is the responsibility of the submitters.</p>
+            <p>Identifiable data approved for <a href="/ega/submission/FAQ#DAC">controlled access</a> should be submitted directly to the <a href="/ega/">European Genome-phenome Archive (EGA)</a>, not ArrayExpress. It is possible to submit identifiable data (e.g. raw sequences) to the EGA, while the related processed data (e.g. RPKM values) are submitted to ArrayExpress. It is the submitter's responsibility to ensure that such a submission complies with the respective ethics requirements. </p>
+            <p>Processed data files can be submitted to ArrayExpress via Annotare. Please create a new submission and include the sample annotation and processed data files. Make sure to add the EGA study accession and if available EGA sample, experiment and run accessions (as sample attributes). We can then add a link to the corresponding EGA study page. Email us at <a href="mailto:annotare@ebi.ac.uk">annotare@ebi.ac.uk</a> if you have questions about this type of submission.</p>
+
+            <a href="javascript:HideContent('humid')" class="hide_button">Hide</a>
+          </div>
+        </div>
+
+      </section>
+
+        <aside class="columns medium-3 last">
+            <h3>Help</h3>
+            <ul id="secondary-nav">
+                <li><a href="index.html">Help home</a></li>
+                <li><a href="quick_start.html">Quick Start guide</a></li>
+                <li><a href="how_to_search.html">How to search</a>
+                    <ul>
+                        <li><a href="how_to_search_adf.html">Array design search</a></li>
+                        <li><a href="how_to_search_private_data.html">Search for private data</a></li>
+                    </ul>
+                </li>
+                <li><a href="submissions_overview.html">How to submit</a>
+                    <ul>
+                        <li class="active"><a href="pre-submission_checklist.html">Pre-submission checklist</a></li>
+                        <li><a href="UHTS_submissions.html">Sequencing submissions</a></li>
+                        <li><a href="single-cell_submission_guide.html">Single-cell submissions</a></li>
+                        <li><a href="adf_submissions_overview.html">Array design submissions</a></li>
+                        <li><a href="ftp_upload.html">FTP upload instructions</a></li>
+                        <li><a href="modify_data_loaded_in_AE.html">Modify data in ArrayExpress</a></li>
+                    </ul>
+                </li>
+                <li><a href="data_availability.html">Learn more about our data</a>
+                    <ul>
+                        <li><a href="data_availability.html">Data access policy</a></li>
+                        <li><a href="accession_codes.html">Accession codes</a></li>
+                        <li><a href="GEO_data.html">GEO data</a></li>
+                        <li><a href="magetab_spec.html">MAGE-TAB format</a></li>
+                    </ul>
+                </li>
+                <li><a href="programmatic_access.html">Other ways to get data</a>
+                    <ul>
+                        <li><a href="programmatic_access.html">Programmatic access</a></li>
+                        <li><a href="FTP_archives.html">FTP archives</a></li>
+                        <li><a href="expressionset_objects.html">ExpressionSet R objects</a></li>
+                    </ul>
+                </li>
+                <li><a href="FAQ.html">FAQ</a></li>
+                <li><a href="contact_us.html">Contact us</a></li>
+            </ul>
+        </aside>
+    </div>
+</body>
+</html>
