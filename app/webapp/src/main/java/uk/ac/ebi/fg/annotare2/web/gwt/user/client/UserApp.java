@@ -103,7 +103,7 @@ public class UserApp implements EntryPoint {
             CookieDialog dialogBox = new CookieDialog(
                     "Maintenance notice and new FTP upload server",
                     "<p>Dear submitter,</p>" +
-                            "<p>There will be a <mark><b>reduced Annotare service from 16th to 23rd of March 2020</b></mark> " +
+                            "<p>There will be a <mark><b>reduced Annotare service from 12th to 23rd of March 2020</b></mark> " +
                             "due to essential systems maintenance. File upload via FTP/Aspera will be unavailable " +
                             "during this time. You may still upload data via browser and save data in the forms " +
                             "but the submit button will be deactivated. We are sorry for any inconvenience!</p> " +
