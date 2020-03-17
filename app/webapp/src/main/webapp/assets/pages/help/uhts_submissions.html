@@ -1,7 +1,4 @@
-<!DOCTYPE html>
-<html class="no-js" lang="en">
-<head><title>Sequencing Submissions &lt; Help &lt; ArrayExpress &lt; EMBL-EBI</title></head>
-<body class="level2">
+
     <div id="content" role="main" class="columns medium-12 clearfix">
         <section class="columns medium-9">
             <h2>Sequencing Submissions</h2>
@@ -13,10 +10,9 @@
                 </li>
                 <li><a href="#HowToSubmit">What data files to submit, and how</a>
                   <ul>
-                    <li><a href="#meta_data">Meta-data</a></li>
+                    <li><a href="#meta_data">Metadata</a></li>
                     <li><a href="#raw_data_files">Raw data file requirements</a></li>
                     <li><a href="#processed_data">Processed data files</a></li>
-                    <li><a href="#sending_raw_files">File upload</a></li>
                   </ul>
                 </li>
             </ol>
@@ -48,8 +44,8 @@
             <br>
             <p>To start your submission go to the <a href="/fg/annotare/login">Annotare webform submission tool</a> and create a new sequencing submission.</p>
 
-            <h4 id="meta_data">Experiment meta-data</h4>
-            <p>Apart from the <a href="submissions_overview.html">experiment description and sample annotation</a>, sequencing experiments require further details describing the sequencing    library (as they are needed for ENA submission). Please see <a href="/fg/annotare/help/seq_lib_spec.html">this guide</a> for more information about the library specifications.</p>
+            <h4 id="meta_data">Experiment metadata</h4>
+            <p>Apart from the <a href="what_to_prepare.html">experiment description and sample annotation</a>, sequencing experiments require further details describing the sequencing    library (as they are needed for ENA submission). Please see <a href="seq_lib_spec.html">this guide</a> for more information about the library specifications.</p>
 
             <h4 id="raw_data_files">Raw data file requirements</h4>
             <p>Please provide individual <strong>unprocessed</strong> raw data files for each sample, in <a href="#FastqSpec">FASTQ</a> or <a href="#BamSpec">BAM</a> format, and prepare your files according to <a href="http://ena-docs.readthedocs.io/en/latest/format_01.html">ENA specifications</a>. This is a developing field so please do check the specifications every time you submit a new experiment. Data files which do not satisfy ENA's requirements will not be accepted.</p>
@@ -87,19 +83,12 @@
             <p>If your BAM files contain mapped reads, then please either create unmapped BAM files, or send us the original read files (e.g. fastq.gz files) as raw data files (again, check <a href="/ena/about/read-file-formats">ENA specifications</a>).
               BAM files containing mapped reads can be included in your submission as processed files, as long as they satisfy ENA's specification and that the reference genome used for alignment has been accessioned in the International Nucleotide Sequence Database Collaboration (INSDC, involving <a href="https://www.ddbj.nig.ac.jp/">DDBJ</a>, <a href="/ena">ENA</a>, and <a href="https://www.ncbi.nlm.nih.gov/genbank/">GenBank</a>).</p>
 
-
             <h4 id="processed_data">Processed data files</h4>
-            <p>If your processed data are in spreadsheets, e.g. a table of FPKM values for genes with genes in rows and samples in columns, please save them in tab-delimited text (*.txt) format (not Excel). We also accept BAM alignment files. There is no need to compress or zip up the processed files one by one or as a bundle. Upload them in Annotare and assign to your samples in the same way as you would for <a href="#sending_raw_files">raw files</a> (see below).</p>
+            <p>If your processed data are in spreadsheets, e.g. a table of FPKM values for genes with genes in rows and samples in columns, please save them in tab-delimited text (*.txt) format (not Excel). We also accept BAM alignment files, bed/bigwig files, and any other commonly used output data format. There is no need to compress or zip up the processed files one by one or as a bundle. Upload them in Annotare and assign to your samples in the same way as you would for raw files, choosing "Processed" or "Processed Matrix" as file type.</p>
 
-            <h4 id="sending_raw_files">File upload</h4>
-            <p>You can upload raw and processed sequencing files <strong>directly in Annotare</strong>. Use "drag-and-drop" to place files in the upload frame or click <code>Upload files...</code> to select the files to be transferred. </p>
-            <p>If you prefer, you may use the FTP/Aspera upload function. Please note that there is a <strong>private directory with a unique name for each submission</strong> where files must be copied to. Before starting to transfer files, click on <code>FTP/Aspera Upload...</code>. The dialogue will show you the directory name for your submission (e.g. <code>ftp-private.ebi.ac.uk/ibtd1rmo-20r7k3g747sup/</code>). Copy the data files to this directory following the <a href="ftp_upload.html">FTP/Aspera transfer instructions</a>. Please transfer the compressed files one by one (and not bundling multiple fastq.gz files in one tar.gz archive) to avoid time-out issues and to allow us to process your files promptly.
-
-            To associate the transferred files with your experiment submission and ensure the file integrity, follow the on-screen instructions of the dialogue, and fill in file names and their corresponding <a href="https://en.wikipedia.org/wiki/MD5">MD5 checksums</a> (remember to use the checksum of the actual compressed file that is sent to us). Annotare will then verify the presence of the files on our FTP site and the MD5 checksums. If verification passes, you will be able to assign data files to each of your samples. Here are some examples how to caclulate MD5 checksums: <a href="http://www.winmd5.com/">Windows user example</a>, <a href="http://www.resourcesforlife.com/docs/item1428">Mac user example</a>, <a href="http://heatware.net/linux-unix/how-to-create-md5-checksums-and-validate-a-file-in-linux/">Linux user example</a>.</p>
-
-            <p style="text-align: right;"><a href="#top" class="linktotop">Top</a></p>
 
         </section>
+        
         <aside class="columns medium-3 last">
             <h3>Help</h3>
     <ul id="secondary-nav">

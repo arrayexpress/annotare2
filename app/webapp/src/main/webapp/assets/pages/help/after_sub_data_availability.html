@@ -1,0 +1,83 @@
+
+<section id="annotare-help" class="grid_18 alpha">
+    <h2>Data access policy</h2>
+
+    <a id="general"><h3>General information</h3></a>
+    <p>Experiments (sets of assays) and array designs in
+        ArrayExpress are either 'public' or 'private' (often pre-publication and under peer review). Data         will be kept private until a specified release date, or until an associated
+        paper containing the experiment or array design accession number is
+        published. Access to private data is possible via <a href="#user_accounts">submitter and
+        reviewer login accounts</a> created by ArrayExpress upon successful loading of an experiment or array design into the database.</p>
+
+    <p>In private status, a submitter or reviewer can view the full ArrayExpress record and download all associated files. There are two exceptions:</p>
+      <ol>
+        <li>For sequencing experiments there is no access to fastq raw data files until the experiment is made public. The reason is that raw data files are brokered to the European Nucleotide Archive (ENA), which is part of the Sequence Read Archive (SRA), a collaboration between ENA (EBI), Genbank (NCBI), and DDBJ (Japan). There is currently no infrastructure to access privately held data files in SRA.</li>
+        <li>Experiments tagged for double-blind peer review will hide submitter-related meta-data and block view of the full samples table, while data download remains unaffected. See <a href="#double-blind">submitter anonymity</a> for details. </li>
+      </ol>
+
+    <p>For sensitive data from human samples and individuals that can potentially lead to the identification of the donors (e.g. genomic DNA sequences), ArrayExpress 'private' data sets and submitter/reviewer login accounts cannot provide the high level of data encryption and access control required. In such cases, there should be a <a href="/ega/submission/FAQ#DAC">data access committee</a> overlooking data privacy issues, and the data should be submitted to the <a href="/ega/">European Genome-phenome Archive</a> (EGA).</p>
+    <p>Human-identifiable data can still be submitted to ArrayExpress if the data has been consented for public release. Such approvals typically would be given by the relevant ethics committees and <em>ensuring this is the responsibility of the submitters</em>.</p>
+
+
+    <a id="release"><h3>Release policy</h3></a>
+    <p>Experiments are made public when</p>
+    <ul>
+        <li>the specified release date is reached</li>
+        <li>the submitter emails to tell us that the data can now be released (usually this is when an associated publication is accepted or
+            published)</li>
+        <li>we identify a publication in which the ArrayExpress experiment accession number is cited</li>
+    </ul>
+    <p>Array designs are made public when </p>
+    <ul>
+        <li>the specified release date is reached </li>
+        <li>the submitter emails to tell us that the data can now be released</li>
+        <li>when an experiment the array design is linked to is made public</li>
+        <li>we identify a publication in which the ArrayExpress array design accession number is cited </li>
+    </ul>
+    <p>When an experiment or array design is made public the data is available through the <a href="/arrayexpress">ArrayExpress web interface
+        </a>and the <a href="ftp://ftp.ebi.ac.uk/pub/databases/arrayexpress/data/">FTP site</a>.
+        There are more information on this <a href="/arrayexpress/help/ftp_archives.html">ArrayExpress FTP downloads</a> help page.</p>
+        
+</section>
+
+
+<aside class="columns medium-3 last">
+    <h3>Help</h3>
+<ul id="secondary-nav">
+    <li><a href="index.html">Help home</a></li>
+    <li><a href="quick_start.html">Quick Start guide</a></li>
+    <li><a href="how_to_search.html">How to search</a>
+        <ul>
+            <li><a href="how_to_search_adf.html">Array design search</a></li>
+            <li><a href="how_to_search_private_data.html">Search for private data</a></li>
+        </ul>
+    </li>
+    <li><a href="submissions_overview.html">How to submit</a>
+        <ul>
+            <li><a href="pre-submission_checklist.html">Pre-submission checklist</a></li>
+            <li><a href="UHTS_submissions.html">Sequencing submissions</a></li>
+            <li><a href="single-cell_submission_guide.html">Single-cell submissions</a></li>
+            <li><a href="adf_submissions_overview.html">Array design submissions</a></li>
+            <li><a href="ftp_upload.html">FTP upload instructions</a></li>
+            <li><a href="modify_data_loaded_in_AE.html">Modify data in ArrayExpress</a></li>
+        </ul>
+    </li>
+    <li><a href="data_availability.html">Learn more about our data</a>
+        <ul>
+            <li class="active"><a href="data_availability.html">Data access policy</a></li>
+            <li><a href="accession_codes.html">Accession codes</a></li>
+            <li><a href="GEO_data.html">GEO data</a></li>
+            <li><a href="magetab_spec.html">MAGE-TAB format</a></li>
+        </ul>
+    </li>
+    <li><a href="programmatic_access.html">Other ways to get data</a>
+        <ul>
+            <li><a href="programmatic_access.html">Programmatic access</a></li>
+		<li><a href="FTP_archives.html">FTP archives</a></li>
+		<li><a href="expressionset_objects.html">ExpressionSet R objects</a></li>
+        </ul>
+    </li>
+    <li><a href="FAQ.html">FAQ</a></li>
+    <li><a href="contact_us.html">Contact us</a></li>
+</ul>
+</aside>
