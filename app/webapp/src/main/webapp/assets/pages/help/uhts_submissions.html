@@ -1,13 +1,10 @@
+<section id="annotare-help">
+  <div class="small-12 medium-9 columns">
 
-    <div id="content" role="main" class="columns medium-12 clearfix">
-<section class="columns medium-9">
     <h2>Sequencing Submissions</h2>
     <ol>
-        <li><a href="#DataTypes">Types of data that can be submitted</a>
-          <ul>
-            <li><a href="#HumanIdentifiableData">Potentially identifiable human data</a></li>
-          </ul>
-        </li>
+        <li><a href="#DataTypes">Types of data that can be submitted</a></li>
+        <li><a href="#HumanIdentifiableData">Potentially identifiable human data</a></li>
         <li><a href="#HowToSubmit">What data files to submit, and how</a>
           <ul>
             <li><a href="#meta_data">Metadata</a></li>
@@ -30,7 +27,7 @@
     <p>The meta-data about your experiment will be stored at ArrayExpress, and the raw data files (e.g. fastq files) are stored at the <a href="/ena/about/sra_submissions">Sequence Read Archive</a> (SRA) of the <a href="/ena/">European Nucleotide Archive</a> (ENA). ArrayExpress will transfer the raw data files to the ENA for you so you <i>do not</i> need to submit those files separately to the ENA. You can also send us processed data (i.e. processed from the raw reads, e.g. BAM alignment files, differential expression data, expression values linked to genome coordinates, etc).  Depending on the file format, it will either be stored at ArrayExpress or the ENA.  <span style="color:red">Given the split of meta-data and data files between ArrayExpress and ENA, once your submission is fully processed, it is a lengthy process to modify/update it. Some changes (e.g. cancelling an ENA record which has been released to the public) will not be possible.  Please take a look at our <a href="modify_data_loaded_in_AE.html">sequencing experiment update/cancellation policy</a> before proceeding.</span></p>
     <br>
 
-    <h4><a id="HumanIdentifiableData"></a>Potentially identifiable human data</h4>
+    <h3><a id="HumanIdentifiableData"></a>Potentially identifiable human data</h3>
     <p>Data from human samples and individuals that can potentially lead to the identification of the donors (e.g. genomic DNA sequences) can be submitted to ArrayExpress if consent for public release of the data hs been given. Such approvals typically would be given by the relevant ethics committees and <em>ensuring this is the responsibility of the submitter</em>.</p>
     <p>Identifiable data approved for <a href="/ega/submission/FAQ#DAC">controlled access</a> should be submitted directly to the <a href="/ega/">European Genome-phenome Archive (EGA)</a>, not ArrayExpress. Cases are possible where identifiable data (e.g. raw sequences) are submitted to the EGA, while the related processed data (e.g. RPKM values) are submitted to ArrayExpress, but <em>it is up to the submitter to ensure that such a submission complies with the respective ethics requirements.</em></p>
     <p>To submit processed data to ArrayExpress, please begin by creating a submission in <a href="/fg/annotare/">Annotare</a>. When you are ready, email us at <a href="mailto:annotare@ebi.ac.uk">annotare@ebi.ac.uk</a> (or use the "Contact Us" form) and tell us the relevant EGA study and dataset accession numbers. To circumvent the requirement for raw data in Annotare, a curator will then approve the submission manually. </p>
@@ -82,6 +79,8 @@
 
     <h4 id="processed_data">Processed data files</h4>
     <p>If your processed data are in spreadsheets, e.g. a table of FPKM values for genes with genes in rows and samples in columns, please save them in tab-delimited text (*.txt) format (not Excel). We also accept BAM alignment files, bed/bigwig files, and any other commonly used output data format. There is no need to compress or zip up the processed files one by one or as a bundle. Upload them in Annotare and assign to your samples in the same way as you would for raw files, choosing "Processed" or "Processed Matrix" as file type.</p>
+
+  </div>
 
   <!-- side navigation -->
   <div class="medium-3 columns sidebar">

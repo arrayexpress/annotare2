@@ -1,10 +1,11 @@
-<section class="grid_18 alpha">
+<section id="annotare-help">
+  <div class="small-12 medium-9 columns">
 
     <h2>"Strict" MAGE-TAB format for raw and processed microarray data matrix</h2>
 
     <p>This format allows each data point in the file to be mapped to a particular assay in the experiment, and to a particular probe/probe set in the
         array design file of your experiment. For the mapping to work smoothly, each matrix file should contain data from assays on a
-        single array design (i.e if you use multiple array designs in your experiment, mutliple matrix files will be
+        single array design (i.e if you use multiple array designs in your experiment, multiple matrix files will be
         needed), and the column/row headings and the order of columns are strictly controlled:</p>
 
     <ul>
@@ -17,7 +18,7 @@
         <br>
         <li><strong>Measurements calculated from multiple assays:</strong> Measurements such as Log2 fold-changes are often
             calculated from more than one assay (e.g. for every given gene, calculate the average of 3 knockout samples vs the
-            average of 3 wild-type conotrols). In that case, you can put down multiple assay names per column, with the assay names
+            average of 3 wild-type controls). In that case, you can put down multiple assay names per column, with the assay names
             separated by semi-colons:</li>
         <br>
         <table style="border: 1px solid black; border-collapse: collapse;">
@@ -101,8 +102,7 @@
     </p>
     <img src="../assets/images/affy_datamatrix.png" alt="Affymetrix data matrix" style="border:2px solid #385930; width: 80%"/>
 
-
-
+  </div>
 
   <!-- side navigation -->
   <div class="medium-3 columns sidebar">
