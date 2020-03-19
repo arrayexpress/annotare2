@@ -489,45 +489,63 @@
   </div>
   </div>
 
-</section>
-
-<aside class="columns medium-3 last">
-    <h3>Help</h3>
-    <ul id="secondary-nav">
-        <li><a href="index.html">Help home</a></li>
-        <li><a href="quick_start.html">Quick Start guide</a></li>
-        <li><a href="how_to_search.html">How to search</a>
+  <!-- side navigation -->
+  <div class="small-12 medium-3 columns sidebar">
+    <ul class="vertical menu accordion-menu" data-accordion-menu>
+      <li><a href="/fg/annotare/help/" class="active" >Submission guide</a></li>
+      <li><a>Before you start</a>
+        <ul class="menu vertical nested">
+          <li><a href="what_to_submit.html">Submission overview</a></li>
+          <li><a href="">Accepted file formats</a>
             <ul>
-                <li><a href="how_to_search_adf.html">Array design search</a></li>
-                <li><a href="how_to_search_private_data.html">Search for private data</a></li>
+              <li><a href="accepted_raw_ma_file_formats.html">Microarray raw data</a></li>
+              <li><a href="accepted_processed_ma_file_formats.html">Microarray processed data</a></li>
+              <li><a href="UHTS_submissions.html#HowToSubmit">Sequencing raw data</a></li>
+              <li><a href="UHTS_submissions.html#processed_data">Sequencing processed data</a></li>
             </ul>
-        </li>
-        <li><a href="submissions_overview.html">How to submit</a>
+          </li>
+          <li><a href="pre-submission_checklist.html">Pre-submission checklist</a></li>
+          <li><a href="adf_submissions_overview.html">Array design submissions</a></li>
+        </ul>
+      </li>
+      <li><a>Annotare step-by-step</a>
+        <ul class="menu vertical nested is-active">
+          <li><a href="getting_started.html">Getting started</a></li>
+          <li><a href="time_saving_features.html">Time-saving features</a></li>
+          <li><a href="describe_exp.html">Describe experiment</a></li>
+          <li><a href="sample_attributes.html">Sample attributes and protocols</a></li>
+          <li><a href="">Technology-specific details</a>
+            <ul class="menu vertical nested is-active">
+              <li><a href="seq_lib_spec.html">Sequencing library information</a></li>
+              <li><a class="active" href="singlecell_submission_guide.html">Single cell information</a></li>
+              <li><a href="two_color_ma.html">Two-colour experiments</a></li>
+            </ul>
+          </li>
+          <li><a href="">Upload and assign files</a>
             <ul>
-                <li><a href="pre-submission_checklist.html">Pre-submission checklist</a></li>
-                <li><a href="UHTS_submissions.html">Sequencing submissions</a></li>
-                <li class="active"><a href="single-cell_submission_guide.html">Single-cell submissions</a></li>
-                <li><a href="adf_submissions_overview.html">Array design submissions</a></li>
-                <li><a href="ftp_upload.html">FTP upload instructions</a></li>
-                <li><a href="modify_data_loaded_in_AE.html">Modify data in ArrayExpress</a></li>
+              <li><a href="file_upload.html#direct">Direct upload</a></li>
+              <li><a href="ftp_upload.html">FTP/Aspera upload</a></li>
+              <li><a href="file_upload.html#ftp">Import FTP/Aspera uploaded files</a></li>
+              <li><a href="assign_files.html">Assign files</a></li>
             </ul>
-        </li>
-        <li><a href="data_availability.html">Learn more about our data</a>
+          </li>
+          <li><a href="">Validate and submit</a>
             <ul>
-                <li><a href="data_availability.html">Data access policy</a></li>
-                <li><a href="accession_codes.html">Accession codes</a></li>
-                <li><a href="GEO_data.html">GEO data</a></li>
-                <li><a href="magetab_spec.html">MAGE-TAB format</a></li>
+              <li><a href="validate_exp.html#validate">What is validation?</a></li>
+              <li><a href="submit_exp.html">Submit, and what happens next?</a></li>
+              <li><a href="submit_exp.html#save_sub">Saving a copy of your submission</a></li>
             </ul>
-        </li>
-        <li><a href="programmatic_access.html">Other ways to get data</a>
-            <ul>
-                <li><a href="programmatic_access.html">Programmatic access</a></li>
-                <li><a href="FTP_archives.html">FTP archives</a></li>
-                <li><a href="expressionset_objects.html">ExpressionSet R objects</a></li>
-            </ul>
-        </li>
-        <li><a href="FAQ.html">FAQ</a></li>
-        <li><a href="contact_us.html">Contact us</a></li>
+          </li>
+        </ul>
+      </li>
+      <li><a href="">After submission</a>
+        <ul class="menu vertical nested ">
+          <li><a href="after_sub_private_access.html">Access private experiments</a></li>
+          <li><a href="after_sub_modify_data.html">Modify or remove an existing experiment</a></li>
+          <li><a href="after_sub_data_availability.html">Data availability and release policy</a></li>
+        </ul>
+      </li>
     </ul>
-</aside>
+  </div> <!-- /medium-3 -->
+
+</section>
