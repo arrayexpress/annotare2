@@ -93,17 +93,17 @@ public class UserApp implements EntryPoint {
         showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "Notice_200818_Shown"; // change name according to the cookie display date ddmmyy
+    private final static String NOTICE_COOKIE = "Notice_23032020_Shown"; // change name according to the cookie display date ddmmyyyy
     private void showNotice() {
         Date stopNoticeDate = new Date();
-        stopNoticeDate.setTime(1585007940000L); // stop showing on 9th Jan 2020 (http://www.epochconverter.com/)
+        stopNoticeDate.setTime(1586213999000L); // stop showing on 6th April 2020 (http://www.epochconverter.com/)
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE)) && (new Date().before(stopNoticeDate))) {
             Date expiryDate = new Date();
             expiryDate.setTime(8000000000000L);
             CookieDialog dialogBox = new CookieDialog(
                     "Maintenance notice and new FTP upload server",
                     "<p>Dear submitter,</p>" +
-                            "<p>There will be a <mark><b>reduced Annotare service from 12th to 23rd of March 2020</b></mark> " +
+                            "<p><b>Annotare service is currently reduced</b> " +
                             "due to essential systems maintenance. File upload via FTP/Aspera will be unavailable " +
                             "during this time. You may still upload data via browser and save data in the forms " +
                             "but the submit button will be deactivated. We are sorry for any inconvenience!</p> " +
