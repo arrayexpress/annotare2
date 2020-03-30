@@ -93,23 +93,22 @@ public class UserApp implements EntryPoint {
         showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "Notice_23032020_Shown"; // change name according to the cookie display date ddmmyyyy
+    private final static String NOTICE_COOKIE = "Notice_30032020_Shown"; // change name according to the cookie display date ddmmyyyy
     private void showNotice() {
         Date stopNoticeDate = new Date();
-        stopNoticeDate.setTime(1586213999000L); // stop showing on 6th April 2020 (http://www.epochconverter.com/)
+        stopNoticeDate.setTime(1586732399000L); // stop showing on 12th April 2020 (http://www.epochconverter.com/)
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE)) && (new Date().before(stopNoticeDate))) {
             Date expiryDate = new Date();
             expiryDate.setTime(8000000000000L);
             CookieDialog dialogBox = new CookieDialog(
-                    "Maintenance notice and new FTP upload server",
+                    "Maintenance notice",
                     "<p>Dear submitter,</p>" +
-                            "<p><b>Annotare service is currently reduced</b> " +
-                            "due to essential systems maintenance. File upload via FTP/Aspera will be unavailable " +
-                            "during this time. You may still upload data via browser and save data in the forms " +
-                            "but the submit button will be deactivated. We are sorry for any inconvenience!</p> " +
-                            "<p>Please note: the FTP server is changing to <mark><b>ftp-private-2.ebi.ac.uk</b></mark> (all other steps " +
-                            "will remain the same, see <a href=https://www.ebi.ac.uk/arrayexpress/help/ftp_upload.html " +
-                            "target=_blank>FTP upload instructions</a>)</p>" +
+                            "<p>Unfortunately, the Annotare maintenance is further delayed due to the restrictions " +
+                            "around the coronavirus pandemic. We currently cannot offer a definite date when " +
+                            "submissions will be back to normal but expect it to happen by the end of this week.</p> " +
+                            "<p>During the maintenance, the submit button is deactivated and file upload via " +
+                            "FTP/Aspera is unavailable. You may still upload data via browser and save data in the forms.</p>" +
+                            "<p>We apologise for the inconvenience and thank you for your patience!</p>" +
                             "<p>Regards,<br>Annotare Team",
                     NOTICE_COOKIE, expiryDate
             );
