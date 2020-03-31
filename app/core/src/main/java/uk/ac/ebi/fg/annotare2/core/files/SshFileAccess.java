@@ -72,7 +72,8 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
         if ((isSupported(source) || isLocal(source)) && (isSupported(destination) || isLocal(destination))) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
             if (!executor.execute(
-                    "rsync -e ssh --perms --chmod=u+rw,g+rw,o+r " + scpLocationFromURI(source) + " " + scpLocationFromURI(destination)
+                    "scp " + scpLocationFromURI(source) + " " + scpLocationFromURI(destination) +
+                            " ; ssh sra-login chmod u+rw,g+rw,o+r " + escapeFilePath(destination.getPath())
                     )) {
                 throw new IOException(executor.getErrors());
             }
