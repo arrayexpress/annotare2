@@ -102,7 +102,6 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         initWidget(uiBinder.createAndBindUi(this));
         contactUsDialog = new ContactUsDialog();
         waitingPopup = new WaitingPopup();
-        submitButton.setEnabled(false);
     }
 
     @Override

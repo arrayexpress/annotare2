@@ -104,7 +104,8 @@ public class UserApp implements EntryPoint {
                     "Maintenance notice",
                     "<p>Dear submitter,</p>" +
                             "<p>The bulk of the maintenance is now completed and submitting your experiment is now enabled again.</p> " +
-                            "<p>FTP upload is possible using the ftp-private.ebi.ac.uk server. " +
+                            "<p>FTP upload is possible using the <a href=https://www.ebi.ac.uk/arrayexpress/help/ftp_upload.html " +
+                            "target=_blank>ftp-private.ebi.ac.uk</a> server. " +
                             "Aspera upload remains unavailable. We are working on re-activating this as soon as possible.</p> " +
                             "<p>Best Regards,<br>Annotare Team",
                     NOTICE_COOKIE, expiryDate
