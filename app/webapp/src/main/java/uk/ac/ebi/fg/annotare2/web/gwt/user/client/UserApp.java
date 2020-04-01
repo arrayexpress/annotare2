@@ -93,24 +93,20 @@ public class UserApp implements EntryPoint {
         showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "Notice_200818_Shown"; // change name according to the cookie display date ddmmyy
+    private final static String NOTICE_COOKIE = "Notice_01042020_Shown"; // change name according to the cookie display date ddmmyy
     private void showNotice() {
         Date stopNoticeDate = new Date();
-        stopNoticeDate.setTime(1585007940000L); // stop showing on 9th Jan 2020 (http://www.epochconverter.com/)
+        stopNoticeDate.setTime(1587164399000L); // stop showing on 17th April 2020 (http://www.epochconverter.com/)
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE)) && (new Date().before(stopNoticeDate))) {
             Date expiryDate = new Date();
             expiryDate.setTime(8000000000000L);
             CookieDialog dialogBox = new CookieDialog(
-                    "Maintenance notice and new FTP upload server",
+                    "Maintenance notice",
                     "<p>Dear submitter,</p>" +
-                            "<p>There will be a <mark><b>reduced Annotare service from 16th to 23rd of March 2020</b></mark> " +
-                            "due to essential systems maintenance. File upload via FTP/Aspera will be unavailable " +
-                            "during this time. You may still upload data via browser and save data in the forms " +
-                            "but the submit button will be deactivated. We are sorry for any inconvenience!</p> " +
-                            "<p>Please note: the FTP server is changing to <mark><b>ftp-private-2.ebi.ac.uk</b></mark> (all other steps " +
-                            "will remain the same, see <a href=https://www.ebi.ac.uk/arrayexpress/help/ftp_upload.html " +
-                            "target=_blank>FTP upload instructions</a>)</p>" +
-                            "<p>Regards,<br>Annotare Team",
+                            "<p>The bulk of the maintenance is now completed and submitting your experiment is now enabled again.</p> " +
+                            "<p>FTP upload is possible using the ftp-private.ebi.ac.uk server. " +
+                            "Aspera upload remains unavailable. We are working on re-activating this as soon as possible.</p> " +
+                            "<p>Best Regards,<br>Annotare Team",
                     NOTICE_COOKIE, expiryDate
             );
             dialogBox.show();
