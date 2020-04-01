@@ -93,23 +93,20 @@ public class UserApp implements EntryPoint {
         showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "Notice_30032020_Shown"; // change name according to the cookie display date ddmmyyyy
+    private final static String NOTICE_COOKIE = "Notice_01042020_Shown"; // change name according to the cookie display date ddmmyy
     private void showNotice() {
         Date stopNoticeDate = new Date();
-        stopNoticeDate.setTime(1586732399000L); // stop showing on 12th April 2020 (http://www.epochconverter.com/)
+        stopNoticeDate.setTime(1587164399000L); // stop showing on 17th April 2020 (http://www.epochconverter.com/)
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE)) && (new Date().before(stopNoticeDate))) {
             Date expiryDate = new Date();
             expiryDate.setTime(8000000000000L);
             CookieDialog dialogBox = new CookieDialog(
                     "Maintenance notice",
                     "<p>Dear submitter,</p>" +
-                            "<p>Unfortunately, the Annotare maintenance is further delayed due to the restrictions " +
-                            "around the coronavirus pandemic. We currently cannot offer a definite date when " +
-                            "submissions will be back to normal but expect it to happen by the end of this week.</p> " +
-                            "<p>During the maintenance, the submit button is deactivated and file upload via " +
-                            "FTP/Aspera is unavailable. You may still upload data via browser and save data in the forms.</p>" +
-                            "<p>We apologise for the inconvenience and thank you for your patience!</p>" +
-                            "<p>Regards,<br>Annotare Team",
+                            "<p>The bulk of the maintenance is now completed and submitting your experiment is now enabled again.</p> " +
+                            "<p>FTP upload is possible using the ftp-private.ebi.ac.uk server. " +
+                            "Aspera upload remains unavailable. We are working on re-activating this as soon as possible.</p> " +
+                            "<p>Best Regards,<br>Annotare Team",
                     NOTICE_COOKIE, expiryDate
             );
             dialogBox.show();
