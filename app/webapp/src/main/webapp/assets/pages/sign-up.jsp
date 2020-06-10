@@ -50,7 +50,7 @@
         color: white;
     }
 </style>
-<section class="grid_12 push_6 form">
+<section class="row columns form">
     <h2>Please register with Annotare</h2>
     <form method="POST">
         <div class="error">${dummyErrors}</div>
