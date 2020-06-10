@@ -13,179 +13,210 @@
 ~ See the License for the specific language governing permissions and
 ~ limitations under the License.
 --%>
-<%@tag import="java.io.FileNotFoundException"%>
-<%@tag description="Frontier page template" pageEncoding="UTF-8"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<%@attribute name="title" required="true"%>
-<%@attribute name="localnav" fragment="true" required="true"%>
-<%@attribute name="extracss" fragment="true"%>
-<%@attribute name="extrajs" fragment="true"%>
-<%@attribute name="extradeferjs" fragment="true"%>
-<%
-    try {
-%>
+<%@tag description="Frontier page template" pageEncoding="UTF-8" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@attribute name="title" required="true" %>
+<%@attribute name="localnav" fragment="true" required="false" %>
+<%@attribute name="extracss" fragment="true" %>
+<%@attribute name="extrajs" fragment="true" %>
+<%@attribute name="extradeferjs" fragment="true" %>
+
 <!DOCTYPE html>
-<!-- for more info please see http://stackoverflow.com/questions/1296235/jsp-tricks-to-make-templating-easier/3257426#3257426 -->
-<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
-<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
-<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<html lang="en"> <!--<![endif]-->
 <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8"/>
+    <title>The European Bioinformatics Institute &lt; EMBL-EBI</title>
+    <meta name="description" content="EMBL-EBI Blank boilerplate page"/><!-- Describe what this page is about -->
+    <meta name="keywords" content="bioinformatics, europe, institute"/>
+    <!-- 3 to 10 keywords about the content of this page (not the whole project) -->
+    <meta name="author" content="EMBL-EBI"/><!-- Your [project-name] here -->
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="MobileOptimized" content="width"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="theme-color" content="#70BDBD"/> <!-- Android Chrome mobile browser tab color -->
+    <!-- Get suggested SEO and social metatags at:
+         https://www.ebi.ac.uk/style-lab/websites/patterns/meta-copy.html -->
 
-    <!-- Use the .htaccess and remove these lines to avoid edge case issues.
-         More info: h5bp.com/b/378 -->
-    <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> --> <!-- Not yet implemented -->
+    <!-- Add information on the life cycle of this page -->
+    <meta name="ebi:owner" content="John Doe"/> <!-- Who should be contacted about changes -->
+    <meta name="ebi:review-cycle" content="30"/> <!-- In days, how often should the content be reviewed -->
+    <meta name="ebi:last-review" content="2015-12-20"/> <!-- The last time the content was reviewed -->
+    <meta name="ebi:expiry" content="2016-01-20"/> <!-- When this content is no longer relevant -->
 
-    <title>${title}</title>
-    <meta name="description" content="EMBL-EBI"><!-- Describe what this page is about -->
-    <meta name="keywords" content="bioinformatics, europe, institute"><!-- A few keywords that relate to the content of THIS PAGE (not the whol project) -->
-    <meta name="author" content="EMBL-EBI"><!-- Your [project-name] here -->
+    <!-- If you link to any other sites frequently, consider optimising performance with a DNS prefetch -->
+    <link rel="dns-prefetch" href="//www.ebi.ac.uk"/>
 
-    <!-- Mobile viewport optimized: j.mp/bplateviewport -->
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+    <!-- If you have custom icon, replace these as appropriate.
+         You can generate them at realfavicongenerator.net -->
+    <link rel="icon" type="image/x-icon"
+          href="https://ebi.emblstatic.net/web_guidelines/EBI-Framework/v1.3/images/logos/EMBL-EBI/favicons/favicon.ico"/>
+    <link rel="icon" type="image/png"
+          href="https://ebi.emblstatic.net/web_guidelines/EBI-Framework/v1.3/images/logos/EMBL-EBI/favicons/favicon-32x32.png"/>
+    <link rel="icon" type="image/png" sizes="192x192"
+          href="https://ebi.emblstatic.net/web_guidelines/EBI-Framework/v1.3/images/logos/EMBL-EBI/favicons/android-chrome-192x192.png"/>
+    <!-- Android (192px) -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114"
+          href="https://ebi.emblstatic.net/web_guidelines/EBI-Framework/v1.3/images/logos/EMBL-EBI/favicons/apple-icon-114x114.png"/>
+    <!-- For iPhone 4 Retina display (114px) -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72"
+          href="https://ebi.emblstatic.net/web_guidelines/EBI-Framework/v1.3/images/logos/EMBL-EBI/favicons/apple-icon-72x72.png"/>
+    <!-- For iPad (72px) -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144"
+          href="https://ebi.emblstatic.net/web_guidelines/EBI-Framework/v1.3/images/logos/EMBL-EBI/favicons/apple-icon-144x144.png"/>
+    <!-- For iPad retinat (144px) -->
+    <link rel="apple-touch-icon-precomposed"
+          href="https://ebi.emblstatic.net/web_guidelines/EBI-Framework/v1.3/images/logos/EMBL-EBI/favicons/apple-icon-57x57.png"/>
+    <!-- For iPhone (57px) -->
+    <link rel="mask-icon"
+          href="https://ebi.emblstatic.net/web_guidelines/EBI-Framework/v1.3/images/logos/EMBL-EBI/favicons/safari-pinned-tab.svg"
+          color="#ffffff"/> <!-- Safari icon for pinned tab -->
+    <meta name="msapplication-TileColor" content="#2b5797"/> <!-- MS Icons -->
+    <meta name="msapplication-TileImage"
+          content="//ebi.emblstatic.net/web_guidelines/EBI-Framework/v1.3/images/logos/EMBL-EBI/favicons/mstile-144x144.png"/>
 
     <!-- CSS: implied media=all -->
     <!-- CSS concatenated and minified via ant build script-->
-    <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/mini/ebi-fluid-embl.css">
+
+    <link rel="stylesheet" href="https://ebi.emblstatic.net/web_guidelines/EBI-Framework/v1.3/css/ebi-global.css"
+          type="text/css" media="all"/>
+    <link rel="stylesheet" href="https://dev.ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.2/fonts.css"
+          type="text/css" media="all"/>
+
+    <!-- Use this CSS file for any custom styling -->
+    <!--
+      <link rel="stylesheet" href="css/custom.css" type="text/css" media="all" />
+    -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/annotare.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/annotare-colours.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/font-awesome.min.css">
-    <jsp:invoke fragment="extracss"/>
+    <!-- If you have a custom header image or colour -->
+    <!--
+    <meta name="ebi:masthead-color" content="#000" />
+    <meta name="ebi:masthead-image" content="//www.ebi.ac.uk/web_guidelines/EBI-Framework/images/backgrounds/embl-ebi-background.jpg" />
+    -->
 
+    <!-- you can replace this with theme-[projectname].css. See http://www.ebi.ac.uk/web/style/colour for details of how to do this -->
+    <!-- also inform ES so we can host your colour palette file -->
     <!-- end CSS-->
-
-
-    <!-- All JavaScript at the bottom, except for Modernizr / Respond.
-         Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
-         For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
-
-    <!-- Full build -->
-    <!-- <script src="//www.ebi.ac.uk/web_guidelines/js/libs/modernizr.minified.2.1.6.js"></script> -->
-
-    <!-- custom build (lacks most of the "advanced" HTML5 support -->
-    <script src="//www.ebi.ac.uk/web_guidelines/js/libs/modernizr.custom.49274.js"></script>
-    <jsp:invoke fragment="extrajs"/>
 </head>
 
 <body class="level2"><!-- add any of your classes or IDs -->
+<!-- add any of your classes or IDs -->
 <div id="skip-to">
-    <ul>
-        <li><a href="#content">Skip to main content</a></li>
-        <li><a href="#local-nav">Skip to local navigation</a></li>
-        <li><a href="#global-nav">Skip to EBI global navigation menu</a></li>
-        <li><a href="#global-nav-expanded">Skip to expanded EBI global navigation menu (includes all sub-sections)</a></li>
-    </ul>
+    <a href="#content">Skip to main content</a>
 </div>
 
-<div id="wrapper" class="container_24">
-    <header>
-        <div id="global-masthead" class="masthead grid_24">
-            <!--This has to be one line and no newline characters-->
-            <a href="//www.ebi.ac.uk/" title="Go to the EMBL-EBI homepage"><img src="//www.ebi.ac.uk/web_guidelines/images/logos/EMBL-EBI/EMBL_EBI_Logo_white.png" alt="EMBL European Bioinformatics Institute"></a>
-
-            <nav>
-                <ul id="global-nav">
-                    <!-- set active class as appropriate -->
-                    <li class="first active" id="services"><a href="//www.ebi.ac.uk/services">Services</a></li>
-                    <li id="research"><a href="//www.ebi.ac.uk/research">Research</a></li>
-                    <li id="training"><a href="//www.ebi.ac.uk/training">Training</a></li>
-                    <li id="industry"><a href="//www.ebi.ac.uk/industry">Industry</a></li>
-                    <li id="about" class="last"><a href="//www.ebi.ac.uk/about">About us</a></li>
-                </ul>
-            </nav>
-
-        </div>
-
-        <div id="local-masthead" class="masthead grid_24 nomenu">
-
-            <!-- local-title -->
-            <!-- NB: for additional title style patterns, see http://frontier.ebi.ac.uk/web/style/patterns -->
-
-            <div id="local-title" class="logo-title"><img class="svg" src="${pageContext.request.contextPath}/assets/images/annotare-logo-64.svg" width="64" height="64" alt="Annotare"><span><h1><a href="${pageContext.request.contextPath}/" title="Annotare">Annotare</a></h1></span></div>
-
-            <!-- /local-title -->
-
-            <!-- local-nav -->
-
-            <nav>
-                <jsp:invoke fragment="localnav"/>
-            </nav>
-
-            <!-- /local-nav -->
-
-        </div>
-    </header>
-
-    <div id="content" role="main" class="grid_24 clearfix">
-        <jsp:doBody/>
+<header id="masthead-black-bar" class="clearfix masthead-black-bar">
+</header>
+<div id="content">
+    <div data-sticky-container>
+        <header id="masthead" class="masthead" data-sticky data-sticky-on="large" data-top-anchor="content:top"
+                data-btm-anchor="content:bottom">
+            <div class="masthead-inner row columns">
+                <!-- local-title -->
+                <div class="columns medium-12">
+                    <a href="${pageContext.request.contextPath}/" title="Back to Annotare homepage">
+                        <div class="media-object" id="local-title">
+                            <div class="media-object-section hide-for-small-only">
+                                <img class="svg"
+                                     src="${pageContext.request.contextPath}/assets/images/annotare-logo-64.svg"
+                                     alt="Annotare logo" width="64" height="64">
+                            </div>
+                            <div class="media-object-section">
+                                <h1>Annotare</h1>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <!-- /local-title -->
+                <!-- local-nav -->
+                <nav>
+                    <ul id="local-nav" class="menu float-left" data-description="navigational">
+                        <li class="first"><a href="${pageContext.request.contextPath}/"
+                                             title="Annotare ${project.version} rev.${buildNumber}">Home</a></li>
+                        <li class="first"><a href="http://www.ebi.ac.uk/arrayexpress">Go to ArrayExpress</a></li>
+                        <li${helpClass}><a href="${pageContext.request.contextPath}/help">Help</a></li>
+                        <li class="last${aboutClass}"><a href="${pageContext.request.contextPath}/about">About
+                            Annotare</a></li>
+                    </ul>
+                    <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
+                         add them here, and give them a class of "functional". Remember: you'll need a class of "last" for
+                         whichever one will show up last...
+                         For example: -->
+                    <ul class="dropdown menu float-right" data-description="functional">
+                        <c:choose>
+                            <c:when test="${sessionScope.loggedin != null}">
+                                <li class="functional last"><a href="${pageContext.request.contextPath}/logout/"
+                                                               class="icon icon-functional login"
+                                                               data-icon="l">Logout</a></li>
+                                <li class="functional"><a href="${pageContext.request.contextPath}/account/"
+                                                          style="pointer-events: none; cursor: default;"
+                                                          class="icon icon-generic account"
+                                                          data-icon="M">${sessionScope.email}</a></li>
+                            </c:when>
+                            <c:otherwise>
+                                <li class="functional last${loginClass}"><a
+                                        href="${pageContext.request.contextPath}/login/"
+                                        class="icon icon-functional login" data-icon="l">Login</a></li>
+                                <li class="functional${signUpClass}"><a
+                                        href="${pageContext.request.contextPath}/sign-up/"
+                                        class="icon icon-functional register" data-icon="7">Register</a></li>
+                            </c:otherwise>
+                        </c:choose>
+                        <%--<li class="functional"><a href="#" class="icon icon-generic feedback" data-icon="\">Feedback</a></li>--%>
+                        <li class="functional last"><a href="${pageContext.request.contextPath}/about#contact"
+                                                       class="icon icon-generic" data-icon="\">Contact us</a></li>
+                    </ul>
+                </nav>
+                <!-- /local-nav -->
+            </div>
+        </header>
     </div>
 
+    <section id="main-content-area" role="main" class="row columns">
+        <jsp:doBody/>
+    </section>
+</div>
 
-    <footer>
-        <div id="global-footer" class="grid_24">
+<footer>
+    <div id="global-footer" class="global-footer">
+        <nav id="global-nav-expanded" class="global-nav-expanded row columns">
+            <!-- Footer will be automatically inserted by footer.js -->
+        </nav>
+        <section id="ebi-footer-meta" class="ebi-footer-meta row columns">
+            <!-- Footer meta will be automatically inserted by footer.js -->
+        </section>
+    </div>
+</footer>
 
-            <nav id="global-nav-expanded">
-
-                <div class="grid_4 alpha">
-                    <h3 class="embl-ebi"><a href="//www.ebi.ac.uk/" title="EMBL-EBI">EMBL-EBI</a></h3>
-                </div>
-
-                <div class="grid_4">
-                    <h3 class="services"><a href="//www.ebi.ac.uk/services">Services</a></h3>
-                </div>
-
-                <div class="grid_4">
-                    <h3 class="research"><a href="//www.ebi.ac.uk/research">Research</a></h3>
-                </div>
-
-                <div class="grid_4">
-                    <h3 class="training"><a href="//www.ebi.ac.uk/training">Training</a></h3>
-                </div>
-
-                <div class="grid_4">
-                    <h3 class="industry"><a href="//www.ebi.ac.uk/industry">Industry</a></h3>
-                </div>
-
-                <div class="grid_4 omega">
-                    <h3 class="about"><a href="//www.ebi.ac.uk/about">About us</a></h3>
-                </div>
-
-            </nav>
-
-            <section id="ebi-footer-meta">
-                <p class="address">EMBL-EBI, Wellcome Trust Genome Campus, Hinxton, Cambridgeshire, CB10 1SD, UK &nbsp; &nbsp; +44 (0)1223 49 44 44</p>
-                <p class="legal">Copyright &copy; EMBL-EBI 2016 | EBI is an outstation of the <a href="http://www.embl.org">European Molecular Biology Laboratory</a> | <a href="/about/privacy">Privacy</a> | <a href="/about/cookies">Cookies</a> | <a href="/about/terms-of-use">Terms of use</a></p>
-            </section>
-
-        </div>
-
-    </footer>
-</div> <!--! end of #wrapper -->
-
-
-<!-- JavaScript at the bottom for fast page loading -->
-
-<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <!--
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="../js/libs/jquery-1.6.2.min.js"><\/script>')</script>
+<script>window.jQuery || document.write('<script src="../js/libs/jquery-1.10.2.min.js"><\/script>')</script>
 -->
 
+<script defer="defer" src="//ebi.emblstatic.net/web_guidelines/EBI-Framework/v1.3/js/script.js"></script>
 
-<!-- Your custom JavaScript file scan go here... change names accordingly -->
+<!-- The Foundation theme JavaScript -->
+<script src="//ebi.emblstatic.net/web_guidelines/EBI-Framework/v1.3/libraries/foundation-6/js/foundation.js"></script>
+<script src="//ebi.emblstatic.net/web_guidelines/EBI-Framework/v1.3/js/foundationExtendEBI.js"></script>
+<script type="text/JavaScript">$(document).foundation();</script>
+<script type="text/JavaScript">$(document).foundationExtendEBI();</script>
+
+<!-- Google Analytics details... -->
+<!-- Change UA-XXXXX-X to be your site's ID -->
+<script
+        type="text/javascript">!function (e, a, n, t, i, o, c) {
+    e.GoogleAnalyticsObject = i, e[i] = e[i] || function () {
+        (e[i].q = e[i].q || []).push(arguments)
+    }, e[i].l = 1 * new Date, o = a.createElement(n), c = a.getElementsByTagName(n)[0], o.async = 1, o.src = "//www.google-analytics.com/analytics.js", c.parentNode.insertBefore(o, c)
+}(window, document, "script", 0, "ga"), ga("create", "UA-629242-1", {cookieDomain: "auto"}), ga("require", "linkid", "linkid.js"), ga("set", "anonymizeIp", !0), ga("send", "pageview");</script>
+<!--! end of #wrapper -->
 <!--
 <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/plugins.js"></script>
 <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/script.js"></script>
 -->
 <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/cookiebanner.js"></script>
 <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/foot.js"></script>
-<jsp:invoke fragment="extradeferjs"/>
 <!-- end scripts-->
 
 <!-- Google Analytics details... -->
@@ -200,12 +231,3 @@
 -->
 </body>
 </html>
-<%
-    } catch (Throwable x) {
-        if (x instanceof FileNotFoundException || x.getCause() instanceof FileNotFoundException ) {
-            response.sendError(404);
-        } else {
-            throw x;
-        }
-    }
-%>

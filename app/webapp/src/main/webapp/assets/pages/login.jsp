@@ -42,10 +42,10 @@
         }
     }
 </script>
-<section class="grid_16"  style="padding-top:31px;padding-left: 26px;height:633px;">
+<section class="column medium-8"  style="padding-top:31px;padding-left: 26px;height:633px;">
     <iframe height="100%" width="100%" src="https://www.youtube.com/embed/ANr2PTVy7JA" frameborder="0" allowfullscreen=""></iframe>
 </section>
-<section class="grid_7 form">
+<section class="column medium-4 form">
     <div id="login-box">
         <h2>Please log in to Annotare</h2>
         <form name="login" method="POST">

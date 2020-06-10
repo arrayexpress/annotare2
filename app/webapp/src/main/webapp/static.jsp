@@ -101,31 +101,7 @@
 <compress:html enabled="true" removeComments="true" compressCss="true" compressJavaScript="false" yuiJsDisableOptimizations="true">
     <t:frontierpage>
         <jsp:attribute name="title">${pageTitle}Annotare &lt; EMBL-EBI</jsp:attribute>
-        <jsp:attribute name="localnav">
-            <ul class="grid_24" id="local-nav">
-                <li class="first"><a href="${pageContext.request.contextPath}/" title="Annotare ${project.version} rev.${buildNumber}">Home</a></li>
-                <li class="first"><a href="http://www.ebi.ac.uk/arrayexpress">Go to ArrayExpress</a></li>
-                <li${helpClass}><a href="${pageContext.request.contextPath}/help">Help</a></li>
-                <li class="last${aboutClass}"><a href="${pageContext.request.contextPath}/about">About Annotare</a></li>
-                <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
-                     add them here, and give them a class of "functional". Remember: you'll need a class of "last" for
-                     whichever one will show up last...
-                     For example: -->
-                <c:choose>
-                    <c:when test="${sessionScope.loggedin != null}">
-                        <li class="functional last"><a href="${pageContext.request.contextPath}/logout/" class="icon icon-functional login" data-icon="l">Logout</a></li>
-                        <li class="functional"><a href="${pageContext.request.contextPath}/account/" style="pointer-events: none; cursor: default;" class="icon icon-generic account" data-icon="M">${sessionScope.email}</a></li>
-                    </c:when>
-                    <c:otherwise>
-                        <li class="functional last${loginClass}"><a href="${pageContext.request.contextPath}/login/" class="icon icon-functional login" data-icon="l">Login</a></li>
-                        <li class="functional${signUpClass}"><a href="${pageContext.request.contextPath}/sign-up/" class="icon icon-functional register" data-icon="7">Register</a></li>
-                    </c:otherwise>
-                </c:choose>
-                    <%--<li class="functional"><a href="#" class="icon icon-generic feedback" data-icon="\">Feedback</a></li>--%>
-                <li class="functional last"><a href="${pageContext.request.contextPath}/about#contact" class="icon icon-generic" data-icon="\">Contact us</a></li>
-            </ul>
 
-        </jsp:attribute>
         <jsp:body>
             <t:analytics></t:analytics>
             <jsp:include page="/assets/pages/${param.pageName}"/>

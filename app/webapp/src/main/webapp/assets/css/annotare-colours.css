@@ -5,10 +5,14 @@
     your custom colour palette in a consistent manner */
 
 /* Links */
-a:link,
+/*a:link,
 a:visited {
     color: ${color.a3};
     border-bottom-color: ${color.a1};
+}*/
+
+.masthead, #ebi_search .button, .pagination .current {
+    background-color: #6C8CD5;
 }
 
 a:hover,
