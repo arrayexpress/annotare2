@@ -326,6 +326,7 @@ public class AeIntegrationWatchdog {
 
             logger.debug("Thread sleep has been kicked in for 2 days");
             TimeUnit.DAYS.sleep(2); // artificial delay to check for SQL expeception
+            logger.debug("Thread has woken up again. Hello World!");
 
             submission.setStatus(SubmissionStatus.IN_CURATION);
             submissionManager.save(submission);
