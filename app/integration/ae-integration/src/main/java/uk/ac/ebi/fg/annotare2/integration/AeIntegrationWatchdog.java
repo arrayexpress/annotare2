@@ -315,7 +315,7 @@ public class AeIntegrationWatchdog {
     }
 
     @Transactional(rollbackOn = {SubsTrackingException.class})
-    public void processSubmitted(Submission submission) throws SubsTrackingException {
+    public void processSubmitted(Submission submission) throws SubsTrackingException, InterruptedException {
         Pair<SubmissionOutcome, Integer> submissionOutcomeIntegerPair = submitSubmission(submission);
         SubmissionOutcome outcome = submissionOutcomeIntegerPair.getLeft();
         Integer substrackingId = submissionOutcomeIntegerPair.getRight();
@@ -323,6 +323,10 @@ public class AeIntegrationWatchdog {
             File exportDir = copyDataFiles(submission, substrackingId);
             addFilesToSubstracking(submission, substrackingId, exportDir);
             boolean hasResubmitted = SubmissionStatus.RESUBMITTED == submission.getStatus();
+
+            logger.debug("Thread sleep has been kicked in for 2 days");
+            TimeUnit.DAYS.sleep(2); // artificial delay to check for SQL expeception
+
             submission.setStatus(SubmissionStatus.IN_CURATION);
             submissionManager.save(submission);
 
