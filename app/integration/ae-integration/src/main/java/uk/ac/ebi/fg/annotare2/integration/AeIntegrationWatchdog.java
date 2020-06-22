@@ -324,8 +324,8 @@ public class AeIntegrationWatchdog {
             addFilesToSubstracking(submission, substrackingId, exportDir);
             boolean hasResubmitted = SubmissionStatus.RESUBMITTED == submission.getStatus();
 
-            logger.debug("Thread sleep has been kicked in for 30 hours");
-            TimeUnit.HOURS.sleep(30); // artificial delay to check for SQL expeception
+            logger.debug("Thread sleep has been kicked in for 24 hours");
+            TimeUnit.HOURS.sleep(24); // artificial delay to check for SQL expeception
             logger.debug("Thread has woken up again. Hello World!");
 
             submission.setStatus(SubmissionStatus.IN_CURATION);
