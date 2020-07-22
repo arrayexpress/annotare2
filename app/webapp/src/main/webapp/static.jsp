@@ -89,9 +89,15 @@
     div#data-protection-banner a {
         color: white;
     }
-    .row{
-        width: 50%;
-        margin: auto;
+
+    .icon-functional:before,
+    .icon-generic:before {
+        padding-right: 0.5rem;
+    }
+
+    section#main-content-area {
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
     }
 
     a#data-protection-agree {
