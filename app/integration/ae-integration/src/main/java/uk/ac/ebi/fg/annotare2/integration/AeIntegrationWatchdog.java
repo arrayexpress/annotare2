@@ -314,7 +314,6 @@ public class AeIntegrationWatchdog {
 
     }
 
-    @Transactional(rollbackOn = {SubsTrackingException.class})
     public void processSubmitted(Submission submission) throws SubsTrackingException, InterruptedException {
         Pair<SubmissionOutcome, Integer> submissionOutcomeIntegerPair = submitSubmission(submission);
         SubmissionOutcome outcome = submissionOutcomeIntegerPair.getLeft();
@@ -380,7 +379,8 @@ public class AeIntegrationWatchdog {
         }
     }
 
-    private void addFilesToSubstracking(Submission submission, Integer substrackingId, File exportDir) throws SubsTrackingException {
+    @Transactional(rollbackOn = {SubsTrackingException.class})
+    public void addFilesToSubstracking(Submission submission, Integer substrackingId, File exportDir) throws SubsTrackingException {
         Connection subsTrackingConnection = null;
 
         try {
@@ -619,7 +619,8 @@ public class AeIntegrationWatchdog {
         }
     }
 
-    private Pair<SubmissionOutcome, Integer> submitSubmission(Submission submission) throws SubsTrackingException {
+    @Transactional(rollbackOn = {SubsTrackingException.class})
+    public Pair<SubmissionOutcome, Integer> submitSubmission(Submission submission) throws SubsTrackingException {
 
         SubmissionOutcome result = SubmissionOutcome.SUBMISSION_FAILED;
         Connection subsTrackingConnection = null;
