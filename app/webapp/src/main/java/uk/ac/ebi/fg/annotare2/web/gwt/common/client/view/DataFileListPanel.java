@@ -100,8 +100,9 @@ public class DataFileListPanel extends SimpleLayoutPanel {
                     NotificationPopupPanel.error("Empty file name is not permitted.", true, false);
                     return false;
                 }
-                if (!value.matches("^[_a-zA-Z0-9\\-\\.]+$")) {
-                    NotificationPopupPanel.error("File name should only contain alphanumeric characters, underscores and dots.", true, false);
+                if (!value.matches("^(?!\\#)[_a-zA-Z0-9\\-\\.\\#]+$")) {
+                    NotificationPopupPanel.error("File name should only contain alphanumeric characters, underscores, dots and hash(#) symbol. " +
+                            "File name should not start with a hash(#) symbol.", true, false);
                     return false;
                 }
                 if (isDuplicated(value, rowIndex)) {
