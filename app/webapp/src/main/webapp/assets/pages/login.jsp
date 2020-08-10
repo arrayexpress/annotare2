@@ -43,7 +43,39 @@
     }
 </script>
 <section class="column medium-8"  style="padding-top:31px;padding-left: 26px;height:633px;">
-    <iframe height="100%" width="100%" src="https://www.youtube.com/embed/ANr2PTVy7JA" frameborder="0" allowfullscreen=""></iframe>
+    <div class="row">
+        <h3 style="color: #BF8F30;">Welcome to Annotare, the ArrayExpress submission tool</h3>
+        <p>Annotare is a tool for submitting functional genomics experiments,
+        microarray or next-generation sequencing, to <a href="https://www.ebi.ac.uk/arrayexpress">ArrayExpress</a> in
+            <a href="http://fged.org/projects/mage-tab/">MAGE-TAB</a> format.</p>
+    </div>
+    <div class="row">
+        <h3 style="color: #BF8F30;">Overview of the submission process</h3>
+    <p><img src="../assets/images/submission_overview_big.png" alt="submission_overview"/></p>
+    </div>
+    <div class="row">
+        <h4 style="color: #BF8F30;">Start here</h4>
+        <div id="further_info" class="row columns">
+            <div class="column medium-4">
+                <p>I am here for the first time or have a new data type to submit</p>
+                <p><a href="${pageContext.request.contextPath}/help" target="_blank">Submission Guide</a></p>
+            </div>
+            <div class="column medium-4">
+                <p>I want to change the release date or add publication details</p>
+                <p><a href="https://www.ebi.ac.uk/fg/acext/" target="_blank">Access control tool</a></p>
+            </div>
+            <div class="column medium-4">
+                <p>I want to add or delete data from my experiment</p>
+                <p><a href="${pageContext.request.contextPath}/help/after_sub_modify_data.html" target="_blank">Read more...</a></p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <h4 style="color: #BF8F30;">Questions? <a href="${pageContext.request.contextPath}/help" target="_blank">See full submission guide</a> or
+            <a href="https://www.ebi.ac.uk/training/online/course/arrayexpress-why-and-how-submit-your-data"
+               target="_blank">watch the video tutorial</a>
+        </h4>
+    </div>
 </section>
 <section class="column medium-4 form">
     <div id="login-box">

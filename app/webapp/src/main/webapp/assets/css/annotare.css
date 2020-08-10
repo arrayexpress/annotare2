@@ -103,3 +103,11 @@
     margin-right: -3px
 }
 
+#further_info div {
+    background-color: aliceblue;
+    padding-top: 1%;
+    padding-right: 1%;
+    border-right: 5px solid white;
+    margin-bottom: 0.5%;
+}
+
