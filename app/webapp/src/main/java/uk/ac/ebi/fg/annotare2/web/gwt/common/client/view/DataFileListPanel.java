@@ -101,8 +101,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
                     return false;
                 }
                 if (!value.matches("^(?!\\#)[_a-zA-Z0-9\\-\\.\\#]+$")) {
-                    NotificationPopupPanel.error("File name should only contain alphanumeric characters, underscores, dots and hash(#) symbol. " +
-                            "File name should not start with a hash(#) symbol.", true, false);
+                    NotificationPopupPanel.error("File names can not contain spaces or special characters (except '_', '-', '.', '#').", true, false);
                     return false;
                 }
                 if (isDuplicated(value, rowIndex)) {
