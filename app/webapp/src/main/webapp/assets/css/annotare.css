@@ -118,7 +118,12 @@
     font-weight: lighter;
 }
 
-#main-content-area section {
+section#main-content-area {
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
+}
+
+input.button.secondary,
+input.button.secondary:hover{
+    background-color: #6C8CD5;
 }

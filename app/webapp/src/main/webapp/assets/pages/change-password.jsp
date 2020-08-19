@@ -79,10 +79,10 @@
         <div class="btn-row right">
             <c:choose>
                 <c:when test="${requestScope.phase == 'email' && pageScope.userEmail != ''}">
-                    <input type="submit" class="submit" name="changePassword" value="Send" autofocus="autofocus"/>
+                    <input type="submit" class="button secondary float-right" name="changePassword" value="Send" autofocus="autofocus"/>
                 </c:when>
                 <c:otherwise>
-                    <input type="submit" class="submit" name="changePassword" value="Send"/>
+                    <input type="submit" class="button secondary float-right" name="changePassword" value="Send"/>
                 </c:otherwise>
             </c:choose>
             <input type="hidden" name="phase" value="${requestScope.phase}"/>

@@ -72,7 +72,9 @@
         </div>
         <div class="btn-row">
             <div>Already registered? Please <a href="${pageContext.request.contextPath}/login/">log in</a>.</div>
-            <div class="right"><input type="submit" class="submit" name="signup" value="Register" id="register" disabled /></div>
+            <div class="right">
+                <input type="submit" class="button secondary float-right" name="signup" value="Register" id="register" disabled />
+            </div>
         </div>
     </form>
 </section>
