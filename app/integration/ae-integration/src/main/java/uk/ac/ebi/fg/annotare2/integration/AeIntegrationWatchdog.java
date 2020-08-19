@@ -88,6 +88,7 @@ public class AeIntegrationWatchdog {
     private final Messenger messenger;
     private ScheduledExecutorService scheduler;
     private BlockingQueue<Long> submissionsBeingProcessed;
+    private final SubmissionStatusUpdater submissionStatusUpdater;
 
     private enum SubmissionOutcome {
         INITIAL_SUBMISSION_OK,
@@ -107,7 +108,8 @@ public class AeIntegrationWatchdog {
                                  DataFileManager dataFileManager,
                                  FileValidationService fileValidationService, FtpManager ftpManager,
                                  EfoSearch efoSearch,
-                                 Messenger messenger) {
+                                 Messenger messenger,
+                                 SubmissionStatusUpdater submissionStatusUpdater) {
         this.sessionFactory = sessionFactory;
         this.subsTracking = subsTracking;
         this.aeConnection = aeConnection;
@@ -122,6 +124,7 @@ public class AeIntegrationWatchdog {
         this.messenger = messenger;
         this.scheduler = Executors.newScheduledThreadPool(properties.getWatchdogThreadCount());
         this.submissionsBeingProcessed = new ArrayBlockingQueue<>(properties.getWatchdogThreadCount());
+        this.submissionStatusUpdater = submissionStatusUpdater;
     }
 
     @PostConstruct
@@ -327,8 +330,7 @@ public class AeIntegrationWatchdog {
             MINUTES.sleep(481); // artificial delay to check for SQL expeception
             logger.debug("Thread has woken up again. Hello World!");
 
-            submission.setStatus(SubmissionStatus.IN_CURATION);
-            submissionManager.save(submission);
+            submissionStatusUpdater.add(submission);
 
             if (properties.isSubsTrackingEnabled()) {
                 String otrsTemplate = (SubmissionOutcome.INITIAL_SUBMISSION_OK == outcome) ?
