@@ -104,10 +104,21 @@
 }
 
 #further_info div {
-    background-color: aliceblue;
+    background-color: rgb(243, 247, 251);
     padding-top: 1%;
     padding-right: 1%;
     border-right: 5px solid white;
     margin-bottom: 0.5%;
 }
 
+#homepage-left-section h3,
+#homepage-left-section h4,
+#homepage-left-section h5 {
+    color: #BF8F30;
+    font-weight: lighter;
+}
+
+#main-content-area section {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}

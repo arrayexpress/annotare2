@@ -95,11 +95,6 @@
         padding-right: 0.5rem;
     }
 
-    section#main-content-area {
-        padding-top: 1.5rem;
-        padding-bottom: 1.5rem;
-    }
-
     a#data-protection-agree {
         float: right;
     }
