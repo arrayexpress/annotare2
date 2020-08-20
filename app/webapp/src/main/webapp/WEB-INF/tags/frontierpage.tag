@@ -80,7 +80,7 @@
 
     <link rel="stylesheet" href="https://ebi.emblstatic.net/web_guidelines/EBI-Framework/v1.3/css/ebi-global.css"
           type="text/css" media="all"/>
-    <link rel="stylesheet" href="https://dev.ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.2/fonts.css"
+    <link rel="stylesheet" href="https://dev.ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.3/fonts.css"
           type="text/css" media="all"/>
 
     <!-- Use this CSS file for any custom styling -->
@@ -144,6 +144,8 @@
                          whichever one will show up last...
                          For example: -->
                     <ul class="dropdown menu float-right" data-description="functional">
+                        <li class="functional last"><a href="${pageContext.request.contextPath}/about#contact"
+                                                       class="icon icon-generic" data-icon="\">Contact us</a></li>
                         <c:choose>
                             <c:when test="${sessionScope.loggedin != null}">
                                 <li class="functional last"><a href="${pageContext.request.contextPath}/logout/"
@@ -164,8 +166,7 @@
                             </c:otherwise>
                         </c:choose>
                         <%--<li class="functional"><a href="#" class="icon icon-generic feedback" data-icon="\">Feedback</a></li>--%>
-                        <li class="functional last"><a href="${pageContext.request.contextPath}/about#contact"
-                                                       class="icon icon-generic" data-icon="\">Contact us</a></li>
+
                     </ul>
                 </nav>
                 <!-- /local-nav -->
