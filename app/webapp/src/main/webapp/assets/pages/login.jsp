@@ -87,8 +87,7 @@
     </div>
 </section>
 <section class="column medium-4 form">
-    <div class="row">
-        <div id="login-box" class="medium-12 columns">
+        <div id="login-box">
             <h2>Please log in to Annotare</h2>
             <form name="login" method="POST">
                 <div>
@@ -134,14 +133,11 @@
                 </div>
 
             </form>
-        </div>
     </div>
-    <div class="row">
-        <div id="twitter-box" class="medium-12 columns">
+        <div id="twitter-box">
             <a class="twitter-timeline" data-height="375" data-chrome="nofooter noborders transparent" data-dnt="true"
                data-theme="light" data-link-color="#6C8CD5"
                href="https://twitter.com/ArrayExpressEBI">Tweets by ArrayExpressEBI</a>
             <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
         </div>
-    </div>
 </section>
