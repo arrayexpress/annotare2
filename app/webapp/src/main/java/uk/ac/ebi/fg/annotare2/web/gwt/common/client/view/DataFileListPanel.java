@@ -90,7 +90,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         grid.setColumnWidth(checkboxColumn, 40, Style.Unit.PX);
 
         emptyTableWidget = new HTML("<p><br/></p><p><b style=\"font-size:18px;\">Upload Files</b><br/><br/>Drag-and-drop files here to start upload<br/> or press the \"Upload Files\" button.<br/><br/></p>"+
-        "<p><i class=\"fa fa-warning\"></i>File names can not contain spaces or special characters (except '_', '-', '.', '#').</p>");
+        "<p><i class=\"fa fa-warning\"></i>File names can not contain spaces or special characters except <br/>('_', '-', '.', '#')</p>");
         emptyTableWidget.addStyleName("empty");
 
         final EditSuggestCell nameCell = new EditSuggestCell(null) {
