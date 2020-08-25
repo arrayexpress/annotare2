@@ -42,7 +42,7 @@
         }
     }
 </script>
-<section id="homepage-left-section" class="column medium-8" style="padding-top:31px;padding-left: 26px;height:633px;">
+<section id="homepage-left-section" class="column medium-8" style="padding-top:31px;padding-left: 26px;">
     <div class="row">
         <h4>Welcome to Annotare, the ArrayExpress submission tool</h4>
         <p>Annotare is a tool for submitting functional genomics experiments,
@@ -87,55 +87,61 @@
     </div>
 </section>
 <section class="column medium-4 form">
-    <div id="login-box">
-        <h2>Please log in to Annotare</h2>
-        <form name="login" method="POST">
-            <div>
-                <c:out value="${sessionScope.info}"/>
-                <c:remove var="info" scope="session"/>
-            </div>
-            <div class="error">${dummyErrors}</div>
-            <div>
-                <label for="email">Email address</label>
-            </div>
-            <div>
-                <c:choose>
-                    <c:when test="${email != ''}">
-                        <input type="text" id="email" name="email" value="${f:escapeXml(email)}" onblur="fixEmail()"/>
-                    </c:when>
-                    <c:otherwise>
-                        <input type="text" id="email" name="email" autofocus="autofocus" onblur="fixEmail()"/>
-                    </c:otherwise>
-                </c:choose>
-            </div>
-            <div class="error">${emailErrors}</div>
-            <div><label for="password">Password</label></div>
-            <div>
-                <c:choose>
-                    <c:when test="${email != ''}">
-                        <input type="password" name="password" id="password" autofocus="autofocus"/>
-                    </c:when>
-                    <c:otherwise>
-                        <input type="password" name="password" id="password"/>
-                    </c:otherwise>
-                </c:choose>
-            </div>
-            <div class="error">${passwordErrors}</div>
-            <div class="btn-row">
-                <div><a href="${pageContext.request.contextPath}/change-password/">Forgot your password?</a></div>
-                <div class="right">
-                    <input type="submit" name="signIn" value="Log in" class="button secondary float-right"/>
+    <div class="row">
+        <div id="login-box" class="medium-12 columns">
+            <h2>Please log in to Annotare</h2>
+            <form name="login" method="POST">
+                <div>
+                    <c:out value="${sessionScope.info}"/>
+                    <c:remove var="info" scope="session"/>
                 </div>
-            </div>
-            <div class="last-row">Don't have an account? Please <a href="${pageContext.request.contextPath}/sign-up/">register</a>.
-            </div>
+                <div class="error">${dummyErrors}</div>
+                <div>
+                    <label for="email">Email address</label>
+                </div>
+                <div>
+                    <c:choose>
+                        <c:when test="${email != ''}">
+                            <input type="text" id="email" name="email" value="${f:escapeXml(email)}"
+                                   onblur="fixEmail()"/>
+                        </c:when>
+                        <c:otherwise>
+                            <input type="text" id="email" name="email" autofocus="autofocus" onblur="fixEmail()"/>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+                <div class="error">${emailErrors}</div>
+                <div><label for="password">Password</label></div>
+                <div>
+                    <c:choose>
+                        <c:when test="${email != ''}">
+                            <input type="password" name="password" id="password" autofocus="autofocus"/>
+                        </c:when>
+                        <c:otherwise>
+                            <input type="password" name="password" id="password"/>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+                <div class="error">${passwordErrors}</div>
+                <div class="btn-row">
+                    <div><a href="${pageContext.request.contextPath}/change-password/">Forgot your password?</a></div>
+                    <div class="right">
+                        <input type="submit" name="signIn" value="Log in" class="button secondary float-right"/>
+                    </div>
+                </div>
+                <div class="last-row">Don't have an account? Please <a
+                        href="${pageContext.request.contextPath}/sign-up/">register</a>.
+                </div>
 
-        </form>
+            </form>
+        </div>
     </div>
-    <div id="twitter-box">
-        <a class="twitter-timeline" data-height="375" data-chrome="nofooter noborders transparent" data-dnt="true"
-           data-theme="light" data-link-color="#6C8CD5"
-           href="https://twitter.com/ArrayExpressEBI">Tweets by ArrayExpressEBI</a>
-        <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <div class="row">
+        <div id="twitter-box" class="medium-12 columns">
+            <a class="twitter-timeline" data-height="375" data-chrome="nofooter noborders transparent" data-dnt="true"
+               data-theme="light" data-link-color="#6C8CD5"
+               href="https://twitter.com/ArrayExpressEBI">Tweets by ArrayExpressEBI</a>
+            <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+        </div>
     </div>
 </section>
