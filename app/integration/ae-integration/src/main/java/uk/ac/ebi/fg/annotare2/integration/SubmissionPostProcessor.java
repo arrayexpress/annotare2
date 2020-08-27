@@ -65,7 +65,7 @@ public class SubmissionPostProcessor {
             }
         };
 
-        scheduler.scheduleAtFixedRate(updateStatus,1000, 1000, TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(updateStatus,100, 1000, TimeUnit.MILLISECONDS);
     }
 
     @Transactional
