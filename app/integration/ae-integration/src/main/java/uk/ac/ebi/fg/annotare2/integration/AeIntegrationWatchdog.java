@@ -88,9 +88,9 @@ public class AeIntegrationWatchdog {
     private final Messenger messenger;
     private ScheduledExecutorService scheduler;
     private BlockingQueue<Long> submissionsBeingProcessed;
-    private final SubmissionStatusUpdater submissionStatusUpdater;
+    private final SubmissionPostProcessor submissionPostProcessor;
 
-    private enum SubmissionOutcome {
+    enum SubmissionOutcome {
         INITIAL_SUBMISSION_OK,
         REPEAT_SUBMISSION_OK,
         SUBMISSION_FAILED
@@ -109,7 +109,7 @@ public class AeIntegrationWatchdog {
                                  FileValidationService fileValidationService, FtpManager ftpManager,
                                  EfoSearch efoSearch,
                                  Messenger messenger,
-                                 SubmissionStatusUpdater submissionStatusUpdater) {
+                                 SubmissionPostProcessor submissionPostProcessor) {
         this.sessionFactory = sessionFactory;
         this.subsTracking = subsTracking;
         this.aeConnection = aeConnection;
@@ -124,7 +124,7 @@ public class AeIntegrationWatchdog {
         this.messenger = messenger;
         this.scheduler = Executors.newScheduledThreadPool(properties.getWatchdogThreadCount());
         this.submissionsBeingProcessed = new ArrayBlockingQueue<>(properties.getWatchdogThreadCount());
-        this.submissionStatusUpdater = submissionStatusUpdater;
+        this.submissionPostProcessor = submissionPostProcessor;
     }
 
     @PostConstruct
@@ -324,60 +324,14 @@ public class AeIntegrationWatchdog {
         if (SubmissionOutcome.SUBMISSION_FAILED != outcome) {
             File exportDir = copyDataFiles(submission, substrackingId);
             addFilesToSubstracking(submission, substrackingId, exportDir);
-            boolean hasResubmitted = SubmissionStatus.RESUBMITTED == submission.getStatus();
 
             logger.debug("Thread sleep has been kicked in for 8 hours and 1 mins");
             MINUTES.sleep(481); // artificial delay to check for SQL expeception
             logger.debug("Thread has woken up again. Hello World!");
 
-            submissionStatusUpdater.add(submission);
+            submissionPostProcessor.add(Pair.of(submission, outcome));
 
-            if (properties.isSubsTrackingEnabled()) {
-                String otrsTemplate = (SubmissionOutcome.INITIAL_SUBMISSION_OK == outcome) ?
-                        EmailTemplates.INITIAL_SUBMISSION_OTRS_TEMPLATE : EmailTemplates.REPEAT_SUBMISSION_OTRS_TEMPLATE;
 
-                String submissionType = "";
-                if (submission instanceof ExperimentSubmission) {
-                    try {
-                        ExperimentProfile exp = ((ExperimentSubmission) submission).getExperimentProfile();
-                        if (exp.getType().isSequencing()) {
-                            submissionType = "HTS";
-                        } else {
-                            submissionType = "MA";
-                        }
-                    } catch (DataSerializationException x) {
-                    }
-                }
-
-                sendEmail(
-                        otrsTemplate,
-                        new ImmutableMap.Builder<String, String>()
-                                .put("to.name", submission.getCreatedBy().getName())
-                                .put("to.email", submission.getCreatedBy().getEmail())
-                                .put("submission.id", String.valueOf(submission.getId()))
-                                .put("submission.title", submission.getTitle())
-                                .put("submission.date", submission.getUpdated().toString())
-                                .put("submission.type", submissionType)
-                                .put("subsTracking.user", properties.getSubsTrackingUser())
-                                .put("subsTracking.experiment.type", properties.getSubsTrackingExperimentType())
-                                .put("subsTracking.experiment.id", String.valueOf(submission.getSubsTrackingId()))
-                                .build(),
-                        submission
-                );
-            }
-            if (!hasResubmitted) {
-                sendEmail(
-                        EmailTemplates.INITIAL_SUBMISSION_TEMPLATE,
-                        new ImmutableMap.Builder<String, String>()
-                                .put("to.name", submission.getCreatedBy().getName())
-                                .put("to.email", submission.getCreatedBy().getEmail())
-                                .put("submission.id", String.valueOf(submission.getId()))
-                                .put("submission.title", submission.getTitle())
-                                .put("submission.date", submission.getUpdated().toString())
-                                .build(),
-                        submission
-                );
-            }
         }
     }
 
