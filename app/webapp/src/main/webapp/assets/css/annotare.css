@@ -123,6 +123,64 @@ section#main-content-area {
     padding-bottom: 1.5rem;
 }
 
+#annotare-help div.accordion {
+    background-color: white;
+    color: #4d4d4d;
+    cursor: pointer;
+    padding: 18px 0px 0px 18px;
+    #width: 900px;
+    text-align: left;
+    border: 1px solid #ddd;
+    #margin-top: 9px;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+#annotare-help div.accordion.active, div.accordion:hover {
+    background-color: #eee;
+}
+
+/* Style the accordion panel. Note: hidden by default */
+#annotare-help div.panel {
+    padding: 0 18px;
+    background-color: white;
+    #width: 900px;
+    border: 1px solid #ddd;
+    display: none;
+}
+
+/* The "show" class is added to the accordion panel when the user clicks on one of the buttons. This will show the panel content */
+#annotare-help div.panel.show {
+    display: block;
+}
+
+#annotare-help h1 { color: #1240AB; }
+
+#annotare-help h2 { color: #BF8F30; }
+
+#annotare-help h3 {
+    font-size: 26px;
+    color: #207A7A;
+}
+
+#annotare-help h4 { color: #777777; }
+
+#annotare-help img {
+    width: 70%;
+    height: auto;
+    border: 1px solid #ddd;
+}
+
+#annotare-help ul.vertical li a {
+    color: #207A7A;
+    font-weight:bold;
+}
+
+#annotare-help ul.vertical li li a {
+    font-weight: normal;
+    color: black
+}
+
+
 input.button.secondary,
 input.button.secondary:hover{
     background-color: #6C8CD5;

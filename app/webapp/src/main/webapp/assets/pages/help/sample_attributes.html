@@ -1,5 +1,18 @@
-<section id="annotare-help" class="grid_18 alpha">
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sample attributes &lt; Guide &lt; Annotare &lt; EMBL-EBI</title>
+
+</head>
+
+<body>
+
+<section id="annotare-help">
+  <div class="small-12 medium-9 columns">
+
     <h2>Sample attributes</h2>
+    <br>
     <a id="annotate"></a><h3>Annotate samples, nominate experimental variable(s)</h3>
     <p>Some samples would have been created for you automatically, based on the number of hybridizations/samples
     you quoted when <a href="getting_started.html#start_new_sub">creating the experiment submission</a>.
@@ -9,7 +22,7 @@
     icon <img src="../assets/images/box_icon.png" alt="checkbox" style="width: 2%; border: solid white;"/> and click <code>Delete Samples</code>.</p>
     <p>Once you've created the correct number of samples, describe them with attribute information. Click
     <code>Sample Attributes and Variables...</code>. A new page would pop up:</p>
-    <p><img src="../assets/images/sample_attributes.png" alt="sample_attributes" style="width:70%;border:2px solid #385930"></p>
+    <p><img src="../assets/images/sample_attributes.png" alt="sample_attributes" style="width:70%;"></p>
 
     <p>For each attribute selected, if it is also the main variable
     under investigation or tested in the experiment, check the <code>Experimental Variable</code> box.
@@ -18,90 +31,98 @@
     both a sample attribute and the experimental variable.
     </p>
     <p>You may find some terms already pre-selected as experimental variable based on your choices for experimental designs (in the <a href="getting_started.html/#start_new_sub">submission setup</a> or <a href="describe_exp.html#exp_design">General Information</a> section). You can edit or remove these suggested variables here or <a href="describe_exp.html#exp_design">modify the Experimental Design terms</a>.</p>
-    <br>
+    <p>&nbsp;</p>
+    <hr />
 
-    <a id="discrete_terms"></a>
-    <h3>Annotate with discrete terms</h3>
+    <h3 id="discrete_terms">Annotate with discrete terms</h3>
     <p>Try to annotate your samples with as many discrete terms as possible, as this will allow your dataset to be
     searched more efficiently and flexibly once it goes public. Think of the discrete terms as potential building
     blocks of a user's query when mining ArrayExpress for your dataset.</p>
-    <p><img src="../assets/images/use_discrete_attribute_terms.png" alt="discrete_attributes" style="width:70%;border:2px solid #385930"></p>
+    <p><img src="../assets/images/use_discrete_attribute_terms.png" alt="discrete_attributes" style="width:70%;"></p>
 
-    <br>
+    <p>&nbsp;</p>
+    <hr />
+
     <h3 id="protocols">Protocols</h3>
     <p>Protocols describe your sample growth/treatment ("wet-lab") and data processing ("dry-lab") procedures.
     Click <code>Add Protocol</code> to see the list of mandatory and optional protocol types. You can start filling the description in the dialogue and click <code>Create</code> to add the protocols to the list. You can modify the text or add other types of protocols any time. Multiple protocols of the same type can be created too.     </p>
-    <p><img src="../assets/images/protocols_add.png" alt="add_protocol" style="width:70%;border:2px solid #385930"/></p>
+    <p><img src="../assets/images/protocols_add.png" alt="add_protocol" style="width:70%;"/></p>
 
     <p>You may add parameters for each protocol by clicking on the blank space under the heading.  <code>Performer</code> and <code>Hardware</code> are mandatory fields for the "nucleic acid sequencing protocol". You can also change the protocol name in the same way.</p>
-    <p><img src="../assets/images/protocols_sequencing.png" alt="describe_sequencing_protocol" style="width:70%;border:2px solid #385930" /></p>
+    <p><img src="../assets/images/protocols_sequencing.png" alt="describe_sequencing_protocol" style="width:70%;" /></p>
 
     <p>By default all protocols are assigned to all samples but by clicking <code>Assign</code>
     you can change the samples assigned to each protocol.</p>
-    <p><img src="../assets/images/protocols_assign.png" alt="assign_protocols" style="width:70%;border:2px solid #385930" /></p>
+    <p><img src="../assets/images/protocols_assign.png" alt="assign_protocols" style="width:70%;" /></p>
+    <br>
+  </div>
 
+  <!-- side navigation -->
+  <div class="small-12 medium-3 columns sidebar">
+    <ul class="vertical menu accordion-menu" data-accordion-menu>
+      <li><a href="index.html" class="active" >Submission guide</a></li>
+      <li><a>Before you start</a>
+        <ul class="menu vertical nested">
+          <li><a href="what_to_submit.html">Submission overview</a></li>
+          <li><a href="">Accepted file formats</a>
+            <ul>
+              <li><a href="accepted_raw_ma_file_formats.html">Microarray raw data</a></li>
+              <li><a href="accepted_processed_ma_file_formats.html">Microarray processed data</a></li>
+              <li><a href="accepted_sequencing_file_formats.html#raw_data_files">Sequencing raw data</a></li>
+              <li><a href="accepted_sequencing_file_formats.html#processed_data">Sequencing processed data</a></li>
+            </ul>
+          </li>
+          <li><a href="pre-submission_checklist.html">Pre-submission checklist</a></li>
+          <li><a href="adf_submissions_overview.html">Array design submissions</a></li>
+        </ul>
+      </li>
+      <li><a>Annotare step-by-step</a>
+        <ul class="menu vertical nested is-active">
+          <li><a href="getting_started.html">Getting started</a></li>
+          <li><a href="time_saving_features.html">Time-saving features</a></li>
+          <li><a href="describe_exp.html">Describe experiment</a></li>
+          <li><a class="active" href="sample_attributes.html">Sample attributes and protocols</a>
+            <ul class="menu vertical nested is-active">
+              <li><a href="sample_attributes.html#annotate">Annotate samples, nominate experimental variable(s)</a></li>
+              <li><a href="sample_attributes.html#discrete_terms">Annotate with discrete terms</a></li>
+              <li><a href="sample_attributes.html#protocols">Protocols</a></li>
+            </ul>
+          </li>
+          <li><a href="">Technology-specific details</a>
+            <ul>
+              <li><a href="seq_lib_spec.html">Sequencing library information</a></li>
+              <li><a href="single-cell_submission_guide.html">Single cell information</a></li>
+              <li><a href="two_color_ma.html">Two-colour experiments</a></li>
+            </ul>
+          </li>
+          <li><a href="">Upload and assign files</a>
+            <ul>
+              <li><a href="file_upload.html#direct">Direct upload</a></li>
+              <li><a href="ftp_upload.html">FTP/Aspera upload</a></li>
+              <li><a href="file_upload.html#ftp">Import FTP/Aspera uploaded files</a></li>
+              <li><a href="assign_files.html">Assign files</a></li>
+            </ul>
+          </li>
+          <li><a href="">Validate and submit</a>
+            <ul>
+              <li><a href="validate_exp.html#validate">What is validation?</a></li>
+              <li><a href="submit_exp.html">Submit, and what happens next?</a></li>
+              <li><a href="submit_exp.html#save_sub">Saving a copy of your submission</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="">After submission</a>
+        <ul class="menu vertical nested ">
+          <li><a href="after_sub_private_access.html">Access private experiments</a></li>
+          <li><a href="after_sub_modify_data.html">Modify or remove an existing experiment</a></li>
+          <li><a href="after_sub_data_availability.html">Data availability and release policy</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div> <!-- /medium-3 -->
 
 </section>
-<aside class="grid_6 omega">
-    <h3>Annotare Guide</h3>
-    <ol id="secondary-nav">
-        <li><h4>Getting started</h4>
-            <ul>
-                <li><a href="getting_started.html#register">Register for submission account</a></li>
-                <li><a href="getting_started.html#start_new_sub">Start a new submission</a></li>
-                <li><a href="getting_started.html#sub_status">Understand submission status</a></li>
-                <li><a href="getting_started.html#delete_sub">Delete a submission</a></li>
-            </ul>
-        </li>
-        <li><h4>Describe experiment</h4>
-            <ul>
-                <li><a href="describe_exp.html#expt_bg">General Information</a></li>
-                <li><a href="describe_exp.html#remain_anonymous">Enable anonymity</a></li>
-                <li><a href="describe_exp.html#contact_citation">Provide contact details</a></li>
-	              <li><a href="describe_exp.html#publications">Add publications</a></li>
-            </ul>
-        </li>
-        <li><h4>Time-saving features</h4>
-            <ul>
-                <li><a href="time_saving_features.html#fill_down_import">Fill-down and import values</a></li>
-                <li><a href="time_saving_features.html#upload_multiple_files">Upload and assign multiple files in one go</a></li>
-            </ul>
-        </li>
-        <li class="active"><h4>Sample attributes</h4>
-            <ul>
-                <li><a href="sample_attributes.html#annotate">Annotate samples, nominate experimental variable(s)</a></li>
-                <li><a href="sample_attributes.html#discrete_terms">Annotate with discrete terms</a></li>
-                <li><a href="sample_attributes.html#protocols">Protocols</a></li>
-            </ul>
-        </li>
-        <li><h4>Microarray experiment</h4>
-            <ul>
-                <li><a href="accepted_raw_ma_file_formats.html">Accepted raw file types</a></li>
-                <li><a href="accepted_processed_ma_file_formats.html">Accepted processed file formats</a></li>
-                <li><a href="two_color_ma.html">Two-colour experiments</a></li>
-            </ul>
-        </li>
-        <li><h4>Sequencing experiment</h4>
-            <ul>
-                <li><a href="/arrayexpress/help/UHTS_submissions.html#DataTypes">Accepted data types</a></li>
-                <li><a href="/arrayexpress/help/UHTS_submissions.html#HowToSubmit">How to prepare raw files</a></li>
-                <li><a href="seq_lib_spec.html">Provide library information</a></li>
-                <li><a href="/arrayexpress/help/UHTS_submissions.html#processed_data">Accepted processed file formats</a></li>
-            </ul>
-        </li>
-        <li><h4>Upload files and assign to samples</h4>
-            <ul>
-                <li><a href="file_upload.html#direct">Direct upload</a></li>
-                <li><a href="file_upload.html#ftp">FTP/Aspera upload</a></li>
-                <li><a href="assign_files.html">Assign files</a></li>
-            </ul>
-        </li>
-        <li><h4>Validate and submit</h4>
-            <ul>
-                <li><a href="validate_exp.html#validate">What is validation?</a></li>
-                <li><a href="submit_exp.html">Submit, and what happens next?</a></li>
-		            <li><a href="submit_exp.html#save_sub">Saving a copy of your submission</a></li>
-            </ul>
-        </li>
-    </ol>
-</aside>
+
+</body>
+</html>

@@ -1,5 +1,18 @@
-<section id="annotare-help" class="grid_18 alpha">
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Upload files &lt; Guide &lt; Annotare &lt; EMBL-EBI</title>
+
+</head>
+
+<body>
+
+<section id="annotare-help">
+  <div class="small-12 medium-9 columns">
+
     <h2>Upload files</h2>
+    <br>
     <h3 id="direct">Direct upload</h3>
     <p>This is available for all experiments, regardless of number of files and files sizes. Make sure you have read the
     <a href="accepted_raw_ma_file_formats.html">accepted raw file types</a> and
@@ -11,8 +24,9 @@
     populating multiple rows of file names using <code>Paste Into Column</code> button.
         <img src="../assets/images/upload_direct.png" alt="upload"/>
     </p>
-    <br>
-    <h3 id="ftp">FTP upload</h3>
+    <p>&nbsp;</p>
+    <hr />
+    <h3 id="ftp">FTP/Aspera upload</h3>
     <p>This is an alternative upload route for large files or submissions with more than 1000 files.</p>
     <ol>
         <li>Before you start uploading any files, you must calculate the "MD5 checksum" for each file.  The checksum is
@@ -23,100 +37,75 @@
         these: <a href="http://www.winmd5.com/">Windows user example</a>,
         <a href="http://www.macappguide.com/2009/04/28/quick-tip-check-md5sum-in-os-x/">Mac user example</a>,
         <a href="http://heatware.net/linux-unix/how-to-create-md5-checksums-and-validate-a-file-in-linux/">Linux user example</a>.</li><br>
-        <li>Follow <a href="/arrayexpress/help/ftp_upload.html">these instructions to transfer the files</a>.</li><br>
-        <li>Click <code>FTP Upload...</code> to import/register your files with their MD5 checksums.</li><br>
+        <li>Follow <a href="ftp_upload.html">these instructions to transfer the files</a>.</li><br>
+        <li>Click <code>FTP/Aspera Upload...</code> to import/register your files with their MD5 checksums.</li><br>
         <li>Proceed to assign files to your samples.  For paired-end experiments, you can assign multiple raw read files
         per sample; simply create two <code>Raw Data File</code> columns with the <code>Assign Files...</code> button. Don't forget that you can <a href="time_saving_features.html#import">copy and paste</a> file names down a column using the <code>Paste Into Column</code> button.</li>
     </ol>
     <p><img src="../assets/images/upload_ftp.png" alt="upload" /></p>
     <br>
-    <h3 id="aspera">Aspera upload</h3>
-    <p>Aspera is a commercial file transfer protocol that provides better transfer speeds than FTP over long distances. For short distance file transfers we recommend the use of FTP.</p>
-    <ol>
-        <li>
-            Download Aspera Command Line client <a href="http://downloads.asperasoft.com/en/downloads/62" target="_blank">here</a> (choose the required platform)
-        </li>
-        <br>
-        <li>
-            Once the tool has been setup then enter the following command:
-            <br>
-            <br>
-            <code>
-                <strong>
-                    ascp -P 33001 &lt;yourfile.txt&gt; aexpress@fasp.ebi.ac.uk:&lt;your upload directory&gt;&#47;&lt;yourfile.txt&gt;<br>
-                </strong>
-            </code><br>
-            You can find your upload directory from Annotare under <code>"Assign data files"</code> by clicking on <code>"FTP upload..."</code>. It should look similar to this:
-                <code>abcd1efg-hijk2lmno3pqr</code>.<br>
-                <br>
-                When prompted for password enter this: <code><strong>aexpress1</strong></code>
-        </li>
-        <br>
-        <li>Proceed to import the uploaded files to your submission, as described for FTP upload above, by clicking on <code>"FTP upload..."</code>.</li>
-    </ol>
+  </div>
+
+  <!-- side navigation -->
+  <div class="small-12 medium-3 columns sidebar">
+    <ul class="vertical menu accordion-menu" data-accordion-menu>
+      <li><a href="index.html" class="active" >Submission guide</a></li>
+      <li><a>Before you start</a>
+        <ul class="menu vertical nested">
+          <li><a href="what_to_submit.html">Submission overview</a></li>
+          <li><a href="">Accepted file formats</a>
+            <ul>
+              <li><a href="accepted_raw_ma_file_formats.html">Microarray raw data</a></li>
+              <li><a href="accepted_processed_ma_file_formats.html">Microarray processed data</a></li>
+              <li><a href="accepted_sequencing_file_formats.html#raw_data_files">Sequencing raw data</a></li>
+              <li><a href="accepted_sequencing_file_formats.html#processed_data">Sequencing processed data</a></li>
+            </ul>
+          </li>
+          <li><a href="pre-submission_checklist.html">Pre-submission checklist</a></li>
+          <li><a href="adf_submissions_overview.html">Array design submissions</a></li>
+        </ul>
+      </li>
+      <li><a>Annotare step-by-step</a>
+        <ul class="menu vertical nested is-active">
+          <li><a href="getting_started.html">Getting started</a></li>
+          <li><a href="time_saving_features.html">Time-saving features</a></li>
+          <li><a href="describe_exp.html">Describe experiment</a></li>
+          <li><a href="sample_attributes.html">Sample attributes and protocols</a></li>
+          <li><a href="">Technology-specific details</a>
+            <ul class="menu vertical nested">
+              <li><a href="seq_lib_spec.html">Sequencing library information</a></li>
+              <li><a href="single-cell_submission_guide.html">Single cell information</a></li>
+              <li><a href="two_color_ma.html">Two-colour experiments</a></li>
+            </ul>
+          </li>
+          <li><a href="">Upload and assign files</a>
+            <ul class="menu vertical nested is-active">
+              <li><a class="active" href="file_upload.html#direct">Direct upload</a></li>
+              <li><a href="ftp_upload.html">FTP/Aspera upload</a></li>
+              <li><a class="active" href="file_upload.html#ftp">Import FTP/Aspera uploaded files</a></li>
+              <li><a href="assign_files.html">Assign files</a></li>
+            </ul>
+          </li>
+          <li><a href="">Validate and submit</a>
+            <ul>
+              <li><a href="validate_exp.html#validate">What is validation?</a></li>
+              <li><a href="submit_exp.html">Submit, and what happens next?</a></li>
+              <li><a href="submit_exp.html#save_sub">Saving a copy of your submission</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="">After submission</a>
+        <ul class="menu vertical nested ">
+          <li><a href="after_sub_private_access.html">Access private experiments</a></li>
+          <li><a href="after_sub_modify_data.html">Modify or remove an existing experiment</a></li>
+          <li><a href="after_sub_data_availability.html">Data availability and release policy</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div> <!-- /medium-3 -->
 
 </section>
 
-<aside class="grid_6 omega">
-    <h3>Annotare Guide</h3>
-    <ol id="secondary-nav">
-        <li><h4>Getting started</h4>
-            <ul>
-                <li><a href="getting_started.html#register">Register for submission account</a></li>
-                <li><a href="getting_started.html#start_new_sub">Start a new submission</a></li>
-                <li><a href="getting_started.html#sub_status">Understand submission status</a></li>
-                <li><a href="getting_started.html#delete_sub">Delete a submission</a></li>
-            </ul>
-        </li>
-        <li><h4>Describe experiment</h4>
-            <ul>
-                <li><a href="describe_exp.html#expt_bg">General Information</a></li>
-                <li><a href="describe_exp.html#remain_anonymous">Enable anonymity</a></li>
-                <li><a href="describe_exp.html#contact_citation">Provide contact details</a></li>
-	              <li><a href="describe_exp.html#publications">Add publications</a></li>
-            </ul>
-        </li>
-        <li><h4>Time-saving features</h4>
-            <ul>
-                <li><a href="time_saving_features.html#fill_down_import">Fill-down and import values</a></li>
-                <li><a href="time_saving_features.html#upload_multiple_files">Upload and assign multiple files in one go</a></li>
-            </ul>
-        </li>
-        <li><h4>Sample attributes</h4>
-            <ul>
-                <li><a href="sample_attributes.html#annotate">Annotate samples, nominate experimental variable(s)</a></li>
-                <li><a href="sample_attributes.html#discrete_terms">Annotate with discrete terms</a></li>
-                <li><a href="sample_attributes.html#protocols">Protocols</a></li>
-            </ul>
-        </li>
-        <li><h4>Microarray experiment</h4>
-            <ul>
-                <li><a href="accepted_raw_ma_file_formats.html">Accepted raw file types</a></li>
-                <li><a href="accepted_processed_ma_file_formats.html">Accepted processed file formats</a></li>
-                <li><a href="two_color_ma.html">Two-colour experiments</a></li>
-            </ul>
-        </li>
-        <li><h4>Sequencing experiment</h4>
-            <ul>
-                <li><a href="/arrayexpress/help/UHTS_submissions.html#DataTypes">Accepted data types</a></li>
-                <li><a href="/arrayexpress/help/UHTS_submissions.html#HowToSubmit">How to prepare raw files</a></li>
-                <li><a href="seq_lib_spec.html">Provide library information</a></li>
-                <li><a href="/arrayexpress/help/UHTS_submissions.html#processed_data">Accepted processed file formats</a></li>
-            </ul>
-        </li>
-        <li><h4>Upload files and assign to samples</h4>
-            <ul>
-                <li class="active"><a href="file_upload.html#direct">Direct upload</a></li>
-                <li class="active"><a href="file_upload.html#ftp">FTP/Aspera upload</a></li>
-                <li><a href="assign_files.html">Assign files</a></li>
-            </ul>
-        </li>
-        <li><h4>Validate and submit</h4>
-            <ul>
-                <li><a href="validate_exp.html#validate">What is validation?</a></li>
-                <li><a href="submit_exp.html">Submit, and what happens next?</a></li>
-		            <li><a href="submit_exp.html#save_sub">Saving a copy of your submission</a></li>
-            </ul>
-        </li>
-    </ol>
-</aside>
+</body>
+</html>

@@ -1,22 +1,35 @@
-<section id="annotare-help" class="grid_18 alpha">
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Validate your experiment submission &lt; Guide &lt; Annotare &lt; EMBL-EBI</title>
+
+</head>
+
+<body>
+
+<section id="annotare-help">
+  <div class="small-12 medium-9 columns">
+
     <h2>Validate your experiment submission</h2>
+    <br>
     <a id="validate"></a><h3>What is validation?</h3>
     <p>The validation step aims at catching errors such as missing mandatory information (e.g. public release date, library preparataion protocol for a sequencing experiment, some samples have not been assigned any raw or processed data files), or inconsistencies in your submission (e.g. for a two-colour microarray experiment, a
         hybridisation assay is associated with one labeled extract only but not two).  Having errors like these caught and fixed before
         submission allows us to process your experiment faster for loading into ArrayExpress. You must validate your submission before submitting for curation.</p>
     <p>The checks will be run when you click <code>Validate</code>. It should only take a few seconds:
-        <img src="../assets/images/validate_wborder.png" alt="validate" style="border:2px solid #385930; width: 50%"/>
+        <img src="../assets/images/validate_wborder.png" alt="validate" style="width: 50%"/>
     </p>
     <p>You may use the validation throughout your submission to check what still needs to be fixed before the experiment can be submitted.</p>
 
     <p>If there are no errors, you'll see a message: <code>Validation has been successful</code> and you can proceed to submit the
         experiment to ArrayExpress.</p>
     <p>If however there are errors, they will be listed like this:
-        <img src="../assets/images/validate_error_messages.png" alt="validate message"style="border:2px solid #385930"/>
+        <img src="../assets/images/validate_error_messages.png" alt="validate message" style="width: 80%"/>
     </p>
     <p>The error messages tell you the relevant section of the form that requires changes. You can jump to the section by clicking the link. After stating the problem the messages will also give you a brief explanation of how to fix the error.</p>
-    <p>If you need further help with fixing errors, try browsing the <a href="/fg/annotare/help/index.html">Annotare guide</a> for the respective section. If you don't find any answers here, drop us a message using the "Contact Us" button from within your submission form.</p>
-
+    <p>If you need further help with fixing errors, try browsing the <a href="index.html">Annotare guide</a> for the respective section. If you don't find any answers here, drop us a message using the "Contact Us" button from within your submission form.</p>
+    <br>
     <!--
     <a id ="fix_errors"></a><h3>Common errors and fixes</h3>
     <p>If you need further help with fixing errors, please email us at <a href="mailto:annotare@ebi.ac.uk">annotare@ebi.ac.uk</a>,
@@ -73,7 +86,7 @@
             <td>At least one contact must have 'submitter' role specified</td>
             <td>When creating a contact, make sure you assign a role to it. At least
                 one of the contacts created must have the role 'submitter', whose name and email address will be
-                displayed in the "Contact" field of an ArrayExpress record (here is <a href="/arrayexpress/experiments/E-MEXP-2086/">an example</a>).  See <a href="describe_exp.html#contact_citation">this page</a> for more details.
+                displayed in the "Contact" field of an ArrayExpress record (here is <a href="https://www.ebi.ac.uk/arrayexpress/experiments/E-MEXP-2086/">an example</a>).  See <a href="describe_exp.html#contact_citation">this page</a> for more details.
             </td>
         </tr>
         <tr>
@@ -84,68 +97,68 @@
     </table>
   -->
 
-</section>
-<aside class="grid_6 omega">
-    <h3>Annotare Guide</h3>
-    <ol id="secondary-nav">
-        <li><h4>Getting started</h4>
-            <ul>
-                <li><a href="getting_started.html#register">Register for submission account</a></li>
-                <li><a href="getting_started.html#start_new_sub">Start a new submission</a></li>
-                <li><a href="getting_started.html#sub_status">Understand submission status</a></li>
-<li><a href="getting_started.html#delete_sub">Delete a submission</a></li>
-            </ul>
-        </li>
-        <li><h4>Describe experiment</h4>
-            <ul>
-                <li><a href="describe_exp.html#expt_bg">General Information</a></li>
+  </div>
 
-                <li><a href="describe_exp.html#remain_anonymous">Enable anonymity</a></li>
-                <li><a href="describe_exp.html#contact_citation">Provide contact details</a></li>
-	<li><a href="describe_exp.html#publications">Add publications</a></li>
-            </ul>
-        </li>
-        <li><h4>Time-saving features</h4>
+  <!-- side navigation -->
+  <div class="small-12 medium-3 columns sidebar">
+    <ul class="vertical menu accordion-menu" data-accordion-menu>
+      <li><a href="index.html" class="active" >Submission guide</a></li>
+      <li><a>Before you start</a>
+        <ul class="menu vertical nested">
+          <li><a href="what_to_submit.html">Submission overview</a></li>
+          <li><a href="">Accepted file formats</a>
             <ul>
-                <li><a href="time_saving_features.html#fill_down_import">Fill-down and import values</a></li>
-                <li><a href="time_saving_features.html#upload_multiple_files">Upload and assign multiple files in one go</a></li>
+              <li><a href="accepted_raw_ma_file_formats.html">Microarray raw data</a></li>
+              <li><a href="accepted_processed_ma_file_formats.html">Microarray processed data</a></li>
+              <li><a href="accepted_sequencing_file_formats.html#raw_data_files">Sequencing raw data</a></li>
+              <li><a href="accepted_sequencing_file_formats.html#processed_data">Sequencing processed data</a></li>
             </ul>
-        </li>
-        <li><h4>Sample attributes</h4>
+          </li>
+          <li><a href="pre-submission_checklist.html">Pre-submission checklist</a></li>
+          <li><a href="adf_submissions_overview.html">Array design submissions</a></li>
+        </ul>
+      </li>
+      <li><a>Annotare step-by-step</a>
+        <ul class="menu vertical nested is-active">
+          <li><a href="getting_started.html">Getting started</a></li>
+          <li><a href="time_saving_features.html">Time-saving features</a></li>
+          <li><a href="describe_exp.html">Describe experiment</a></li>
+          <li><a href="sample_attributes.html">Sample attributes and protocols</a></li>
+          <li><a href="">Technology-specific details</a>
             <ul>
-                <li><a href="sample_attributes.html#annotate">Annotate samples, nominate experimental variable(s)</a></li>
-                <li><a href="sample_attributes.html#discrete_terms">Annotate with discrete terms</a></li>
-                <li><a href="sample_attributes.html#protocols">Protocols</a></li>
+              <li><a href="seq_lib_spec.html">Sequencing library information</a></li>
+              <li><a href="single-cell_submission_guide.html">Single cell information</a></li>
+              <li><a href="two_color_ma.html">Two-colour experiments</a></li>
             </ul>
-        </li>
-        <li><h4>Microarray experiment</h4>
+          </li>
+          <li><a href="">Upload and assign files</a>
             <ul>
-                <li><a href="accepted_raw_ma_file_formats.html">Accepted raw file types</a></li>
-                <li><a href="accepted_processed_ma_file_formats.html">Accepted processed file formats</a></li>
-                <li><a href="two_color_ma.html">Two-colour experiments</a></li>
+              <li><a href="file_upload.html#direct">Direct upload</a></li>
+              <li><a href="ftp_upload.html">FTP/Aspera upload</a></li>
+              <li><a href="file_upload.html#ftp">Import FTP/Aspera uploaded files</a></li>
+              <li><a href="assign_files.html">Assign files</a></li>
             </ul>
-        </li>
-        <li><h4>Sequencing experiment</h4>
-            <ul>
-                <li><a href="/arrayexpress/help/UHTS_submissions.html#DataTypes">Accepted data types</a></li>
-                <li><a href="/arrayexpress/help/UHTS_submissions.html#HowToSubmit">How to prepare raw files</a></li>
-                <li><a href="seq_lib_spec.html">Provide library information</a></li>
-                <li><a href="/arrayexpress/help/UHTS_submissions.html#processed_data">Accepted processed file formats</a></li>
+          </li>
+          <li><a href="">Validate and submit</a>
+            <ul class="menu vertical nested is-active">
+              <li><a class="active" href="validate_exp.html#validate">What is validation?</a></li>
+              <li><a href="submit_exp.html">Submit, and what happens next?</a></li>
+              <li><a href="submit_exp.html#save_sub">Saving a copy of your submission</a></li>
             </ul>
-        </li>
-        <li><h4>Upload files and assign to samples</h4>
-            <ul>
-                <li><a href="file_upload.html#direct">Direct upload</a></li>
-                <li><a href="file_upload.html#ftp">FTP/Aspera upload</a></li>
-                <li><a href="assign_files.html">Assign files</a></li>
-            </ul>
-        </li>
-        <li><h4>Validate and submit</h4>
-            <ul>
-                <li class="active"><a href="validate_exp.html#validate">What is validation?</a></li>
-                <li><a href="submit_exp.html">Submit, and what happens next?</a></li>
-		            <li><a href="submit_exp.html#save_sub">Saving a copy of your submission</a></li>
-            </ul>
-        </li>
-    </ol>
-</aside>
+          </li>
+        </ul>
+      </li>
+      <li><a href="">After submission</a>
+        <ul class="menu vertical nested ">
+          <li><a href="after_sub_private_access.html">Access private experiments</a></li>
+          <li><a href="after_sub_modify_data.html">Modify or remove an existing experiment</a></li>
+          <li><a href="after_sub_data_availability.html">Data availability and release policy</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div> <!-- /medium-3 -->
+
+</section>
+
+</body>
+</html>
