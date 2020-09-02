@@ -91,7 +91,7 @@ public class MageTabFiles {
             SDRFWriter sdrfWriter = null;
             try {
                 sdrfWriter = new SDRFWriter(new FileWriter(sdrfFile));
-                sdrfWriter.write(generated.SDRFs.values().iterator().next());
+                sdrfWriter.write(generated.SDRFs.values().iterator().next(), false, true);
             } finally {
                 close(sdrfWriter, true);
             }
