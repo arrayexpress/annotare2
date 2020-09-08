@@ -17,7 +17,9 @@ import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 
 import javax.annotation.PostConstruct;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -28,6 +30,7 @@ public class SubmissionPostProcessor {
     private static final Logger logger = LoggerFactory.getLogger(SubmissionPostProcessor.class);
 
     private final BlockingQueue<Pair<Submission, AeIntegrationWatchdog.SubmissionOutcome>> submissionsQueue;
+    private final Set<Long> submissionsSet;
     private final SubmissionManager submissionManager;
     private final ScheduledExecutorService scheduler;
     private final HibernateSessionFactory sessionFactory;
@@ -44,6 +47,7 @@ public class SubmissionPostProcessor {
         this.properties = properties;
         this.messenger = messenger;
         submissionsQueue = new LinkedBlockingQueue<>();
+        submissionsSet = new HashSet<>();
         this.scheduler = Executors.newScheduledThreadPool(1);
     }
 
@@ -65,7 +69,7 @@ public class SubmissionPostProcessor {
             }
         };
 
-        scheduler.scheduleAtFixedRate(updateStatus,100, 1000, TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(updateStatus,0, 500, TimeUnit.MILLISECONDS);
     }
 
     @Transactional
@@ -75,7 +79,7 @@ public class SubmissionPostProcessor {
         submission.setStatus(SubmissionStatus.IN_CURATION);
         submissionManager.save(submission);
         logger.debug("Submission: {} status updated to IN_CURATION", submission.getId());
-
+        submissionsSet.remove(submission.getId());
         boolean hasResubmitted = SubmissionStatus.RESUBMITTED == submission.getStatus();
         if (properties.isSubsTrackingEnabled()) {
             String otrsTemplate = (AeIntegrationWatchdog.SubmissionOutcome.INITIAL_SUBMISSION_OK == submissionsPair.getRight()) ?
@@ -128,6 +132,11 @@ public class SubmissionPostProcessor {
 
     public synchronized void add(Pair<Submission, AeIntegrationWatchdog.SubmissionOutcome> submission){
         submissionsQueue.add(submission);
+        submissionsSet.add(submission.getLeft().getId());
+    }
+
+    public synchronized boolean isPresent(Submission submission){
+        return submissionsSet.contains(submission.getId());
     }
 
     private void sendEmail(String template, Map<String, String> params, Submission submission) {
