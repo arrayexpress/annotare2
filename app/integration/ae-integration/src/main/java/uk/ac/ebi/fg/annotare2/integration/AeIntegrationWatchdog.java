@@ -158,66 +158,63 @@ public class AeIntegrationWatchdog {
     }
 
     private void processSubmissions() throws Exception {
-        Session submissionsSession = sessionFactory.openSession();
-        try {
-            final Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(
-                    SubmissionStatus.SUBMITTED
-                    , SubmissionStatus.RESUBMITTED
-                    , SubmissionStatus.AWAITING_FILE_VALIDATION
-                    , SubmissionStatus.VALIDATING_FILES
-                    , SubmissionStatus.IN_CURATION
-                    , SubmissionStatus.PRIVATE_IN_AE
-                    , SubmissionStatus.PUBLIC_IN_AE
-            );
+        sessionFactory.openSession();
+        final Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(
+                SubmissionStatus.SUBMITTED
+                , SubmissionStatus.RESUBMITTED
+                , SubmissionStatus.AWAITING_FILE_VALIDATION
+                , SubmissionStatus.VALIDATING_FILES
+                , SubmissionStatus.IN_CURATION
+                , SubmissionStatus.PRIVATE_IN_AE
+                , SubmissionStatus.PUBLIC_IN_AE
+        );
 
-            for (Submission submission : submissions) {
-                //Reopening session for each submission to avoid invalid session issue after long process of a submission
-                Session session = sessionFactory.openSession();
-                try {
-                    if (addSubmissionToSubmissionProcessingSet(submission)) {
-                        try {
-                            switch (submission.getStatus()) {
-                                case SUBMITTED:
-                                case RESUBMITTED:
-                                    if (submissionPostProcessor.isPresent(submission)) {
-                                        logger.debug("Thread {} processing submission {}: {}", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
-                                        processSubmitted(submission);
-                                    }
-                                    break;
-                                case IN_CURATION:
-                                    processInCuration(submission);
-                                    break;
+        for (Submission submission : submissions) {
+            //Reopening session for each submission to avoid invalid session issue after long process of a submission
+            Session session = sessionFactory.openSession();
+            try{
+                if (addSubmissionToSubmissionProcessingSet(submission)) {
+                    try {
+                        switch (submission.getStatus()) {
+                            case SUBMITTED:
+                            case RESUBMITTED:
+                                if(submissionPostProcessor.isPresent(submission)){
+                                    logger.debug("Thread {} processing submission {}: {}", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
+                                    processSubmitted(submission);
+                                }
+                                break;
+                            case IN_CURATION:
+                                processInCuration(submission);
+                                break;
 
-                                case PRIVATE_IN_AE:
-                                    processPrivateInAE(submission);
-                                    break;
+                            case PRIVATE_IN_AE:
+                                processPrivateInAE(submission);
+                                break;
 
-                                case PUBLIC_IN_AE:
-                                    processPublicInAE(submission);
-                                    break;
+                            case PUBLIC_IN_AE:
+                                processPublicInAE(submission);
+                                break;
 
-                                case AWAITING_FILE_VALIDATION:
-                                    processAwaitingFileValidation(submission);
-                                    break;
+                            case AWAITING_FILE_VALIDATION:
+                                processAwaitingFileValidation(submission);
+                                break;
 
-                                case VALIDATING_FILES:
-                                    processValidatingFiles(submission);
-                                    break;
-                            }
-                        } finally {
-                            removeSubmissionFromSubmissionProcessingSet(submission);
-                            if (submission.getStatus() == SubmissionStatus.SUBMITTED || submission.getStatus() == SubmissionStatus.RESUBMITTED) {
-                                logger.debug("Thread {} removed submission {}: {} from current processing submission set.", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
-                            }
+                            case VALIDATING_FILES:
+                                processValidatingFiles(submission);
+                                break;
                         }
-
+                    } finally {
+                        removeSubmissionFromSubmissionProcessingSet(submission);
+                        if(submission.getStatus() == SubmissionStatus.SUBMITTED || submission.getStatus() == SubmissionStatus.RESUBMITTED) {
+                            logger.debug("Thread {} removed submission {}: {} from current processing submission set.", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
+                        }
                     }
-                } finally {
-                    session.close();
+
                 }
             }
-        } finally {
-            submissionsSession.close();
+            finally {
+                session.close();
+            }
         }
     }
 
