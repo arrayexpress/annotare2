@@ -132,14 +132,11 @@ public class AeIntegrationWatchdog {
         final Runnable periodicProcess = new Runnable() {
             @Override
             public void run() {
-                Session session = sessionFactory.openSession();
                 try {
                     processSubmissions();
                 } catch (Throwable x) {
                     logger.error("Submission watchdog process caught an exception:", x);
                     messenger.send("Error in submission watchdog process:", x);
-                } finally {
-                    session.close();
                 }
             }
 
@@ -173,43 +170,49 @@ public class AeIntegrationWatchdog {
         );
 
         for (Submission submission : submissions) {
+            Session session = sessionFactory.openSession();
+            try{
+                if (addSubmissionToSubmissionProcessingSet(submission)) {
+                    try {
+                        switch (submission.getStatus()) {
+                            case SUBMITTED:
+                            case RESUBMITTED:
+                                if(submissionPostProcessor.isPresent(submission)){
+                                    logger.debug("Thread {} processing submission {}: {}", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
+                                    processSubmitted(submission);
+                                }
+                                break;
+                            case IN_CURATION:
+                                processInCuration(submission);
+                                break;
 
-            if (addSubmissionToSubmissionProcessingSet(submission)) {
-                try {
-                    switch (submission.getStatus()) {
-                        case SUBMITTED:
-                        case RESUBMITTED:
-                            logger.debug("Thread {} processing submission {}: {}", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
-                            processSubmitted(submission);
-                            break;
+                            case PRIVATE_IN_AE:
+                                processPrivateInAE(submission);
+                                break;
 
-                        case IN_CURATION:
-                            processInCuration(submission);
-                            break;
+                            case PUBLIC_IN_AE:
+                                processPublicInAE(submission);
+                                break;
 
-                        case PRIVATE_IN_AE:
-                            processPrivateInAE(submission);
-                            break;
+                            case AWAITING_FILE_VALIDATION:
+                                processAwaitingFileValidation(submission);
+                                break;
 
-                        case PUBLIC_IN_AE:
-                            processPublicInAE(submission);
-                            break;
-
-                        case AWAITING_FILE_VALIDATION:
-                            processAwaitingFileValidation(submission);
-                            break;
-
-                        case VALIDATING_FILES:
-                            processValidatingFiles(submission);
-                            break;
+                            case VALIDATING_FILES:
+                                processValidatingFiles(submission);
+                                break;
+                        }
+                    } finally {
+                        removeSubmissionFromSubmissionProcessingSet(submission);
+                        if(submission.getStatus() == SubmissionStatus.SUBMITTED || submission.getStatus() == SubmissionStatus.RESUBMITTED) {
+                            logger.debug("Thread {} removed submission {}: {} from current processing submission set.", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
+                        }
                     }
-                } finally {
-                    removeSubmissionFromSubmissionProcessingSet(submission);
-                    if(submission.getStatus() == SubmissionStatus.SUBMITTED || submission.getStatus() == SubmissionStatus.RESUBMITTED) {
-                        logger.debug("Thread {} removed submission {}: {} from current processing submission set.", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
-                    }
+
                 }
-
+            }
+            finally {
+                session.close();
             }
         }
     }
