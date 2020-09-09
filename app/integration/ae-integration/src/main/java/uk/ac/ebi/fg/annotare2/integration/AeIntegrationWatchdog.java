@@ -158,7 +158,7 @@ public class AeIntegrationWatchdog {
     }
 
     private void processSubmissions() throws Exception {
-
+        sessionFactory.openSession();
         final Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(
                 SubmissionStatus.SUBMITTED
                 , SubmissionStatus.RESUBMITTED
@@ -170,6 +170,7 @@ public class AeIntegrationWatchdog {
         );
 
         for (Submission submission : submissions) {
+            //Reopening session for each submission to avoid invalid session issue after long process of a submission
             Session session = sessionFactory.openSession();
             try{
                 if (addSubmissionToSubmissionProcessingSet(submission)) {
