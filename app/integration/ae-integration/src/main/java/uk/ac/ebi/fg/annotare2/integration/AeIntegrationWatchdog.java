@@ -96,6 +96,7 @@ public class AeIntegrationWatchdog {
         SUBMISSION_FAILED
     }
 
+    private Boolean SUBMISSION_IS_BEING_PROCESSED = false;
 
     @Inject
     public AeIntegrationWatchdog(HibernateSessionFactory sessionFactory,
@@ -178,7 +179,7 @@ public class AeIntegrationWatchdog {
                         switch (submission.getStatus()) {
                             case SUBMITTED:
                             case RESUBMITTED:
-                                if(submissionPostProcessor.isPresent(submission)){
+                                if(!SUBMISSION_IS_BEING_PROCESSED && !submissionPostProcessor.isPresent(submission)){
                                     logger.debug("Thread {} processing submission {}: {}", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
                                     processSubmitted(submission);
                                 }
@@ -322,6 +323,7 @@ public class AeIntegrationWatchdog {
     }
 
     public void processSubmitted(Submission submission) throws SubsTrackingException, InterruptedException {
+        SUBMISSION_IS_BEING_PROCESSED = true;
         Pair<SubmissionOutcome, Integer> submissionOutcomeIntegerPair = submitSubmission(submission);
         SubmissionOutcome outcome = submissionOutcomeIntegerPair.getLeft();
         Integer substrackingId = submissionOutcomeIntegerPair.getRight();
@@ -334,9 +336,8 @@ public class AeIntegrationWatchdog {
             logger.debug("Thread has woken up again. Hello World!");
 
             submissionPostProcessor.add(Pair.of(submission, outcome));
-
-
         }
+        SUBMISSION_IS_BEING_PROCESSED = false;
     }
 
     @Transactional(rollbackOn = {SubsTrackingException.class})
