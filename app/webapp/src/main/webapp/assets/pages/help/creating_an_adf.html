@@ -49,7 +49,7 @@
 
         <p>Each row (field) of meta data starts with a heading (bold in the screenshot below),
             each appearing only once and coming from a controlled vocabulary. The headings would be pre-filled for you when
-            you download one of our <a href="adf_quick_start.html#templates">ADF templates</a> so you don't need to insert them from scratch.  <em>Please do not edit the headings,
+            you download one of our <a href="adf_submissions_overview.html#templates">ADF templates</a> so you don't need to insert them from scratch.  <em>Please do not edit the headings,
                 but fill in each field as much as possible</em>, like the blue text below:</p>
 
         <img src="../assets/images/adf_how_to_fill.png" alt="ADF_how_to_fill" />
@@ -61,14 +61,14 @@
         <table>
         <thead>
           <tr>
-            <th>ADF header field</th>
-            <th>What is it?</th>
-            <th>Allowed values</th>
-            <th>Example</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
+            <th style="width: 25%;">ADF header field</th>
+            <th style="width: 25%;">What is it?</th>
+            <th style="width: 25%;">Allowed values</th>
+            <th style="width: 25%;">Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
 
             <td><strong>* Array Design Name</strong></td>
             <td>An informative title of the array design. Should include the name of the manufacturer (e.g. Agilent)
@@ -107,7 +107,7 @@
         </tr>
         <tr>
 
-            <td><strong>* Comment[ArrayExpressReleaseDate]</strong></td>
+            <td><strong>* Comment[ArrayExpress ReleaseDate]</strong></td>
             <td>Keep pre-published array designs private by inserting a future date
                 (can be amended later). Otherwise, insert the date of submission.</td>
             <td>Must use YYYY-MM-DD format.</td>
@@ -167,14 +167,14 @@
             <td>http://www.uniprot.org</td>
         </tr>
         </tbody></table>
-        <p><strong> * denotes <em>mandatory</em> fields.</strong></p>
+
 
         <p>&nbsp;</p>
         <hr />
 
         <h3><a id="ADFTable"></a>ADF table</h3>
 
-        <p>Just like the metadata header fields, column headings in the ADF table come from a controlled vocabulary.  Please use one of the  <a href="adf_quick_start.html#templates">ADF templates</a>, where correct headings have been prefilled for you, saving you inserting them from scratch. <em>Please don't change the column headings in the template.</em>.</p>
+        <p>Just like the metadata header fields, column headings in the ADF table come from a controlled vocabulary.  Please use one of the  <a href="adf_submissions_overview.html#templates">ADF templates</a>, where correct headings have been prefilled for you, saving you inserting them from scratch. <em>Please don't change the column headings in the template.</em>.</p>
 
 
         <h4><a id="Concepts"></a>3.1. Features, reporters and composite elements</h4>
@@ -183,7 +183,7 @@
             <li><strong>Features (for spotted arrays only):</strong> Each spot on the array is called a feature. The position of each feature is described by 4 coordinates, each has its dedicated column in the ADF table: <strong><code>Block Column</code></strong>, <strong><code>Block Row</code></strong>, <strong><code>Column</code></strong> and <strong><code>Row</code></strong>. Each set of 4 coordinates represents a unique position on the microarray, so features cannot be duplicated on an array. Include all features in your ADF file, even if there is nothing spotted there (e.g. control spots). Here is a schematic diagram showing the 4 coordinates:<br>
 
                 <br>
-                <img src="../assets/images/adf_br_bc_r_c_diagram.png" alt="feature_coordinates_diagram" style="width: 50%; height: 50%">
+                <img src="../assets/images/adf_br_bc_r_c_diagram.png" alt="feature_coordinates_diagram" style="width: 50%;">
                 <br>
                 <br><br></li>
 
