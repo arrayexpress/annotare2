@@ -180,6 +180,10 @@ section#main-content-area {
     color: black
 }
 
+#annotare-help ul.vertical li li a.active {
+    font-weight: bold;
+}
+
 
 input.button.secondary,
 input.button.secondary:hover{
