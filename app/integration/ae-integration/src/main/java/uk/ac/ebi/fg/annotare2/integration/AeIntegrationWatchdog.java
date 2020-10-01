@@ -330,11 +330,6 @@ public class AeIntegrationWatchdog {
         if (SubmissionOutcome.SUBMISSION_FAILED != outcome) {
             File exportDir = copyDataFiles(submission, substrackingId);
             addFilesToSubstracking(submission, substrackingId, exportDir);
-
-            logger.debug("Thread sleep has been kicked in for 8 hours and 1 mins");
-            MINUTES.sleep(481); // artificial delay to check for SQL expeception
-            logger.debug("Thread has woken up again. Hello World!");
-
             submissionPostProcessor.add(Pair.of(submission, outcome));
         }
         SUBMISSION_IS_BEING_PROCESSED = false;
