@@ -135,7 +135,7 @@
                         <li class="first"><a href="${pageContext.request.contextPath}/"
                                              title="Annotare ${project.version} rev.${buildNumber}">Home</a></li>
                         <li class="first"><a href="http://www.ebi.ac.uk/arrayexpress">Go to ArrayExpress</a></li>
-                        <li${helpClass}><a href="${pageContext.request.contextPath}/help">Help</a></li>
+                        <li${helpClass}><a href="${pageContext.request.contextPath}/help">Submission Guide</a></li>
                         <li class="last${aboutClass}"><a href="${pageContext.request.contextPath}/about">About
                             Annotare</a></li>
                     </ul>
