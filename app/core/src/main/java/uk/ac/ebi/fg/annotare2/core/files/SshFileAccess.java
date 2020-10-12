@@ -17,6 +17,8 @@
 
 package uk.ac.ebi.fg.annotare2.core.files;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.core.utils.LinuxShellCommandExecutor;
 import uk.ac.ebi.fg.annotare2.core.utils.URIEncoderDecoder;
 
@@ -34,6 +36,8 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 public class SshFileAccess implements RemoteFileAccess, Serializable {
 
     private static final long serialVersionUID = 752647115562277616L;
+    private static final Logger log = LoggerFactory.getLogger(SshFileAccess.class);
+
 
     public boolean isSupported(URI file) {
         return null != file && "scp".equals(file.getScheme());
@@ -71,6 +75,8 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
     public void copy(URI source, URI destination) throws IOException {
         if ((isSupported(source) || isLocal(source)) && (isSupported(destination) || isLocal(destination))) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
+            log.info("Executing command: " + "rsync --rsync-path=~/rsync -e ssh --perms --chmod=u+rw,g+rw,o+r "
+                    + scpLocationFromURI(source) + " " + scpLocationFromURI(destination));
             if (!executor.execute(
                     "rsync --rsync-path=~/rsync -e ssh --perms --chmod=u+rw,g+rw,o+r "
                             + scpLocationFromURI(source) + " " + scpLocationFromURI(destination)
@@ -146,6 +152,7 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
 
     private boolean executeSshCommand(LinuxShellCommandExecutor executor, String host, String command)
             throws IOException {
+        log.info("Executing command: " + "ssh " + host + " \"" + command + "\"");
         return executor.execute("ssh " + host + " \"" + command + "\"");
     }
 

@@ -44,7 +44,7 @@ public class LinuxShellCommandExecutor {
     }
 
     public boolean execute(String command) throws IOException {
-        log.debug("Executing {}", command);
+        log.info("Executing {}", command);
 
         List<String> commandParams = new ArrayList<>();
         commandParams.add("/bin/sh");
