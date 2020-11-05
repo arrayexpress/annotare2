@@ -16,7 +16,7 @@ public enum  SingleCellExtractAttribute {
             "Drop-seq",
             "inDrop",
             "Cell Picking",
-            "Mouse Pipette",
+            "Mouth Pipette",
             "Laser-capture Microdissection",
             "other"),
     LIBRARY_CONSTRUCTION("Library Construction *",
