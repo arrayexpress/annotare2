@@ -62,7 +62,7 @@
                 <td class="arrayHelp">
                     <p>If you cannot find your array design,
                         try searching <a href="https://www.ebi.ac.uk/arrayexpress/arrays/browse.html" target="_blank">here</a> or
-                        <a href="https://www.ebi.ac.uk/arrayexpress/help/adf_submissions_overview.html"
+                        <a href="https://www.ebi.ac.uk/fg/annotare/help/adf_submissions_overview.html"
                            target="_blank">submit your array design</a> to ArrayExpress.</p>
                 </td>
             </tr>
