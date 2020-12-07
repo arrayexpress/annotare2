@@ -328,6 +328,7 @@ public class AeIntegrationWatchdog {
             File exportDir = copyDataFiles(submission, substrackingId);
             addFilesToSubstracking(submission, substrackingId, exportDir);
             submissionPostProcessor.add(Pair.of(submission, outcome));
+            logger.debug("Submission: {} added to post processing queue", submission.getId());
         }
     }
 
