@@ -71,17 +71,13 @@ public class SubmissionPostProcessor {
                 }
             }
         };
-        Future<?> result = scheduler.scheduleAtFixedRate(updateStatus,0, 500, TimeUnit.MILLISECONDS);
-        try {
-            result.get(30000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | TimeoutException | ExecutionException e) {
-            LOGGER.error("Submission postprocessor timed out.");
-            result.cancel(true);
-        }
+        scheduler.scheduleAtFixedRate(updateStatus,0, 500, TimeUnit.MILLISECONDS);
+
     }
 
     @Transactional
     public void processSubmission() throws InterruptedException {
+        LOGGER.debug("Postprocessor task started..! ");
         Pair<Submission, AeIntegrationWatchdog.SubmissionOutcome> submissionsPair = submissionsQueue.peek();
         LOGGER.debug("Postprocessor started for submission : {}", submissionsPair.getLeft().getId());
         Submission submission = null;
