@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -36,6 +37,7 @@ public class SubmissionPostProcessor {
     private final Set<Long> submissionsSet;
     private final SubmissionManager submissionManager;
     private final ScheduledExecutorService scheduler;
+    private final ExecutorService worker;
     private final HibernateSessionFactory sessionFactory;
     private final ExtendedAnnotareProperties properties;
     private final Messenger messenger;
@@ -51,14 +53,17 @@ public class SubmissionPostProcessor {
         this.messenger = messenger;
         submissionsQueue = new LinkedBlockingQueue<>();
         submissionsSet = new HashSet<>();
-        this.scheduler = Executors.newScheduledThreadPool(1);
+        this.scheduler = Executors.newScheduledThreadPool(1); //scheduler thread starts tasks in periodic intervals.
+        this.worker = Executors.newFixedThreadPool(2); //Worker threads actually executes the status change process.
     }
 
     @PostConstruct
     public void init(){
-        final Runnable updateStatus = new Runnable() {
-            @Override
-            public void run() {
+        //A runnable task to submit to scheduler to run at a fixed rate.
+        final Runnable updateStatus = () -> {
+            // Creating one more runnable task and submit to worker threads.
+            // This allows to monitor this task and cancel it after timeout.
+            Runnable statusChangeTask = () -> {
                 if(!submissionsQueue.isEmpty()){
                     Session session = sessionFactory.openSession();
                     try {
@@ -69,6 +74,14 @@ public class SubmissionPostProcessor {
                         session.close();
                     }
                 }
+            };
+            Future<?> taskResult = worker.submit(statusChangeTask);
+            //Cancelling task after 30sec time out.
+            try {
+                taskResult.get(30000, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                LOGGER.error("Submission postprocessor task timed out..!");
+                taskResult.cancel(true);
             }
         };
         scheduler.scheduleAtFixedRate(updateStatus,0, 500, TimeUnit.MILLISECONDS);
