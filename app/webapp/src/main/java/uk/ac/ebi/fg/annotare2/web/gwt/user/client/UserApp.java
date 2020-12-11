@@ -93,20 +93,19 @@ public class UserApp implements EntryPoint {
         showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "Notice_01042020_Shown"; // change name according to the cookie display date ddmmyy
+    private final static String NOTICE_COOKIE = "Notice_11122021_Shown"; // change name according to the cookie display date ddmmyy
     private void showNotice() {
         Date stopNoticeDate = new Date();
-        stopNoticeDate.setTime(1587000000000L); // stop showing on 16th April 2020 (http://www.epochconverter.com/)
+        stopNoticeDate.setTime(1610409599L); // stop showing on 11th January 2021 (http://www.epochconverter.com/)
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE)) && (new Date().before(stopNoticeDate))) {
             Date expiryDate = new Date();
             expiryDate.setTime(8000000000000L);
             CookieDialog dialogBox = new CookieDialog(
-                    "Maintenance notice",
+                    "Christmas(hooray!) Downtime notice",
                     "<p>Dear submitter,</p>" +
-                            "<p>The bulk of the maintenance is now completed and submitting your experiment is now enabled again.</p> " +
-                            "<p>FTP upload is possible using the <a href=https://www.ebi.ac.uk/arrayexpress/help/ftp_upload.html " +
-                            "target=_blank>ftp-private.ebi.ac.uk</a> server. " +
-                            "Aspera upload remains unavailable. We are working on re-activating this as soon as possible.</p> " +
+                            "<p>The curation team will be on holiday from 21st December 2020 until 6th January 2021. " +
+                            "This will mean a delay in processing datasets for ArrayExpress." +
+                            "<p>Please submit early! Happy holidays!</p>" +
                             "<p>Best Regards,<br>Annotare Team",
                     NOTICE_COOKIE, expiryDate
             );
