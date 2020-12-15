@@ -26,7 +26,7 @@
 <html lang="en"> <!--<![endif]-->
 <head>
     <meta charset="utf-8"/>
-    <title>The European Bioinformatics Institute &lt; EMBL-EBI</title>
+    <title>Annotare &lt; EMBL-EBI</title>
     <meta name="description" content="EMBL-EBI Blank boilerplate page"/><!-- Describe what this page is about -->
     <meta name="keywords" content="bioinformatics, europe, institute"/>
     <!-- 3 to 10 keywords about the content of this page (not the whole project) -->
