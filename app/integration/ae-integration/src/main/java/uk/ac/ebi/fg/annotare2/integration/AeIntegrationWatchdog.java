@@ -49,7 +49,6 @@ import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.integration.FileValidationService.FileValidationStatus;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
-import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 
 
 import javax.annotation.PostConstruct;
@@ -500,21 +499,7 @@ public class AeIntegrationWatchdog {
 
             // check if the submission has been rejected
             if (!isInCuration(submission.getSubsTrackingId())) {
-                submission.setStatus(SubmissionStatus.IN_PROGRESS);
-                submission.setSubmitted(null);
-                submission.setOwnedBy(submission.getCreatedBy());
-                submissionManager.save(submission);
-                sendEmail(
-                        EmailTemplates.REJECTED_SUBMISSION_TEMPLATE,
-                        new ImmutableMap.Builder<String, String>()
-                                .put("to.name", submission.getCreatedBy().getName())
-                                .put("to.email", submission.getCreatedBy().getEmail())
-                                .put("submission.id", String.valueOf(submission.getId()))
-                                .put("submission.title", submission.getTitle())
-                                .put("submission.date", submission.getUpdated().toString())
-                                .build(),
-                        submission
-                );
+                reOpenSubmission(submission);
             } else if (properties.isAeConnectionEnabled()) {
                 String accession = submission.getAccession();
                 if (!isNullOrEmpty(accession)) {
@@ -532,17 +517,18 @@ public class AeIntegrationWatchdog {
     }
 
     @Transactional(rollbackOn = {AEConnectionException.class})
-    public void processPrivateInAE(Submission submission) throws AEConnectionException {
+    public void processPrivateInAE(Submission submission) throws AEConnectionException, SubsTrackingException {
         if (properties.isAeConnectionEnabled()) {
             String accession = submission.getAccession();
             if (!isNullOrEmpty(accession)) {
                 AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
-                if (NOT_LOADED == state) {
-                    submission.setStatus(SubmissionStatus.IN_CURATION);
-                    submissionManager.save(submission);
-                } else if (PUBLIC == state) {
+                if (PUBLIC == state) {
                     submission.setStatus(SubmissionStatus.PUBLIC_IN_AE);
                     submissionManager.save(submission);
+                }
+                // check if the submission has been rejected
+                if (!isInCuration(submission.getSubsTrackingId())) {
+                    reOpenSubmission(submission);
                 }
             } else {
                 submission.setStatus(SubmissionStatus.IN_CURATION);
@@ -551,18 +537,37 @@ public class AeIntegrationWatchdog {
         }
     }
 
+    private void reOpenSubmission(Submission submission) {
+        submission.setStatus(SubmissionStatus.IN_PROGRESS);
+        submission.setSubmitted(null);
+        submission.setOwnedBy(submission.getCreatedBy());
+        submissionManager.save(submission);
+        sendEmail(
+                EmailTemplates.REJECTED_SUBMISSION_TEMPLATE,
+                new ImmutableMap.Builder<String, String>()
+                        .put("to.name", submission.getCreatedBy().getName())
+                        .put("to.email", submission.getCreatedBy().getEmail())
+                        .put("submission.id", String.valueOf(submission.getId()))
+                        .put("submission.title", submission.getTitle())
+                        .put("submission.date", submission.getUpdated().toString())
+                        .build(),
+                submission
+        );
+    }
+
     @Transactional(rollbackOn = {AEConnectionException.class})
-    public void processPublicInAE(Submission submission) throws AEConnectionException {
+    public void processPublicInAE(Submission submission) throws AEConnectionException, SubsTrackingException {
         if (properties.isAeConnectionEnabled()) {
             String accession = submission.getAccession();
             if (!isNullOrEmpty(accession)) {
                 AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
-                if (NOT_LOADED == state) {
-                    submission.setStatus(SubmissionStatus.IN_CURATION);
-                    submissionManager.save(submission);
-                } else if (PRIVATE == state) {
+                if (PRIVATE == state) {
                     submission.setStatus(SubmissionStatus.PRIVATE_IN_AE);
                     submissionManager.save(submission);
+                }
+                // check if the submission has been rejected
+                if (!isInCuration(submission.getSubsTrackingId())) {
+                    reOpenSubmission(submission);
                 }
             } else {
                 submission.setStatus(SubmissionStatus.IN_CURATION);
