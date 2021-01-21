@@ -518,13 +518,15 @@ public class AeIntegrationWatchdog {
 
     @Transactional(rollbackOn = {AEConnectionException.class})
     public void processPrivateInAE(Submission submission) throws AEConnectionException, SubsTrackingException {
-        if (properties.isAeConnectionEnabled()) {
+
             String accession = submission.getAccession();
             if (!isNullOrEmpty(accession)) {
-                AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
-                if (PUBLIC == state) {
-                    submission.setStatus(SubmissionStatus.PUBLIC_IN_AE);
-                    submissionManager.save(submission);
+                if (properties.isAeConnectionEnabled()) {
+                    AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
+                    if (PUBLIC == state) {
+                        submission.setStatus(SubmissionStatus.PUBLIC_IN_AE);
+                        submissionManager.save(submission);
+                    }
                 }
                 // check if the submission has been rejected
                 if (!isInCuration(submission.getSubsTrackingId())) {
@@ -534,7 +536,6 @@ public class AeIntegrationWatchdog {
                 submission.setStatus(SubmissionStatus.IN_CURATION);
                 submissionManager.save(submission);
             }
-        }
     }
 
     private void reOpenSubmission(Submission submission) {
@@ -557,13 +558,15 @@ public class AeIntegrationWatchdog {
 
     @Transactional(rollbackOn = {AEConnectionException.class})
     public void processPublicInAE(Submission submission) throws AEConnectionException, SubsTrackingException {
-        if (properties.isAeConnectionEnabled()) {
+
             String accession = submission.getAccession();
             if (!isNullOrEmpty(accession)) {
-                AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
-                if (PRIVATE == state) {
-                    submission.setStatus(SubmissionStatus.PRIVATE_IN_AE);
-                    submissionManager.save(submission);
+                if (properties.isAeConnectionEnabled()) {
+                    AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
+                    if (PRIVATE == state) {
+                        submission.setStatus(SubmissionStatus.PRIVATE_IN_AE);
+                        submissionManager.save(submission);
+                    }
                 }
                 // check if the submission has been rejected
                 if (!isInCuration(submission.getSubsTrackingId())) {
@@ -573,7 +576,6 @@ public class AeIntegrationWatchdog {
                 submission.setStatus(SubmissionStatus.IN_CURATION);
                 submissionManager.save(submission);
             }
-        }
     }
 
     @Transactional(rollbackOn = {SubsTrackingException.class})
