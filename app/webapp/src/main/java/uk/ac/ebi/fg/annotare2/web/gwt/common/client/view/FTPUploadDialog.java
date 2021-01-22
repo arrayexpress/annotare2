@@ -107,7 +107,7 @@ public class FTPUploadDialog extends DialogBox {
     @UiHandler("okButton")
     void okButtonClicked(ClickEvent event) {
         List<String> pastedData = getPastedData();
-        if (!pastedData.isEmpty() && null != presenter) {
+        if (!pastedData.isEmpty() && null != presenter && checkPastedData(pastedData)) {
             okButton.setEnabled(false);
             final PopupPanel w = new WaitingPopup();
             w.center();
@@ -147,6 +147,20 @@ public class FTPUploadDialog extends DialogBox {
                 hide();
             }
         }
+    }
+
+    private Boolean checkPastedData(List<String> pastedData) {
+        String[] result;
+        for (String data : pastedData) {
+            result = data.split(":|\\\\",5);
+            if(result.length > 1) {
+                NotificationPopupPanel.error(
+                        "FTP/Aspera file path contains illegal characters." +
+                                " Please correct them before uploading.", false, false);
+                return false;
+            }
+        }
+        return true;
     }
 
     private List<String> getPastedData() {
