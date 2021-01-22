@@ -418,17 +418,25 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
         public void onFilesAdded(ResumableUploader uploader, JsArray<ResumableFile> files) {
             boolean shouldUpload = true;
             boolean fileBlocked = false;
+            boolean invalidFileName = false;
             StringBuilder sb = new StringBuilder();
             sb.append("The file(s) already exist.<br/>To re-upload, please delete and upload again.<br/><br/>"); //<br/> added here because Notification panel display this as HTML so simple new line character won't work.
 
             StringBuilder blockedFiles = new StringBuilder();
             blockedFiles.append("File extension(s) not allowed. <br/> Please upload again with correct file format.<br/><br/>");
 
+            StringBuilder invalidFileNameMsg = new StringBuilder();
+            invalidFileNameMsg.append("File names can not contain spaces or special characters (except '_', '-', '.', '#').");
+
             for (int i = 0; i < files.length(); ++i) {
                 ResumableFile file = files.get(i);
 
                 if(!blockedFileExtensions.contains(getExtension(file.getFileName()).toLowerCase()) && !file.getFileName().contains("tar.gz")){
-                    if (!isDuplicateFile(file.getFileName())) {
+                    if(!file.getFileName().matches("^(?!\\#)[_a-zA-Z0-9\\-\\.\\#]+$")){
+                        invalidFileName = true;
+                        shouldUpload = false;
+                        uploader.removeFile(file);
+                    } else if (!isDuplicateFile(file.getFileName())) {
                         logger.info("Batch added file " + file.getFileName() + ", size " + file.getSize());
                     } else {
                         sb.append(" - ").append(file.getFileName()).append("<br/>");
@@ -448,7 +456,11 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
             } else {
                 if(fileBlocked){
                     NotificationPopupPanel.error(blockedFiles.toString(), true, false);
-                } else {
+                }
+                else if(invalidFileName){
+                    NotificationPopupPanel.error(invalidFileNameMsg.toString(), true, false);
+                }
+                else {
                     NotificationPopupPanel.error(sb.toString(), true, false);
                 }
             }
