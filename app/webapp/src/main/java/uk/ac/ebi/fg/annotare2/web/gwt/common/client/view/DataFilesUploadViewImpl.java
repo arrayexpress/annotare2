@@ -419,14 +419,11 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
             boolean shouldUpload = true;
             boolean fileBlocked = false;
             boolean invalidFileName = false;
-            StringBuilder sb = new StringBuilder();
-            sb.append("The file(s) already exist.<br/>To re-upload, please delete and upload again.<br/><br/>"); //<br/> added here because Notification panel display this as HTML so simple new line character won't work.
+            StringBuilder duplicateFilesMsg = new StringBuilder();
+            duplicateFilesMsg.append("The file(s) already exist.<br/>To re-upload, please delete and upload again.<br/><br/>"); //<br/> added here because Notification panel display this as HTML so simple new line character won't work.
 
             StringBuilder blockedFiles = new StringBuilder();
             blockedFiles.append("File extension(s) not allowed. <br/> Please upload again with correct file format.<br/><br/>");
-
-            StringBuilder invalidFileNameMsg = new StringBuilder();
-            invalidFileNameMsg.append("File names can not contain spaces or special characters (except '_', '-', '.', '#').");
 
             for (int i = 0; i < files.length(); ++i) {
                 ResumableFile file = files.get(i);
@@ -439,7 +436,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
                     } else if (!isDuplicateFile(file.getFileName())) {
                         logger.info("Batch added file " + file.getFileName() + ", size " + file.getSize());
                     } else {
-                        sb.append(" - ").append(file.getFileName()).append("<br/>");
+                        duplicateFilesMsg.append(" - ").append(file.getFileName()).append("<br/>");
                         shouldUpload = false;
                         uploader.removeFile(file);
                     }
@@ -458,10 +455,10 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
                     NotificationPopupPanel.error(blockedFiles.toString(), true, false);
                 }
                 else if(invalidFileName){
-                    NotificationPopupPanel.error(invalidFileNameMsg.toString(), true, false);
+                    NotificationPopupPanel.error("File names can not contain spaces or special characters (except '_', '-', '.', '#').", true, false);
                 }
                 else {
-                    NotificationPopupPanel.error(sb.toString(), true, false);
+                    NotificationPopupPanel.error(duplicateFilesMsg.toString(), true, false);
                 }
             }
         }
