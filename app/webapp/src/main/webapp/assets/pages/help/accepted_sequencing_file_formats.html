@@ -6,146 +6,163 @@
 <body>
 
 <section id="annotare-help">
-    <div class="small-12 medium-9 columns">
+  <div class="small-12 medium-9 columns">
 
-        <h2>Accepted sequencing file formats</h2>
-        <br>
-        <h3 id="raw_data_files">Raw data file requirements</h4>
-            <p>Please provide individual <strong>unprocessed</strong> raw data files for each sample, in <a
-                    href="#FastqSpec">FASTQ</a> or <a href="#BamSpec">BAM</a> format, and prepare your files according
-                to <a href="http://ena-docs.readthedocs.io/en/latest/format_01.html">ENA specifications</a>. This is a
-                developing field so please do check the specifications every time you submit a new experiment. Data
-                files which do not satisfy ENA's requirements will not be accepted.</p>
+      <h2>Accepted sequencing file formats</h2>
+      <br>
+      <h3 id="raw_data_files">Raw data files</h3>
+          <p>Please provide individual <strong>unprocessed</strong> raw data files for each sample, in <a
+                  href="#FastqSpec">FASTQ</a> or <a href="#BamSpec">BAM</a> format, and prepare your files according
+              to <a href="http://ena-docs.readthedocs.io/en/latest/format_01.html">ENA specifications</a>. This is a
+              quickly developing field so please do check the specifications every time you submit a new experiment. Data
+              files which do not satisfy ENA's requirements will not be accepted.</p>
 
-            <h4 id="FastqSpec">FASTQ specifications</h4>
-            <ul>
-                <li>Each file must be <strong>compressed</strong> by gzip or bzip2.</li>
-                <li>Submit <strong>individual files</strong> per sample and lane (if applicable). Do not bundle multiple
-                    FASTQ files into one archive, or split a file into smaller sized chunks.
-                </li>
-                <li>Multiplexed libraries should be <strong>demultiplexed</strong> into separate files.</li>
-                <li><strong>No technical adapter sequences</strong> are allowed. But do <i>not</i> remove entire
-                    sequence reads or trim by quality score.
-                </li>
-                <li>For <strong>paired-end</strong> experiments, if the mate pairs are in two separate files (one file
-                    for the forward strand, one for the reverse strand), the two files <i>must</i> be named with the
-                    same root and end with extensions such as <strong>_1.fq.gz</strong> and <strong>_2.fq.gz</strong>.
-                    Examples of naming styles supported by the ENA:
-                    <ul style="list-style-type:none">
-                        <li>sampleA<strong>_R1</strong>.fq.gz / sampleA<strong>_R2</strong>.fq.gz</li>
-                        <li>sampleA<strong>_1</strong>.fq.gz / sampleA<strong>_2</strong>.fq.gz</li>
-                        <li>sampleA<strong>_F</strong>.fq.gz / sampleA<strong>_R</strong>.fq.gz</li>
-                    </ul>
-                </li>
-                <li>Check <a href="http://ena-docs.readthedocs.io/en/latest/format_01.html#fastq-format">ENA
-                    specifications</a> for additional information about the accepted FASTQ format.
-                </li>
-            </ul>
+          <h4 id="FastqSpec">FASTQ specifications</h4>
+          <ul>
+              <li>Each file must be <strong>compressed</strong> by gzip or bzip2.</li>
+              <li>Submit <strong>individual files</strong> per sample and lane (if applicable). Do not bundle multiple
+                  FASTQ files into one archive, or split a file into smaller sized chunks.
+              </li>
+              <li>Multiplexed libraries should be <strong>demultiplexed</strong> into separate files.</li>
+              <li><strong>No technical adapter sequences</strong> are allowed. But do <i>not</i> remove entire
+                  sequence reads or trim by quality score.
+              </li>
+              <li>For <strong>paired-end</strong> experiments, the mate pairs must be split into two separate files (one file
+                  for the forward reads, one for the reverse reads). The two files <i>must</i> be named with the
+                  same root and end with extensions such as <strong>_1.fq.gz</strong> and <strong>_2.fq.gz</strong>.
+                  Examples of naming styles supported by the ENA:
+                  <ul style="list-style-type:none">
+                      <li>sampleA<strong>_R1</strong>.fq.gz / sampleA<strong>_R2</strong>.fq.gz</li>
+                      <li>sampleA<strong>_1</strong>.fq.gz / sampleA<strong>_2</strong>.fq.gz</li>
+                      <li>sampleA<strong>_F</strong>.fq.gz / sampleA<strong>_R</strong>.fq.gz</li>
+                  </ul>
+              </li>
+              <li>Check <a href="http://ena-docs.readthedocs.io/en/latest/format_01.html#fastq-format">ENA
+                  specifications</a> for additional information about the accepted FASTQ format.
+              </li>
+          </ul>
 
-            <h4 id="BamSpec">BAM specifications</h4>
+          <h4 id="BamSpec">BAM specifications</h4>
 
-            <ul>
-                <li>Each file must contain <strong>all reads</strong> from the sequencing machine and all reads should
-                    be <strong>unaligned</strong>. The reason for this is that we expect the BAM file to be used to
-                    regenerate <i>all</i> the sequencing reads.
-                </li>
-                <li>The phred quality score for each base should be included in the file.</li>
-                <li>If you have data from paired-end sequencing libraries, for each sequencing run, include data for
-                    both mate reads in one single BAM file.
-                </li>
-                <li>Check <a href="http://ena-docs.readthedocs.io/en/latest/format_01.html#bam-format">ENA
-                    specifications</a> for additional information about the accepted BAM format.
-                </li>
-            </ul>
+          <ul>
+              <li>Each file must contain <strong>all reads</strong> from the sequencing machine and all reads should
+                  be <strong>unaligned</strong>. The reason for this is that we expect the BAM file to be used to
+                  regenerate <i>all</i> the sequencing reads.
+              </li>
+              <li>The phred quality score for each base should be included in the file.</li>
+              <li>If you have data from paired-end sequencing libraries, for each sequencing run, include data for
+                  both mate reads in one single BAM file.
+              </li>
+              <li>Check <a href="http://ena-docs.readthedocs.io/en/latest/format_01.html#bam-format">ENA
+                  specifications</a> for additional information about the accepted BAM format.
+              </li>
+          </ul>
 
-            <p>To ensure your BAM files contain unaligned reads, you can run the following commands:</p>
-            <ul style="list-style-type:none">
-                <li><code>samtools view -c -F 4 bam_file</code> (counts how many reads are aligned and should return 0)
-                </li>
-                <li><code>samtools view -c -f 4 bam_file</code> (counts how many reads are unaligned and should return
-                    at least 1)
-                </li>
-            </ul>
-            <p>If your BAM files contain mapped reads, then please either create unmapped BAM files, or send us the
-                original read files (e.g. fastq.gz files) as raw data files.
-                BAM files containing mapped reads can be included in your submission as processed files, as long as they
-                satisfy ENA's specification and that the reference genome used for alignment has been accessioned in the
-                International Nucleotide Sequence Database Collaboration (INSDC, involving <a
-                        href="https://www.ddbj.nig.ac.jp/">DDBJ</a>, <a href="https://www.ebi.ac.uk/ena">ENA</a>, and <a
-                        href="https://www.ncbi.nlm.nih.gov/genbank/">GenBank</a>).</p>
-            <p>&nbsp;</p>
-            <hr/>
+          <p>To ensure your BAM files contain unaligned reads, you can run the following commands:</p>
+          <ul style="list-style-type:none">
+              <li><code>samtools view -c -F 4 bam_file</code> (counts how many reads are aligned and should return 0)
+              </li>
+              <li><code>samtools view -c -f 4 bam_file</code> (counts how many reads are unaligned and should return
+                  at least 1)
+              </li>
+          </ul>
+          <p>If your BAM files contain mapped reads, then please either create unmapped BAM files, or send us the
+              original read files (e.g. fastq.gz files) as raw data files.
+              BAM files containing mapped reads can be included in your submission as processed files, as long as they
+              satisfy ENA's specification and that the reference genome used for alignment has been accessioned in the
+              International Nucleotide Sequence Database Collaboration (INSDC, involving <a
+                      href="https://www.ddbj.nig.ac.jp/">DDBJ</a>, <a href="https://www.ebi.ac.uk/ena">ENA</a>, and <a
+                      href="https://www.ncbi.nlm.nih.gov/genbank/">GenBank</a>).</p>
 
-            <h3 id="processed_data">Processed data files</h3>
-            <p>If your processed data are in spreadsheets, e.g. a table of FPKM values for genes with genes in rows and
-                samples in columns, please save them in tab-delimited text (*.txt) format (not Excel). We also accept
-                BAM alignment files, bed/bigwig files, and any other commonly used output data format. There is no need
-                to compress or zip up the processed files one by one or as a bundle. Upload them in Annotare and assign
-                to your samples in the same way as you would for raw files, choosing "Processed" or "Processed Matrix"
-                as file type.</p>
-            <br>
-    </div>
+          <h4>Single cell raw data files</h4>
+          <p>If you are submitting single cell sequencing data, please check the
+              <a href="single-cell_submission_guide.html#FileFormats">single-cell raw data file requirements</a>,
+              as a few special rules apply for certain types of single cell experiments.</p>
 
-    <!-- side navigation -->
-    <div class="medium-3 columns sidebar">
-        <ul class="vertical menu accordion-menu" data-accordion-menu>
-            <li><a href="index.html" class="active">Submission guide</a></li>
-            <li><a>Before you start</a>
-                <ul class="menu vertical nested is-active">
-                    <li><a href="what_to_submit.html">Submission overview</a></li>
-                    <li><a href="">Accepted file formats</a>
-                        <ul class="menu vertical nested is-active">
-                            <li><a href="accepted_raw_ma_file_formats.html">Microarray raw data</a></li>
-                            <li><a href="accepted_processed_ma_file_formats.html">Microarray processed data</a></li>
-                            <li><a class="active" href="accepted_sequencing_file_formats.html#raw_data_files">Sequencing
-                                raw data</a></li>
-                            <li><a class="active" href="accepted_sequencing_file_formats.html#processed_data">Sequencing
-                                processed data</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="pre-submission_checklist.html">Pre-submission checklist</a></li>
-                    <li><a href="adf_submissions_overview.html">Array design submissions</a></li>
-                </ul>
-            </li>
-            <li><a>Annotare step-by-step</a>
-                <ul class="menu vertical nested">
-                    <li><a href="getting_started.html">Getting started</a></li>
-                    <li><a href="time_saving_features.html">Time-saving features</a></li>
-                    <li><a href="describe_exp.html">Describe experiment</a></li>
-                    <li><a href="sample_attributes.html">Sample attributes and protocols</a></li>
-                    <li><a href="">Technology-specific details</a>
-                        <ul>
-                            <li><a href="seq_lib_spec.html">Sequencing library information</a></li>
-                            <li><a href="single-cell_submission_guide.html">Single cell information</a></li>
-                            <li><a href="two_color_ma.html">Two-colour experiments</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="">Upload and assign files</a>
-                        <ul>
-                            <li><a href="file_upload.html#direct">Direct upload</a></li>
-                            <li><a href="ftp_upload.html">FTP/Aspera upload</a></li>
-                            <li><a href="file_upload.html#ftp">Import FTP/Aspera uploaded files</a></li>
-                            <li><a href="assign_files.html">Assign files</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="">Validate and submit</a>
-                        <ul>
-                            <li><a href="validate_exp.html#validate">What is validation?</a></li>
-                            <li><a href="submit_exp.html">Submit, and what happens next?</a></li>
-                            <li><a href="submit_exp.html#save_sub">Saving a copy of your submission</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <li><a href="">After submission</a>
-                <ul>
-                    <li><a href="after_sub_private_access.html">Access private experiments</a></li>
-                    <li><a href="after_sub_modify_data.html">Modify or remove an existing experiment</a></li>
-                    <li><a href="after_sub_data_availability.html">Data availability and release policy</a></li>
-                </ul>
-            </li>
-        </ul>
-    </div> <!-- /medium-3 -->
+          <p>&nbsp;</p>
+          <hr/>
+
+          <h3 id="processed_data">Processed data files</h3>
+
+          <p>We accept all commonly used processed sequencing data or analysis files. There is no need to compress or zip up these files one by one or as a bundle. Upload them in Annotare and assign to your samples in the same way as you would for raw files, choosing "Processed" or "Processed Matrix" as file type.</p>
+
+          <h4>Matrix files</h4>
+
+          <p>Data analysis commonly produces data matrices, e.g. a table with FPKM values, raw count values or output from differential expression analysis, with genes in rows and samples in columns.<br>
+
+              Please save any matrix files as tab-delimited text format (not Excel) and use the file extension <i>.txt</i>.
+              Also make sure that the sample names in your matrix file match with the sample names used in Annotare.</p>
+
+          <h4>Alignment files</h4>
+
+          <p>We also accept BAM alignment files, bed/bigwig files, and any other commonly used alignment data format.
+
+          <h4>Other accepted processed formats</h4>
+          <p>As this is a rapidly evolving field we also welcome other types of processed sequencing data. Ideally the file formats are a standard in the field and non-proprietary.</p>
+
+          <br>
+  </div>
+
+  <!-- side navigation -->
+  <div class="medium-3 columns sidebar">
+      <ul class="vertical menu accordion-menu" data-accordion-menu>
+          <li><a href="index.html" class="active">Submission guide</a></li>
+          <li><a>Before you start</a>
+              <ul class="menu vertical nested is-active">
+                  <li><a href="what_to_submit.html">Submission overview</a></li>
+                  <li><a href="">Accepted file formats</a>
+                      <ul class="menu vertical nested is-active">
+                          <li><a href="accepted_raw_ma_file_formats.html">Microarray raw data</a></li>
+                          <li><a href="accepted_processed_ma_file_formats.html">Microarray processed data</a></li>
+                          <li><a class="active" href="accepted_sequencing_file_formats.html#raw_data_files">Sequencing
+                              raw data</a></li>
+                          <li><a class="active" href="accepted_sequencing_file_formats.html#processed_data">Sequencing
+                              processed data</a></li>
+                      </ul>
+                  </li>
+                  <li><a href="pre-submission_checklist.html">Pre-submission checklist</a></li>
+                  <li><a href="adf_submissions_overview.html">Array design submissions</a></li>
+              </ul>
+          </li>
+          <li><a>Annotare step-by-step</a>
+              <ul class="menu vertical nested">
+                  <li><a href="getting_started.html">Getting started</a></li>
+                  <li><a href="time_saving_features.html">Time-saving features</a></li>
+                  <li><a href="describe_exp.html">Describe experiment</a></li>
+                  <li><a href="sample_attributes.html">Sample attributes and protocols</a></li>
+                  <li><a href="">Technology-specific details</a>
+                      <ul>
+                          <li><a href="seq_lib_spec.html">Sequencing library information</a></li>
+                          <li><a href="single-cell_submission_guide.html">Single cell information</a></li>
+                          <li><a href="two_color_ma.html">Two-colour experiments</a></li>
+                      </ul>
+                  </li>
+                  <li><a href="">Upload and assign files</a>
+                      <ul>
+                          <li><a href="file_upload.html#direct">Direct upload</a></li>
+                          <li><a href="ftp_upload.html">FTP/Aspera upload</a></li>
+                          <li><a href="file_upload.html#ftp">Import FTP/Aspera uploaded files</a></li>
+                          <li><a href="assign_files.html">Assign files</a></li>
+                      </ul>
+                  </li>
+                  <li><a href="">Validate and submit</a>
+                      <ul>
+                          <li><a href="validate_exp.html#validate">What is validation?</a></li>
+                          <li><a href="submit_exp.html">Submit, and what happens next?</a></li>
+                          <li><a href="submit_exp.html#save_sub">Saving a copy of your submission</a></li>
+                      </ul>
+                  </li>
+              </ul>
+          </li>
+          <li><a href="">After submission</a>
+              <ul>
+                  <li><a href="after_sub_private_access.html">Access private experiments</a></li>
+                  <li><a href="after_sub_modify_data.html">Modify or remove an existing experiment</a></li>
+                  <li><a href="after_sub_data_availability.html">Data availability and release policy</a></li>
+              </ul>
+          </li>
+      </ul>
+  </div> <!-- /medium-3 -->
 </section>
 </body>
 </html>
