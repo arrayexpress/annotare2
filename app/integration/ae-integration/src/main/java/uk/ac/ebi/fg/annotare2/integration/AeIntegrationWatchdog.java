@@ -520,6 +520,11 @@ public class AeIntegrationWatchdog {
     public void processPrivateInAE(Submission submission) throws AEConnectionException, SubsTrackingException {
 
             String accession = submission.getAccession();
+        // check if the submission has been rejected
+        if (!isInCuration(submission.getSubsTrackingId())) {
+            reOpenSubmission(submission);
+        }
+        else{
             if (!isNullOrEmpty(accession)) {
                 if (properties.isAeConnectionEnabled()) {
                     AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
@@ -528,14 +533,12 @@ public class AeIntegrationWatchdog {
                         submissionManager.save(submission);
                     }
                 }
-                // check if the submission has been rejected
-                if (!isInCuration(submission.getSubsTrackingId())) {
-                    reOpenSubmission(submission);
-                }
             } else {
                 submission.setStatus(SubmissionStatus.IN_CURATION);
                 submissionManager.save(submission);
             }
+        }
+
     }
 
     private void reOpenSubmission(Submission submission) {
@@ -560,6 +563,11 @@ public class AeIntegrationWatchdog {
     public void processPublicInAE(Submission submission) throws AEConnectionException, SubsTrackingException {
 
             String accession = submission.getAccession();
+        // check if the submission has been rejected
+        if (!isInCuration(submission.getSubsTrackingId())) {
+            reOpenSubmission(submission);
+        }
+        else{
             if (!isNullOrEmpty(accession)) {
                 if (properties.isAeConnectionEnabled()) {
                     AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
@@ -568,14 +576,12 @@ public class AeIntegrationWatchdog {
                         submissionManager.save(submission);
                     }
                 }
-                // check if the submission has been rejected
-                if (!isInCuration(submission.getSubsTrackingId())) {
-                    reOpenSubmission(submission);
-                }
             } else {
                 submission.setStatus(SubmissionStatus.IN_CURATION);
                 submissionManager.save(submission);
             }
+        }
+
     }
 
     @Transactional(rollbackOn = {SubsTrackingException.class})
