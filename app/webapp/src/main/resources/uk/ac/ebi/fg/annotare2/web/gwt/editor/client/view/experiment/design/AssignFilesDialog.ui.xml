@@ -33,7 +33,7 @@
             margin-bottom: 10%;
         }
     </ui:style>
-    <g:ResizeLayoutPanel height="350px" width="650px">
+    <g:ResizeLayoutPanel height="375px" width="650px">
         <g:DockLayoutPanel>
             <g:center>
                 <g:SplitLayoutPanel>
