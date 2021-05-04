@@ -218,7 +218,7 @@ public class ValidateSubmissionDialog extends DialogBox {
                             "detect problems with the files, we will provide information on how to fix the problems, " +
                             "and invite you to resubmit with valid files. <br/><br/>" +
                             "You will receive a stable accession number shortly for this submission. " +
-                            "The accession can be <a href=\"http://www.ebi.ac.uk/arrayexpress/help/FAQ.html#cite\" target=\"_blank\">cited</a> " +
+                            "The accession can be <a href=\"about#cite\" target=\"_blank\">cited</a> " +
                             "in your manuscript, but is not valid until a curator reviewed your submission and loaded it " +
                             "into the ArrayExpress database.");
         } else {
@@ -226,7 +226,7 @@ public class ValidateSubmissionDialog extends DialogBox {
                     "Submission Successful",
                     "Thanks for submitting!<br/><br/>" +
                             "You'll receive a stable accession number shortly for this submission." +
-                            "The accession can be  <a href=\"http://www.ebi.ac.uk/arrayexpress/help/FAQ.html#cite\" " +
+                            "The accession can be  <a href=\"about#cite\" " +
                             "target=\"_blank\">cited</a> " +
                             "in your manuscript, but is not valid until a curator has reviewed your submission and loaded it " +
                             "into the ArrayExpress database. Curators will contact you if they have questions about your " +
