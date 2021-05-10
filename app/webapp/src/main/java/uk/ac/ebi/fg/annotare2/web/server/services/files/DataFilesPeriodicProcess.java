@@ -108,7 +108,7 @@ public class DataFilesPeriodicProcess {
     }
 
     private void periodicRun() throws Exception {
-        /*final FileAvailabilityChecker availabilityChecker = new FileAvailabilityChecker();
+        final FileAvailabilityChecker availabilityChecker = new FileAvailabilityChecker();
         for (final DataFile file : fileDao.getFilesByStatus(TO_BE_STORED, TO_BE_ASSOCIATED, ASSOCIATED)) {
 // FTP files will not be processed if FTP is not enabled
             if (!file.isDeleted() && (properties.isFtpEnabled() || !file.getSourceUri().contains(properties.getFtpPickUpDir()))) {
@@ -136,7 +136,7 @@ public class DataFilesPeriodicProcess {
                     }
                 }
             }
-        }*/
+        }
     }
 
     private synchronized boolean addFileToFileCopyingSet(DataFile file) {
