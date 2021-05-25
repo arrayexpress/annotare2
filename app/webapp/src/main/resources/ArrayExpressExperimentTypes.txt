@@ -9,7 +9,9 @@ ChIP-chip by tiling array
 ChIP-seq
 CLIP-seq
 comparative genomic hybridization by array
+CUT&RUN
 DNA-seq
+exome sequencing
 FAIRE-seq
 genotyping by array
 genotyping by high throughput sequencing
@@ -32,6 +34,8 @@ RNA-seq of coding RNA from single cells
 RNA-seq of non coding RNA
 RNA-seq of non coding RNA from single cells
 RNA-seq of total RNA
+scATAC-seq
+spatial transcriptomics by high-throughput sequencing
 tiling path by array
 transcription profiling by array
 transcription profiling by RT-PCR
