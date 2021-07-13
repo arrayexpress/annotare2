@@ -151,7 +151,7 @@ public class SubsTracking {
                 }
 
                 if (SubmissionStatus.RESUBMITTED != submission.getStatus() && 1 == r.getInCuration()) {
-                    throw new SubsTrackingException(SubsTrackingException.IN_CURATION_ON_RESUBMISSION_EXCEPTION);
+                    throw new SubsTrackingException(SubsTrackingException.IN_CURATION_ON_RESUBMISSION_EXCEPTION + ". Submission ID: " + submission.getId());
                 }
 
                 Integer numSubmissions = null == r.getNumSubmissions() ? 1 : r.getNumSubmissions();
