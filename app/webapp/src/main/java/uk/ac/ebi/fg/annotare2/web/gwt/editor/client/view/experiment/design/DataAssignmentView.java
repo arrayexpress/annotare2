@@ -31,24 +31,15 @@ import java.util.Set;
  */
 public interface DataAssignmentView extends IsWidget {
 
-    void setData(List<DataAssignmentColumn> columns, List<DataAssignmentRow> rows);
-
-    void updateData(List<DataAssignmentColumn> columns, List<DataAssignmentRow> rows);
-
-    void setExperimentType(ExperimentProfileType type);
-
     void setPresenter(Presenter presenter);
 
-    void setDataFiles(List<DataFileRow> dataFiles);
+    void loadData();
 
-    void setDeletedFiles(Set<DataFileRow> dataFiles);
+    void setDataFiles(List<DataFileRow> files);
 
-    public static interface Presenter {
+    void setData(List<DataAssignmentColumn> columns, List<DataAssignmentRow> rows);
 
-        void createColumn(FileType type);
-
-        void removeColumns(List<Integer> indices);
-
-        void updateColumn(DataAssignmentColumn column);
+    interface Presenter {
+        void refresh();
     }
 }

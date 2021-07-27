@@ -142,7 +142,7 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
                     @Override
                     public void onSuccess(ExperimentProfileType result) {
                         view.getUploadView().setExperimentType(result);
-                        view.getAssignmentView().setExperimentType(result);
+                       // view.getAssignmentView().setExperimentType(result);
                     }
                 }
         );
@@ -175,20 +175,20 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
         );
     }
 
-    @Override
-    public void createColumn(FileType type) {
-        expDataService.createDataAssignmentColumn(type);
-    }
-
-    @Override
-    public void removeColumns(List<Integer> indices) {
-        expDataService.removeDataAssignmentColumns(indices);
-    }
-
-    @Override
-    public void updateColumn(DataAssignmentColumn column) {
-        expDataService.updateDataAssignmentColumn(column);
-    }
+//    @Override
+//    public void createColumn(FileType type) {
+//        expDataService.createDataAssignmentColumn(type);
+//    }
+//
+//    @Override
+//    public void removeColumns(List<Integer> indices) {
+//        expDataService.removeDataAssignmentColumns(indices);
+//    }
+//
+//    @Override
+//    public void updateColumn(DataAssignmentColumn column) {
+//        expDataService.updateDataAssignmentColumn(column);
+//    }
 
     @Override
     public void initSubmissionFtpDirectory(AsyncCallback<String> callback) {
@@ -236,4 +236,8 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
         })), callback);
     }
 
+    @Override
+    public void refresh() {
+
+    }
 }

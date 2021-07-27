@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import jsinterop.annotations.JsType;
 import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
 
@@ -25,6 +26,7 @@ import java.util.Date;
 /**
  * @author Olga Melnichuk
  */
+@JsType
 public class DataFileRow implements IsSerializable, HasIdentity {
 
     private long id;

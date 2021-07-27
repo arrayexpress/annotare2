@@ -43,6 +43,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
     private final Provider<LabeledExtractsActivity> labeledExtractsActivityProvider;
     private final Provider<DataFileAssignmentActivity> dataFileAssignmentActivityProvider;
     private final Provider<ProtocolsActivity> protocolsActivityProvider;
+    //private final Provider<AdditionalFilesActivity> additionalFilesActivityProvider;
 
     private final Provider<SdrfPreviewActivity> sdrfPreviewActivityProvider;
     private final Provider<IdfPreviewActivity> idfPreviewActivityProvider;
@@ -64,7 +65,9 @@ public class EditorContentActivityMapper implements ActivityMapper {
             Provider<SdrfPreviewActivity> sdrfPreviewActivityProvider,
             Provider<IdfPreviewActivity> idfPreviewActivityProvider,
             Provider<AdfDetailsActivity> adfDetailsActivityProvider,
-            Provider<AdfTablePreviewActivity> adfTablePreviewActivityProvider) {
+            Provider<AdfTablePreviewActivity> adfTablePreviewActivityProvider
+           // Provider<AdditionalFilesActivity> additionalFilesActivityProvider
+        ) {
         this.expDetailsActivityProvider = expDetailsActivityProvider;
         this.contactsActivityProvider = contactsActivityProvider;
         this.publicationsActivityProvider = publicationsActivityProvider;
@@ -75,6 +78,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
         this.labeledExtractsActivityProvider = labeledExtractsActivityProvider;
         this.dataFileAssignmentActivityProvider = dataFileAssignmentActivityProvider;
         this.protocolsActivityProvider = protocolsActivityProvider;
+        //this.additionalFilesActivityProvider = additionalFilesActivityProvider;
 
         this.sdrfPreviewActivityProvider = sdrfPreviewActivityProvider;
         this.idfPreviewActivityProvider = idfPreviewActivityProvider;
@@ -117,6 +121,8 @@ public class EditorContentActivityMapper implements ActivityMapper {
                     return (dataFileAssignmentActivityProvider.get()).withPlace(designPlace);
                 case PROTOCOLS:
                     return (protocolsActivityProvider.get()).withPlace(designPlace);
+//                case ADDITIONAL_FILES:
+//                    return (additionalFilesActivityProvider.get()).withPlace(designPlace);
             }
         } else if (place instanceof IdfPreviewPlace) {
             return (idfPreviewActivityProvider.get()).withPlace((IdfPreviewPlace) place);

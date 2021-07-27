@@ -53,8 +53,8 @@
         <gwt.version>2.9.0</gwt.version>
         <gwtupload.version>1.0.3</gwtupload.version>
         <gin.version>2.1.2</gin.version>
-        <guava.version>21.0</guava.version>
-        <guice.version>4.0</guice.version>
+        <guava.version>30.1-jre</guava.version>
+        <guice.version>4.2.3</guice.version>
         <governator.version>1.12.8</governator.version>
         <liquibase.version>4.7.1</liquibase.version>
         <hibernate.version>4.2.4.Final</hibernate.version>

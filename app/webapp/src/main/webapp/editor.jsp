@@ -23,6 +23,10 @@
     <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/font-awesome.min.css">
     <t:analytics></t:analytics>
     <script type="text/javascript" src="${pageContext.request.contextPath}/EditorApp/EditorApp.nocache.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/assets/react/css/bundle.min.css">
+    <script type="text/javascript" src="${pageContext.request.contextPath}/assets/react/js/bundle.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/assets/react/js/1.bundle.min.js"></script>
 </head>
 <body revision="${buildNumber}">
 <!-- OPTIONAL: include this if you want history support -->

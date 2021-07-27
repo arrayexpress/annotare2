@@ -40,6 +40,7 @@ public enum ExpDesignSection implements LeftNavigationView.Section {
     LABELED_EXTRACTS("Create labeled extracts and assign labels", "Assign the label to each sample by removing the one thatdoes not apply. For dye-swap designs both labels can be kept.", TWO_COLOR_MICROARRAY, METHYLATION_MICROARRAY, PLANT_TWO_COLOR_MICROARRAY, PLANT_METHYLATION_MICROARRAY, HUMAN_TWO_COLOR_MICROARRAY, HUMAN_METHYLATION_MICROARRAY, CELL_LINE_TWO_COLOR_MICROARRAY, CELL_LINE_METHYLATION_MICROARRAY, ANIMAL_TWO_COLOR_MICROARRAY, ANIMAL_METHYLATION_MICROARRAY),
     PROTOCOLS("Describe protocols", allOf(ExperimentProfileType.class)),
     FILES("Assign data files", allOf(ExperimentProfileType.class)),
+    //ADDITIONAL_FILES("Additional Files", allOf(ExperimentProfileType.class)),
     NONE("None", noneOf(ExperimentProfileType.class));
 
     private final String title;

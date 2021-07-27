@@ -77,6 +77,7 @@ public class EditorGinModule extends AbstractGinModule {
         bind(ProtocolsView.class).to(ProtocolsViewImpl.class);
         bind(DataFilesUploadView.class).to(DataFilesUploadViewImpl.class);
         bind(DataAssignmentView.class).to(DataAssignmentViewImpl.class);
+        bind(AdditionalFilesView.class).to(AdditionalFilesViewImpl.class);
 
         bind(AdfDetailsView.class).to(AdfDetailsViewImpl.class);
 
