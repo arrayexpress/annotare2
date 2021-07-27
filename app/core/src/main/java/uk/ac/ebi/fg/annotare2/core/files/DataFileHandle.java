@@ -17,6 +17,8 @@
 
 package uk.ac.ebi.fg.annotare2.core.files;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -34,6 +36,8 @@ public abstract class DataFileHandle {
     public abstract String getDigest() throws IOException;
 
     public abstract DataFileHandle copyTo(URI destination) throws IOException;
+
+    public abstract Pair<DataFileHandle, Boolean> copyIfNotPresent(URI destination) throws IOException;
 
     public abstract DataFileHandle rename(String newName) throws IOException;
 

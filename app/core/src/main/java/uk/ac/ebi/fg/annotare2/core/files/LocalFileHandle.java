@@ -20,6 +20,8 @@ package uk.ac.ebi.fg.annotare2.core.files;
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
 import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.*;
 import java.net.URI;
@@ -81,6 +83,22 @@ public class LocalFileHandle extends DataFileHandle implements Serializable {
             ((RemoteFileHandle)destFileHandle).copyFrom(file);
         }
         return destFileHandle;
+    }
+
+    @Override
+    public Pair<DataFileHandle, Boolean> copyIfNotPresent(URI destination) throws IOException {
+        DataFileHandle destFileHandle = DataFileHandle.createFromUri(destination);
+        Pair<DataFileHandle, Boolean> copyResult = new MutablePair<>(destFileHandle, false);
+        if (destFileHandle instanceof LocalFileHandle) {
+            Files.copy(file, ((LocalFileHandle)destFileHandle).getFile());
+            copyResult.setValue(true);
+        } else if (destFileHandle instanceof RemoteFileHandle) {
+            if(!(getDigest().equals(destFileHandle.getDigest()))){
+                ((RemoteFileHandle)destFileHandle).copyFrom(file);
+                copyResult.setValue(true);
+            }
+        }
+        return copyResult;
     }
 
     @Override

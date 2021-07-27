@@ -18,6 +18,8 @@
 package uk.ac.ebi.fg.annotare2.core.files;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.*;
 import java.net.URI;
@@ -67,6 +69,11 @@ public class RemoteFileHandle extends DataFileHandle implements Serializable {
     public DataFileHandle copyTo(URI destination) throws IOException {
         access.copy(uri, destination);
         return DataFileHandle.createFromUri(destination);
+    }
+
+    @Override
+    public Pair<DataFileHandle, Boolean> copyIfNotPresent(URI destination) throws IOException {
+       return MutablePair.of(copyTo(destination), true);
     }
 
     @Override

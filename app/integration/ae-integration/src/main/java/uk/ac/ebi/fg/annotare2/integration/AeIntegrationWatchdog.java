@@ -57,6 +57,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -402,11 +404,16 @@ public class AeIntegrationWatchdog {
                     logger.debug("Processing data file {}", dataFile.getName());
                     if (DataFileStatus.STORED == dataFile.getStatus()) {
                         URI destinationURI = (isSequencing && rawDataFiles.contains(dataFile))
-                                ? new URI(ftpManager.getDirectory(ftpSubDirectory) + dataFile.getName())
+                                ? new URI(ftpManager.getDirectory(ftpSubDirectory) + URLEncoder.encode(dataFile.getName(), StandardCharsets.UTF_8.toString()))
                                 : new File(unpackedExportDirectory, dataFile.getName()).toURI();
                         DataFileHandle source = dataFileManager.getFileHandle(dataFile);
-                        DataFileHandle destination = source.copyTo(destinationURI);
-                        logger.debug("Copied data file {} to {}", dataFile.getName(), destinationURI);
+                        Pair<DataFileHandle, Boolean> copyResult = source.copyIfNotPresent(destinationURI);
+                        if(copyResult.getRight()){
+                            logger.debug("Copied data file {} to {}", dataFile.getName(), destinationURI);
+                        }else {
+                            logger.debug("Data file {} already exists in {}", dataFile.getName(), destinationURI);
+                        }
+                        DataFileHandle destination = copyResult.getLeft();
                         if (!isNullOrEmpty(dataFilesPostProcessingScript) && destination instanceof LocalFileHandle) {
                             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
                             if (executor.execute(dataFilesPostProcessingScript + " " + destination.getUri().getPath())) {
