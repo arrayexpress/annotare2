@@ -325,6 +325,7 @@ public class AeIntegrationWatchdog {
         Integer substrackingId = submissionOutcomeIntegerPair.getRight();
         if (SubmissionOutcome.SUBMISSION_FAILED != outcome) {
             File exportDir = copyDataFiles(submission, substrackingId);
+            TimeUnit.HOURS.sleep(9);
             addFilesToSubstracking(submission, substrackingId, exportDir);
             submissionPostProcessor.add(Pair.of(submission, outcome));
             logger.debug("Submission: {} added to post processing queue", submission.getId());
