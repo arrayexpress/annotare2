@@ -257,14 +257,16 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                     experimentSubmission.setExperimentProfile(experiment);
                 }
                 dataFileManager.renameDataFile(dataFile, fileName);
-
+                URI remoteURI = new URI(ftpManager.getDirectory(experimentSubmission.getFtpSubDirectory()) + dataFile.getName());
+                DataFileHandle dataFileHandle = DataFileHandle.createFromUri(remoteURI);
+                dataFileHandle.rename(fileName);
                 save(submission);
             }
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
         } catch (AccessControlException e) {
             throw noPermission(e);
-        } catch (DataSerializationException e) {
+        } catch (DataSerializationException | URISyntaxException | IOException e) {
             throw unexpected(e);
         }
     }
