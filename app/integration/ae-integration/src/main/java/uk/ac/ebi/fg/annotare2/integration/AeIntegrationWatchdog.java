@@ -325,6 +325,8 @@ public class AeIntegrationWatchdog {
         Integer substrackingId = submissionOutcomeIntegerPair.getRight();
         if (SubmissionOutcome.SUBMISSION_FAILED != outcome) {
             File exportDir = copyDataFiles(submission, substrackingId);
+            // Reopening session in case existing session closes after long file copy task(More than 8hrs).
+            sessionFactory.openSession();
             addFilesToSubstracking(submission, substrackingId, exportDir);
             submissionPostProcessor.add(Pair.of(submission, outcome));
             logger.debug("Submission: {} added to post processing queue", submission.getId());
