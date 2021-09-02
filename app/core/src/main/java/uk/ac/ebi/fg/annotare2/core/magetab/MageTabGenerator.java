@@ -23,15 +23,61 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.graph.Node;
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.*;
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.*;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.ArrayDataMatrixNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.ArrayDataNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.AssayNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.DerivedArrayDataMatrixNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.DerivedArrayDataNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.ExtractNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.LabeledExtractNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.ProtocolApplicationNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.SDRFNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.ScanNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.SourceNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.ArrayDesignAttribute;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.CharacteristicsAttribute;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.FactorValueAttribute;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.LabelAttribute;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.MaterialTypeAttribute;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.PerformerAttribute;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.ProviderAttribute;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.TechnologyTypeAttribute;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.UnitAttribute;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.fg.annotare2.core.components.EfoSearch;
 import uk.ac.ebi.fg.annotare2.core.data.ProtocolTypes;
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoTerm;
-import uk.ac.ebi.fg.annotare2.submission.model.*;
+import uk.ac.ebi.fg.annotare2.submission.model.Contact;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.Extract;
+import uk.ac.ebi.fg.annotare2.submission.model.ExtractAttribute;
+import uk.ac.ebi.fg.annotare2.submission.model.FileColumn;
+import uk.ac.ebi.fg.annotare2.submission.model.FileRef;
+import uk.ac.ebi.fg.annotare2.submission.model.FileType;
+import uk.ac.ebi.fg.annotare2.submission.model.LabeledExtract;
+import uk.ac.ebi.fg.annotare2.submission.model.MultiSets;
+import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.submission.model.Protocol;
+import uk.ac.ebi.fg.annotare2.submission.model.ProtocolSubjectType;
+import uk.ac.ebi.fg.annotare2.submission.model.Publication;
+import uk.ac.ebi.fg.annotare2.submission.model.Sample;
+import uk.ac.ebi.fg.annotare2.submission.model.SampleAttribute;
+import uk.ac.ebi.fg.annotare2.submission.model.SingleCellExtractAttribute;
+import uk.ac.ebi.fg.annotare2.submission.model.TermSource;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -279,10 +325,7 @@ public class MageTabGenerator {
         if (isNullOrEmpty(nodeName)) {
             return createFakeNode(clazz);
         }
-        T node = getNode(clazz, nodeName);
-        if (null == node) {
-            node = createNode(clazz, nodeName);
-        }
+        T node = createNode(clazz, nodeName);
         return node;
     }
 
@@ -449,7 +492,7 @@ public class MageTabGenerator {
                 //        nextLayer.put(leId, createScanNode(nextLayer.get(leId), Collections.<Protocol>emptyList()));
                 //    }
                 //}
-                SDRFNode fileNode = createFileNode(nextLayer.get(leId), fileColumn.getType(), fileRef, protocols);
+                SDRFNode fileNode = createFileNode(nextLayer.get(leId), fileColumn.getType(), fileRef, protocols, labeledExtract.getExtract().getId());
                 nextLayer.put(leId, fileNode);
             }
         }
@@ -492,7 +535,7 @@ public class MageTabGenerator {
                                     exp.getProtocols(fileRef, fileColumn.getType().isRaw() ? ProtocolSubjectType.RAW_FILE : ProtocolSubjectType.PROCESSED_FILE) :
                                     Collections.<Protocol>emptyList();
 
-                            SDRFNode fileNode = createFileNode(sourceNodes, fileColumn.getType(), fileRef, protocols);
+                            SDRFNode fileNode = createFileNode(sourceNodes, fileColumn.getType(), fileRef, protocols, extractId);
                             nextLayer.put(extractId, fileNode);
                             if (!fileType.isRaw() && it.hasNext()) {
                                 sourceNodes = nextLayer.get(extractId);
@@ -505,7 +548,7 @@ public class MageTabGenerator {
         }
     }
 
-    private void connect(SDRFNode source, SDRFNode destination, Collection<Protocol> protocols) {
+    private void connect(SDRFNode source, SDRFNode destination, Collection<Protocol> protocols, Integer extractId) {
         SDRFNode prev = source;
         Collection<Protocol> orderedProtocols =
                 Ordering.natural().onResultOf(new Function<Protocol, Integer>() {
@@ -518,17 +561,16 @@ public class MageTabGenerator {
         for (Protocol protocol : orderedProtocols) {
             // protocol node name must be unique
             String nodeName = prev.getClass().getSimpleName() + ":" + prev.getNodeName() + ":" + protocol.getId() + (protocol.isAssigned() ? "" : "F");
-            ProtocolApplicationNode protocolNode = getNode(ProtocolApplicationNode.class, nodeName);
-            if (null == protocolNode) {
-                if (protocol.isAssigned()) {
-                    protocolNode = createNode(ProtocolApplicationNode.class, nodeName);
-                    protocolNode.protocol = protocol.getName();
-                    if (protocol.hasPerformer()) {
-                        PerformerAttribute attr = new PerformerAttribute();
-                        attr.setAttributeValue(protocol.getPerformer());
-                        protocolNode.performer = attr;
-                    }
+            ProtocolApplicationNode protocolNode = null;
+            if (protocol.isAssigned()) {
+                protocolNode = createNode(ProtocolApplicationNode.class, nodeName);
+                protocolNode.protocol = protocol.getName();
+                if (protocol.hasPerformer()) {
+                    PerformerAttribute attr = new PerformerAttribute();
+                    attr.setAttributeValue(protocol.getPerformer());
+                    protocolNode.performer = attr;
                 }
+                protocolNode.setExtractId(extractId);
             }
             if (null != protocolNode) {
                 connect(prev, protocolNode);
@@ -580,7 +622,7 @@ public class MageTabGenerator {
                 }
             }
         }
-        connect(sampleNode, extractNode, protocols);
+        connect(sampleNode, extractNode, protocols, extract.getId());
         return extractNode;
     }
 
@@ -603,7 +645,7 @@ public class MageTabGenerator {
         labelAttribute.setAttributeValue(label);
         labeledExtractNode.label = labelAttribute;
 
-        connect(extractNode, labeledExtractNode, protocols);
+        connect(extractNode, labeledExtractNode, protocols, labeledExtract.getExtract().getId());
         return labeledExtractNode;
     }
 
@@ -613,7 +655,7 @@ public class MageTabGenerator {
             assayNode = getNode(AssayNode.class, assayName);
             if (assayNode != null) {
                 addFactorValues(assayNode, prevNode, sdrf);
-                connect(prevNode, assayNode, protocols);
+                connect(prevNode, assayNode, protocols, null);
                 return assayNode;
             }
             assayNode = createNode(AssayNode.class, assayName);
@@ -629,7 +671,7 @@ public class MageTabGenerator {
         }
 
         addFactorValues(assayNode, prevNode, sdrf);
-        connect(prevNode, assayNode, protocols);
+        connect(prevNode, assayNode, protocols, null);
         return assayNode;
     }
 
@@ -708,18 +750,18 @@ public class MageTabGenerator {
             scanNode = createNode(ScanNode.class, assayNode.getNodeName());
         }
 
-        connect(assayNode, scanNode, protocols);
+        connect(assayNode, scanNode, protocols, null);
         return scanNode;
     }
 
-    private SDRFNode createFileNode(SDRFNode prevNode, FileType fileType, FileRef fileRef, Collection<Protocol> protocols) {
+    private SDRFNode createFileNode(SDRFNode prevNode, FileType fileType, FileRef fileRef, Collection<Protocol> protocols, Integer extractId) {
         Set<SDRFNode> prevNodes = new HashSet<SDRFNode>();
         prevNodes.add(prevNode);
 
-        return createFileNode(prevNodes, fileType, fileRef, protocols);
+        return createFileNode(prevNodes, fileType, fileRef, protocols, extractId);
     }
 
-    private SDRFNode createFileNode(Set<SDRFNode> prevNodes, FileType fileType, FileRef fileRef, Collection<Protocol> protocols) {
+    private SDRFNode createFileNode(Set<SDRFNode> prevNodes, FileType fileType, FileRef fileRef, Collection<Protocol> protocols, Integer extractId) {
         SDRFNode fileNode;
         String fileName = null != fileRef ? fileRef.getName() : null;
 
@@ -744,8 +786,9 @@ public class MageTabGenerator {
             default:
                 throw new IllegalStateException("Unsupported file type: " + fileType);
         }
+        fileNode.setExtractId(extractId);
         for (SDRFNode prevNode : prevNodes) {
-            connect(prevNode, fileNode, protocols);
+            connect(prevNode, fileNode, protocols, extractId);
         }
         return fileNode;
     }

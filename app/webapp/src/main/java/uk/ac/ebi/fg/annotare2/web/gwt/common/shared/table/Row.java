@@ -53,6 +53,11 @@ public class Row implements IsSerializable {
         values.set(colIndex, value);
     }
 
+    public void removeValue(int colIndex){
+        checkColumnIndex(colIndex);
+        values.remove(colIndex);
+    }
+
     private void checkColumnIndex(int index) {
         if (index < 0) {
             throw new IndexOutOfBoundsException("Column index can not be less than zero: " + index);
