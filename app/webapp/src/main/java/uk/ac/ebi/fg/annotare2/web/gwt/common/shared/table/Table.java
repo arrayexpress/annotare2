@@ -93,4 +93,29 @@ public class Table implements IsSerializable {
             addRow();
         }
     }
+
+    public void cleanUp(){
+        int rowWidth = getWidth();
+        for(int i = 0; i < rowWidth; i++){
+            if(isUnassignedOrEmpty(rows.get(1).getValue(i))){
+                boolean emptyColumn = true;
+                for(int j = 2; j<rows.size(); j++){
+                    if(!(isUnassignedOrEmpty(rows.get(j).getValue(i)))){
+                        emptyColumn = false;
+                        break;
+                    }
+                }
+                if(emptyColumn){
+                    int reIndex = i; //created new variable to make it effectively final to use in Lambda
+                    rows.forEach(r-> r.removeValue(reIndex));
+                    i--; rowWidth--;
+                }
+
+            }
+        }
+    }
+
+    private boolean isUnassignedOrEmpty(String value) {
+        return value == null || value.isEmpty() || value.startsWith("____UNASSIGNED____");
+    }
 }
