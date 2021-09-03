@@ -24,7 +24,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.ExperimentTab;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorTabBar;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 

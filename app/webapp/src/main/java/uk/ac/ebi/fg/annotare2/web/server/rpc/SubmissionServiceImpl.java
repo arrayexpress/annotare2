@@ -179,7 +179,9 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         StringWriter out = new StringWriter();
         new SDRFGraphWriter(out).write(mageTab.SDRFs.values().iterator().next());
         String sdrf = restoreOriginalNameValues(out.toString());
-        return new TsvParser().parse(new ByteArrayInputStream(sdrf.getBytes(Charsets.UTF_8)));
+        Table sdrfTable = new TsvParser().parse(new ByteArrayInputStream(sdrf.getBytes(Charsets.UTF_8)));
+        sdrfTable.cleanUp();
+        return sdrfTable;
     }
 
     @Transactional
