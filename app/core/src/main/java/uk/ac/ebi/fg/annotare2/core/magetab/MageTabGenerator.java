@@ -561,9 +561,8 @@ public class MageTabGenerator {
         for (Protocol protocol : orderedProtocols) {
             // protocol node name must be unique
             String nodeName = prev.getClass().getSimpleName() + ":" + prev.getNodeName() + ":" + protocol.getId() + (protocol.isAssigned() ? "" : "F");
-            ProtocolApplicationNode protocolNode = null;
             if (protocol.isAssigned()) {
-                protocolNode = createNode(ProtocolApplicationNode.class, nodeName);
+                ProtocolApplicationNode protocolNode = createNode(ProtocolApplicationNode.class, nodeName);
                 protocolNode.protocol = protocol.getName();
                 if (protocol.hasPerformer()) {
                     PerformerAttribute attr = new PerformerAttribute();
@@ -571,8 +570,6 @@ public class MageTabGenerator {
                     protocolNode.performer = attr;
                 }
                 protocolNode.setExtractId(extractId);
-            }
-            if (null != protocolNode) {
                 connect(prev, protocolNode);
                 prev = protocolNode;
             }
