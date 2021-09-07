@@ -47,13 +47,13 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <limpopo.version>2.0.0</limpopo.version>
+        <limpopo.version>2.0.1</limpopo.version>
         <magetabcheck.version>1.27</magetabcheck.version>
         <resumable-gwt.version>1.0.2</resumable-gwt.version>
-        <gwt.version>2.7.0</gwt.version>
+        <gwt.version>2.9.0</gwt.version>
         <gwtupload.version>1.0.3</gwtupload.version>
         <gin.version>2.1.2</gin.version>
-        <guava.version>19.0</guava.version>
+        <guava.version>21.0</guava.version>
         <guice.version>4.0</guice.version>
         <governator.version>1.12.8</governator.version>
         <liquibase.version>2.0.5</liquibase.version>
@@ -78,7 +78,22 @@
             <name>Limpopo Mini-SF Repository</name>
             <url>http://limpopo.sourceforge.net/maven/repo</url>
         </repository>
+        <repository>
+            <id>EBIBioSamples-GH-repo</id>
+            <url>https://raw.githubusercontent.com/EBIBioSamples/EBIBioSamples.github.io/maven-repo</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>FG-local-repo</id>
+            <url>http://193.62.54.19:30007/artifactory/maven-local/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
     </repositories>
+
 
     <dependencies>
 
