@@ -40,6 +40,7 @@ public class TransactionalMethodInterceptor implements MethodInterceptor {
             return obj;
         } catch (RuntimeException e) {
             tx.rollback();
+            sessionFactory.closeSession();
             throw e;
         } catch (Exception e) {
             if (isRollbackNeeded(txAnnotation, e)) {
@@ -47,6 +48,7 @@ public class TransactionalMethodInterceptor implements MethodInterceptor {
             } else {
                 tx.commit();
             }
+            sessionFactory.closeSession();
             throw e;
         }
     }

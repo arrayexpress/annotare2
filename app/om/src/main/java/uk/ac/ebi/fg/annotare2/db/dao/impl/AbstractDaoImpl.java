@@ -36,10 +36,6 @@ public abstract class AbstractDaoImpl<T> {
         return sessionFactory.getCurrentSession();
     }
 
-    protected void closeCurrentSession() {
-         sessionFactory.closeSession();
-    }
-
     protected T get(long id, Class<T> clazz) throws RecordNotFoundException {
         T t;
         try {
