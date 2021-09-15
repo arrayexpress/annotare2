@@ -59,12 +59,11 @@
 
     <logger name="uk.ac.ebi.fg.annotare2.web.server" level="INFO"/>
     <logger name="org.hibernate" level="INFO"/>
-    <logger name="org.hibernate.SQL" level="DEBUG"/>
+    <!--<logger name="org.hibernate.SQL" level="DEBUG"/>-->
     <!--<logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>-->
     <logger name="org.reflections.Reflections" level="ERROR"/>
     <logger name="uk.ac.ebi.fg.annotare2.integration" level="DEBUG"/>
     <logger name="uk.ac.ebi.fg.annotare2.db.model" level="DEBUG"/>
-    <logger name="com.zaxxer.hikari" level="DEBUG"/>
     <!--<logger name="uk.ac.ebi.fg.annotare2.magetabcheck" level="DEBUG"/>-->
 
     <root level="INFO">
