@@ -50,10 +50,6 @@ public class DatabaseDataSource {
 
     @Inject
     public DatabaseDataSource(AnnotareProperties properties) throws NamingException {
-        logger.info("Driver: {}", properties.getDbConnectionDriver());
-        logger.info("URL: {}", properties.getDbConnectionUrl());
-        logger.info("User: {}", properties.getDbConnectionUser());
-        logger.info("Password: {}", properties.getDbConnectionPassword());
         Context context = new InitialContext();
 
         ds = new HikariDataSource();
@@ -75,7 +71,7 @@ public class DatabaseDataSource {
         ds.addDataSourceProperty("useUnicode", "true");
         ds.addDataSourceProperty("characterEncoding", "utf8");
         ds.addDataSourceProperty("connectionCollation", "utf8_unicode_ci");
-        ds.setLeakDetectionThreshold(60*1000);
+
         // register data source in the naming context so hibernate can find it
         context.bind("annotareDb", this.ds);
     }
