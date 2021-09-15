@@ -57,6 +57,7 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
         List<User> users = (List<User>) getCurrentSession().createCriteria(User.class)
                 .add(Restrictions.eq("email", email))
                 .list();
+        closeCurrentSession();
         return users.isEmpty() ? null : users.get(0);
     }
 
