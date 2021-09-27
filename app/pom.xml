@@ -47,7 +47,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <limpopo.version>2.0.2</limpopo.version>
+        <limpopo.version>2.0.3</limpopo.version>
         <magetabcheck.version>1.27</magetabcheck.version>
         <resumable-gwt.version>1.0.2</resumable-gwt.version>
         <gwt.version>2.9.0</gwt.version>
@@ -87,7 +87,7 @@
         </repository>
         <repository>
             <id>FG-local-repo</id>
-            <url>http://193.62.54.19:30007/artifactory/maven-local/</url>
+            <url>http://45.88.81.176:80/artifactory/maven-local/</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
