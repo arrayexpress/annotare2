@@ -54,6 +54,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -257,9 +259,11 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                     experimentSubmission.setExperimentProfile(experiment);
                 }
                 dataFileManager.renameDataFile(dataFile, fileName);
-                URI remoteURI = new URI(ftpManager.getDirectory(experimentSubmission.getFtpSubDirectory()) + dataFile.getName());
+                URI remoteURI = new URI(ftpManager.getDirectory(experimentSubmission.getFtpSubDirectory()) + URLEncoder.encode(dataFile.getName(), StandardCharsets.UTF_8.toString()));
                 DataFileHandle dataFileHandle = DataFileHandle.createFromUri(remoteURI);
-                dataFileHandle.rename(fileName);
+                if(dataFileHandle.exists()){
+                    dataFileHandle.rename(fileName);
+                }
                 save(submission);
             }
         } catch (RecordNotFoundException e) {
