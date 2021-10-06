@@ -336,6 +336,9 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
                 }
                 String v1 = o1.getHardware();
                 String v2 = o2.getHardware();
+                if(v1 == null || v2 == null){
+                    return -1;
+                }
                 return v1.compareTo(v2);
             }
         };
@@ -366,6 +369,9 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
                 }
                 String v1 = o1.getSoftware();
                 String v2 = o2.getSoftware();
+                if(v1 == null || v2 == null){
+                    return -1;
+                }
                 return v1.compareTo(v2);
             }
         };
@@ -396,6 +402,9 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
                 }
                 String v1 = o1.getPerformer();
                 String v2 = o2.getPerformer();
+                if(v1 == null || v2 == null){
+                    return -1;
+                }
                 return v1.compareTo(v2);
             }
         };
