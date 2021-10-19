@@ -67,7 +67,7 @@ public enum  SingleCellExtractAttribute {
             "read1",
             "read2",
             "index1",
-            "index 2"),
+            "index2"),
     UMI_BARCODE_OFFSET("UMI Barcode Offset","Offset in sequence for unique molecular identifier (UMI) barcode read (in bp)"),
     UMI_BARCODE_SIZE("UMI Barcode Size","Length of unique molecular identifier (UMI) barcode read (in bp)"),
     cDNA_READ("cDNA Read",
@@ -76,7 +76,7 @@ public enum  SingleCellExtractAttribute {
             "read1",
             "read2",
             "index1",
-            "index 2"),
+            "index2"),
     cDNA_READ_OFFSET("cDNA Read Offset","Offset in sequence for cDNA read (in bp)"),
     cDNA_READ_SIZE("cDNA Read Size","Length of cDNA read (in bp)"),
     CELL_BARCODE_READ("Cell Barcode Read",
@@ -85,7 +85,7 @@ public enum  SingleCellExtractAttribute {
             "read1",
             "read2",
             "index1",
-            "index 2"),
+            "index2"),
     CELL_BARCODE_OFFSET("Cell Barcode Offset","Offset in sequence for cell barcode read (in bp)"),
     CELL_BARCODE_SIZE("Cell Barcode Size","Length of cell barcode read (in bp)"),
     SAMPLE_BARCODE_READ("Sample Barcode Read",
@@ -94,7 +94,7 @@ public enum  SingleCellExtractAttribute {
             "read1",
             "read2",
             "index1",
-            "index 2"),
+            "index2"),
     SAMPLE_BARCODE_OFFSET("Sample Barcode Offset","Offset in sequence for sample barcode read (in bp)"),
     SAMPLE_BARCODE_SIZE("Sample Barcode Size","Length of sample barcode read (in bp)");
 
@@ -146,7 +146,20 @@ public enum  SingleCellExtractAttribute {
     }
 
     public String getOption(String value) {
-        return options.get(values.indexOf(value));
+        return options.get(values.indexOf(backwardCompatibleOptionValue(value)));
+    }
+
+    //this function is implemented to mantain backward compatibility
+    private String backwardCompatibleOptionValue(String value) {
+        if (value.equalsIgnoreCase("read 1"))
+            return "read1";
+        if (value.equalsIgnoreCase("read 2"))
+            return "read2";
+        if (value.equalsIgnoreCase("index 1"))
+            return "index1";
+        if (value.equalsIgnoreCase("index 2"))
+            return "index2";
+        return value;
     }
 }
 
