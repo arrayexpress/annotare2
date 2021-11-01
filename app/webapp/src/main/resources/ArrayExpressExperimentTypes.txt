@@ -35,6 +35,7 @@ RNA-seq of non coding RNA
 RNA-seq of non coding RNA from single cells
 RNA-seq of total RNA
 scATAC-seq
+single nucleus RNA sequencing
 spatial transcriptomics by high-throughput sequencing
 tiling path by array
 transcription profiling by array
