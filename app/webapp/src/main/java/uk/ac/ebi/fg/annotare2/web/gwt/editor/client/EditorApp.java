@@ -88,7 +88,7 @@ public class EditorApp implements EntryPoint {
     private void getSubmissionCountAndInit(final HasWidgets root, final SubmissionDetails details, SubmissionServiceAsync submissionService) {
         renameBrowserTab(details);
         init(root, details);
-        submissionService.getSubmissionCountForCurrentUser( AsyncCallbackWrapper.callbackWrap(
+        /*submissionService.getSubmissionCountForCurrentUser( AsyncCallbackWrapper.callbackWrap(
                 new ReportingAsyncCallback<Integer>() {
                     @Override
                     public void onSuccess(Integer count) {
@@ -96,14 +96,14 @@ public class EditorApp implements EntryPoint {
                         showNotificationMole();
                     }
                 }
-        ));
+        ));*/
     }
 
-    private void showNotificationMole() {
+    /*private void showNotificationMole() {
         if (submissionCount==1) {
             NotificationPopupPanel.message ("Annotare automatically saves any changes that you make; Simply move the cursor to a different field!", true);
         }
-    }
+    }*/
 
     private void renameBrowserTab(SubmissionDetails details) {
         Accession accession = details.getAccession();
