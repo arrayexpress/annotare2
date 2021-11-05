@@ -550,28 +550,34 @@ public class MageTabGenerator {
 
     private void connect(SDRFNode source, SDRFNode destination, Collection<Protocol> protocols, Integer extractId) {
         SDRFNode prev = source;
-        Collection<Protocol> orderedProtocols =
-                Ordering.natural().onResultOf(new Function<Protocol, Integer>() {
-                    @Override
-                    public Integer apply(Protocol protocol) {
-                        return protocolTypes.getPrecedence(protocol.getType().getAccession());
-                    }
-                }).sortedCopy(protocols);
+        if(protocols.isEmpty()){
+            ProtocolApplicationNode protocolNode = getOrCreateNode(ProtocolApplicationNode.class, null);
+            connect(prev, protocolNode);
+            prev = protocolNode;
+        } else {
+            Collection<Protocol> orderedProtocols =
+                    Ordering.natural().onResultOf(new Function<Protocol, Integer>() {
+                        @Override
+                        public Integer apply(Protocol protocol) {
+                            return protocolTypes.getPrecedence(protocol.getType().getAccession());
+                        }
+                    }).sortedCopy(protocols);
 
-        for (Protocol protocol : orderedProtocols) {
-            // protocol node name must be unique
-            String nodeName = prev.getClass().getSimpleName() + ":" + prev.getNodeName() + ":" + protocol.getId() + (protocol.isAssigned() ? "" : "F");
-            if (protocol.isAssigned()) {
-                ProtocolApplicationNode protocolNode = createNode(ProtocolApplicationNode.class, nodeName);
-                protocolNode.protocol = protocol.getName();
-                if (protocol.hasPerformer()) {
-                    PerformerAttribute attr = new PerformerAttribute();
-                    attr.setAttributeValue(protocol.getPerformer());
-                    protocolNode.performer = attr;
+            for (Protocol protocol : orderedProtocols) {
+                // protocol node name must be unique
+                String nodeName = prev.getClass().getSimpleName() + ":" + prev.getNodeName() + ":" + protocol.getId() + (protocol.isAssigned() ? "" : "F");
+                if (protocol.isAssigned()) {
+                    ProtocolApplicationNode protocolNode = createNode(ProtocolApplicationNode.class, nodeName);
+                    protocolNode.protocol = protocol.getName();
+                    if (protocol.hasPerformer()) {
+                        PerformerAttribute attr = new PerformerAttribute();
+                        attr.setAttributeValue(protocol.getPerformer());
+                        protocolNode.performer = attr;
+                    }
+                    protocolNode.setExtractId(extractId);
+                    connect(prev, protocolNode);
+                    prev = protocolNode;
                 }
-                protocolNode.setExtractId(extractId);
-                connect(prev, protocolNode);
-                prev = protocolNode;
             }
         }
         connect(prev, destination);
