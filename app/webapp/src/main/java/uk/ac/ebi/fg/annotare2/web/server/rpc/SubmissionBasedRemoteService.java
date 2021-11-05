@@ -103,7 +103,7 @@ public abstract class SubmissionBasedRemoteService extends AuthBasedRemoteServic
     }
 
 
-    public int getSubmissionCountForCurrentUser() {
+    /*public int getSubmissionCountForCurrentUser() {
         return submissionManager.getAllSubmissions(getCurrentUser()).size();
-    }
+    }*/
 }
