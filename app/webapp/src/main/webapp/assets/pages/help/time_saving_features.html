@@ -1,102 +1,13 @@
-<!doctype html>
-<html lang="en">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/4.2.1/iframeResizer.min.js"></script>
+
+<div class="row column" style="width: 100%">
+  <iframe id="help-time-saving-features-iframe" class="row" src="https://ebi-gene-expression-group.github.io/annotare-help/pages/time_saving_features.html"
+          style="width: 1px; min-width: 100%; border: none; display: block; overflow: hidden;">
+  </iframe>
+</div>
+
 <script>
-  document.title = "Time-saving features < Submission Guide < Annotare < EMBL-EBI";
+  document.addEventListener("DOMContentLoaded", function(event) {
+    iFrameResize({inPageLinks:true}, '#help-time-saving-features-iframe');
+  });
 </script>
-<body>
-
-<section id="annotare-help">
-  <div class="small-12 medium-9 columns">
-
-    <h2>Time-saving features</h2>
-    <h3 id="fill_down_import">Fill-down and import values</h3>
-    <p>You'll find two buttons: <code>Fill Down Value</code> and <code>Paste Into Column</code> on many Annotare pages. They allow you to populate multiple rows of data efficiently. <code>Fill Down Value</code> works like autofill in Microsoft Excel/OpenOffice Calc, whereas <code>Paste Into Column</code> allows you to import (copy) rows of data from a spreadsheet and insert (paste) into Annotare.</p>
-    <h4 id="fill_down">Fill Down Value</h4>
-    <p>In this example, <code>organism part</code> will be automatically populated in the 9 remaining rows:</p>
-        <p><img src="../assets/images/time_fill_down_samples.png" alt="fill-down"/></p>
-    <p>&nbsp;</p>
-    <h4 id="import">Paste Into Column</h4>
-    <p>In this example, the patient identifiers from the spreadsheet will be inserted under "Individual":</p>
-        <p><img src="../assets/images/time_import_annotation.png" alt="paste-column"/></p>
-
-    <p>&nbsp;</p>
-    <h3 id="upload_assign_multiple">Upload and assign multiple files in one go</h3>
-    <h4 id="upload_multiple_files">Upload multiple files</h4>
-    <p>When uploading files directly in Annotare by clicking <code>Upload Files...</code>, you can select multiple files (by holding down the <code>Ctrl</code> or <code>Cmd</code> key on your keyboard) and upload     them in one go. Here is an example from a Mac computer with the <code>Cmd</code> key held down:</p>
-    <p><img src="../assets/images/time_upload_multiple.png" alt="upload_files"/></p>
-    <p>&nbsp;</p>
-    <h4 id="auto_assign">Automatically assign files to samples</h4>
-    <p>Once all your files are successfully uploaded, you can assign them to the samples in one step using the <code>Paste Into Column</code> function. Here is an example how to automatically fill in the Raw Data File column:</p>
-    <p><img src="../assets/images/time_import_files.png" alt="import_filenames"/></p>
-
-
-  </div>
-
-  <!-- side navigation -->
-  <div class="small-12 medium-3 columns sidebar">
-    <ul class="vertical menu accordion-menu" data-accordion-menu>
-      <li><a href="index.html" class="active" >Submission guide</a></li>
-      <li><a>Before you start</a>
-        <ul class="menu vertical nested">
-          <li><a href="what_to_submit.html">Submission overview</a></li>
-          <li><a href="">Accepted file formats</a>
-            <ul>
-              <li><a href="accepted_raw_ma_file_formats.html">Microarray raw data</a></li>
-              <li><a href="accepted_processed_ma_file_formats.html">Microarray processed data</a></li>
-              <li><a href="accepted_sequencing_file_formats.html#raw_data_files">Sequencing raw data</a></li>
-              <li><a href="accepted_sequencing_file_formats.html#processed_data">Sequencing processed data</a></li>
-            </ul>
-          </li>
-          <li><a href="pre-submission_checklist.html">Pre-submission checklist</a></li>
-          <li><a href="adf_submissions_overview.html">Array design submissions</a></li>
-        </ul>
-      </li>
-      <li><a>Annotare step-by-step</a>
-        <ul class="menu vertical nested is-active">
-          <li><a href="getting_started.html">Getting started</a></li>
-          <li><a class="active" href="time_saving_features.html">Time-saving features</a>
-            <ul class="menu vertical nested is-active">
-              <li><a href="time_saving_features.html#fill_down_import">Fill-down and import values</a></li>
-              <li><a href="time_saving_features.html#upload_multiple_files">Upload and assign multiple files in one go</a></li>
-            </ul>
-          </li>
-          <li><a href="describe_exp.html">Describe experiment</a></li>
-          <li><a href="sample_attributes.html">Sample attributes and protocols</a></li>
-          <li><a href="">Technology-specific details</a>
-            <ul>
-              <li><a href="seq_lib_spec.html">Sequencing library information</a></li>
-              <li><a href="single-cell_submission_guide.html">Single cell information</a></li>
-              <li><a href="two_color_ma.html">Two-colour experiments</a></li>
-            </ul>
-          </li>
-          <li><a href="">Upload and assign files</a>
-            <ul>
-              <li><a href="file_upload.html#direct">Direct upload</a></li>
-              <li><a href="ftp_upload.html">FTP/Aspera upload</a></li>
-              <li><a href="file_upload.html#ftp">Import FTP/Aspera uploaded files</a></li>
-              <li><a href="assign_files.html">Assign files</a></li>
-            </ul>
-          </li>
-          <li><a href="">Validate and submit</a>
-            <ul>
-              <li><a href="validate_exp.html#validate">What is validation?</a></li>
-              <li><a href="submit_exp.html">Submit, and what happens next?</a></li>
-              <li><a href="submit_exp.html#save_sub">Saving a copy of your submission</a></li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-      <li><a href="">After submission</a>
-        <ul class="menu vertical nested ">
-          <li><a href="after_sub_private_access.html">Access private experiments</a></li>
-          <li><a href="after_sub_modify_data.html">Modify or remove an existing experiment</a></li>
-          <li><a href="after_sub_data_availability.html">Data availability and release policy</a></li>
-        </ul>
-      </li>
-    </ul>
-  </div> <!-- /medium-3 -->
-
-</section>
-
-</body>
-</html>
