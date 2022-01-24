@@ -1,108 +1,13 @@
-<!doctype html>
-<html lang="en">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/4.2.1/iframeResizer.min.js"></script>
+
+<div class="row column" style="width: 100%">
+  <iframe id="help-seq-lib-spec-iframe" class="row" src="https://ebi-gene-expression-group.github.io/annotare-help/pages/seq_lib_spec.html"
+          style="width: 1px; min-width: 100%; border: none; display: block; overflow: hidden;">
+  </iframe>
+</div>
+
 <script>
-  document.title = "Sequencing library information < Submission Guide < Annotare < EMBL-EBI";
+  document.addEventListener("DOMContentLoaded", function(event) {
+    iFrameResize({inPageLinks:true}, '#help-seq-lib-spec-iframe');
+  });
 </script>
-<body>
-
-<section id="annotare-help">
-  <div class="small-12 medium-9 columns">
-
-    <h2>Sequencing library information</h2>
-    <p>The following information is required by the <a href="https://www.ebi.ac.uk/ena">
-    European Nucleotide Archive (ENA)</a> that stores that raw data files of your submission. The information helps to
-    correctly interpret the submitted data.  Controlled vocabulary is provided in drop-down lists where possible.
-    <p>For <strong>all</strong> sequencing experiments:</p>
-    <ul>
-        <li><em>Library Layout</em>: whether to expect SINGLE or PAIRED end reads.</li>
-        <li><em>Library Source</em>: the type of source material that is being
-            sequenced.</li>
-        <li><em>Library Strategy</em>: the sequencing technique intended for the
-            library.</li>
-        <li><em>Library Selection</em>: the method used to select and/or enrich the
-            material being sequenced.</li>
-    </ul>
-    <p>For <strong>paired-end</strong> sequencing experiments only:</p>
-    <ul>
-        <li><em>Nominal Length</em>: the expected size of the insert. The insert being
-            the fragment sequenced, as chosen from size fractionation (e.g. cutting out a band from an agarose gel). If nominal
-            length is 500bp, put down "500" as the value.  No decimals or ranges (e.g. 100-200) allowed, and it cannot be zero. This information guides sequence aligner algorithms to place the two mates of a pair of reads on the genome sequences separated by a reasonable distance. Therefore, the nominal length value does not need to be absolutely precise, but also should not be an order of magnitude off:<br>
-            <img src="../assets/images/nominal_length.png" alt="nominal_length" style="width:60%;"/><br><br></li>
-        <li><em>Nominal SDev</em>: the standard deviation of the nominal length. Decimals are allowed (e.g. 56.4) but no ranges
-            (e.g. 34.5-42.6).</li>
-        <li><em>Orientation</em>: the orientation of the two reads. "5'-3'-3'-5'" for
-            forward-reverse pairs, "5'-3'-5'-3'" for forward-forward pairs.	</li>
-    </ul>
-
-    <p>For <strong>strand-specific</strong> sequencing experiments:</p>
-    <ul>
-        <li><em>Library Strand</em>: whether the 'first strand' or 'second strand' of cDNA was used to prepare the library. <i>Note this should not be confused with the forward and reverse strands one would get in a paired-end sequencing reaction.</i><br><br>
-            "First strand" corresponds to the "template"/ "antisense" / "-" strand and has the reverse complement sequence of the transcribed mRNA, wherease "second strand" corresponds to the "coding" /"sense" /"+" strand which has the same sequence as the RNA that is transcribed.  The commonly used <a href="http://nar.oxfordjournals.org/content/37/18/e123.long" target="_blank">dUTP-based protocol</a> sequences the 'first strand'. For paired-end strand-specific sequencing studies, sequencing the 'first strand" is sometimes referred to as "mate2_sense" (i.e. mate 2 of the paired-end reads comes from the sense strand). Please see the diagram below for further information:<br>
-            <img src="../assets/images/strand_specificity.png" alt="strand_specificity" style="width:60%"/></li>
-    </ul>
-    <br>
-  </div>
-
-  <!-- side navigation -->
-  <div class="small-12 medium-3 columns sidebar">
-    <ul class="vertical menu accordion-menu" data-accordion-menu>
-      <li><a href="index.html" class="active" >Submission guide</a></li>
-      <li><a>Before you start</a>
-        <ul class="menu vertical nested">
-          <li><a href="what_to_submit.html">Submission overview</a></li>
-          <li><a href="">Accepted file formats</a>
-            <ul>
-              <li><a href="accepted_raw_ma_file_formats.html">Microarray raw data</a></li>
-              <li><a href="accepted_processed_ma_file_formats.html">Microarray processed data</a></li>
-              <li><a href="accepted_sequencing_file_formats.html#raw_data_files">Sequencing raw data</a></li>
-              <li><a href="accepted_sequencing_file_formats.html#processed_data">Sequencing processed data</a></li>
-            </ul>
-          </li>
-          <li><a href="pre-submission_checklist.html">Pre-submission checklist</a></li>
-          <li><a href="adf_submissions_overview.html">Array design submissions</a></li>
-        </ul>
-      </li>
-      <li><a>Annotare step-by-step</a>
-        <ul class="menu vertical nested is-active">
-          <li><a href="getting_started.html">Getting started</a></li>
-          <li><a href="time_saving_features.html">Time-saving features</a></li>
-          <li><a href="describe_exp.html">Describe experiment</a></li>
-          <li><a href="sample_attributes.html">Sample attributes and protocols</a></li>
-          <li><a href="">Technology-specific details</a>
-            <ul class="menu vertical nested is-active">
-              <li><a class="active" href="seq_lib_spec.html">Sequencing library information</a></li>
-              <li><a href="single-cell_submission_guide.html">Single cell information</a></li>
-              <li><a href="two_color_ma.html">Two-colour experiments</a></li>
-            </ul>
-          </li>
-          <li><a href="">Upload and assign files</a>
-            <ul>
-              <li><a href="file_upload.html#direct">Direct upload</a></li>
-              <li><a href="ftp_upload.html">FTP/Aspera upload</a></li>
-              <li><a href="file_upload.html#ftp">Import FTP/Aspera uploaded files</a></li>
-              <li><a href="assign_files.html">Assign files</a></li>
-            </ul>
-          </li>
-          <li><a href="">Validate and submit</a>
-            <ul>
-              <li><a href="validate_exp.html#validate">What is validation?</a></li>
-              <li><a href="submit_exp.html">Submit, and what happens next?</a></li>
-              <li><a href="submit_exp.html#save_sub">Saving a copy of your submission</a></li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-      <li><a href="">After submission</a>
-        <ul class="menu vertical nested ">
-          <li><a href="after_sub_private_access.html">Access private experiments</a></li>
-          <li><a href="after_sub_modify_data.html">Modify or remove an existing experiment</a></li>
-          <li><a href="after_sub_data_availability.html">Data availability and release policy</a></li>
-        </ul>
-      </li>
-    </ul>
-  </div> <!-- /medium-3 -->
-
-</section>
-
-</body>
-</html>
