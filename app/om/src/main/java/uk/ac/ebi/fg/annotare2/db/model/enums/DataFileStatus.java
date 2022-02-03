@@ -29,7 +29,8 @@ public enum DataFileStatus {
     ASSOCIATED("uploaded (FTP)"),
     MD5_ERROR("MD5 error"),
     FILE_NOT_FOUND_ERROR("file not found"),
-    ERROR("error");
+    ERROR("error"),
+    REMOVED("Removed");
 
     private final String title;
 
