@@ -186,4 +186,9 @@
             ALTER TABLE users ADD COLUMN privacyNoticeVersion INT DEFAULT 0 NOT NULL;
         </sql>
     </changeSet>
+    <changeSet id="addNewDatafileStatus" author="sandeep">
+        <sql>
+            alter table data_files modify status enum ('TO_BE_STORED', 'STORED', 'TO_BE_ASSOCIATED', 'ASSOCIATED', 'MD5_ERROR', 'FILE_NOT_FOUND_ERROR', 'ERROR', 'REMOVED') not null;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
