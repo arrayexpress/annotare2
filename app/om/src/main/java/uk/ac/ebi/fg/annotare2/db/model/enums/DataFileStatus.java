@@ -30,7 +30,7 @@ public enum DataFileStatus {
     MD5_ERROR("MD5 error"),
     FILE_NOT_FOUND_ERROR("file not found"),
     ERROR("error"),
-    REMOVED("Removed");
+    REMOVED("removed");
 
     private final String title;
 

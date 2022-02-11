@@ -127,19 +127,21 @@ public class DataFileManagerImpl implements DataFileManager {
 
     @Override
     public DataFileHandle getFileHandle(DataFile dataFile) throws IOException {
-        if (DataFileStatus.STORED == dataFile.getStatus()) {
-            return new LocalFileHandle(fileStore.get(dataFile.getDigest()));
-        } else if (DataFileStatus.ASSOCIATED == dataFile.getStatus()) {
-            try {
-                return DataFileHandle.createFromUri(new URI(dataFile.getSourceUri()));
-            } catch (URISyntaxException e) {
-                return null;
+        if(DataFileStatus.REMOVED == dataFile.getStatus()){
+            if (DataFileStatus.STORED == dataFile.getStatus()) {
+                return new LocalFileHandle(fileStore.get(dataFile.getDigest()));
+            } else if (DataFileStatus.ASSOCIATED == dataFile.getStatus()) {
+                try {
+                    return DataFileHandle.createFromUri(new URI(dataFile.getSourceUri()));
+                } catch (URISyntaxException e) {
+                    return null;
+                }
+            } else {
+                throw new IOException("Unable to get data data file " + dataFile.getName() + ": invalid status " + dataFile.getStatus().getTitle());
             }
-
-        } else {
-            throw new IOException("Unable to get data data file " + dataFile.getName() + ": invalid status " + dataFile.getStatus().getTitle());
+        } else{
+            return null;
         }
-
     }
 
     @Override
