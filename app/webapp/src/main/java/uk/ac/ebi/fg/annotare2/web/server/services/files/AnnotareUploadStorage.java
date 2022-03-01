@@ -176,6 +176,7 @@ public class AnnotareUploadStorage implements UploadStorage {
 
     private StorageInfo readStorageInfo(File infoFile) throws IOException {
         Kryo kryo = new Kryo();
+        kryo.setRegistrationRequired(false);
         try (Input in = new Input(new FileInputStream(infoFile))) {
             return kryo.readObject(in, StorageInfo.class);
         }
@@ -194,6 +195,7 @@ public class AnnotareUploadStorage implements UploadStorage {
 
     private void writeStorageInfo(StorageInfo info) throws IOException {
         Kryo kryo = new Kryo();
+        kryo.setRegistrationRequired(false);
         try (Output out = new Output(new FileOutputStream(info.infoFile))) {
             kryo.writeObject(out, info);
         }
