@@ -75,10 +75,10 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
     public void copy(URI source, URI destination) throws IOException {
         if ((isSupported(source) || isLocal(source)) && (isSupported(destination) || isLocal(destination))) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
-            log.info("Executing command: " + "rsync --rsync-path=~/rsync -e ssh --checksum "
+            log.info("Executing command: " + "rsync --rsync-path=~/rsync -e ssh --perms --checksum "
                     + scpLocationFromURI(source) + " " + scpLocationFromURI(destination));
             if (!executor.execute(
-                    "rsync --rsync-path=~/rsync -e ssh --checksum "
+                    "rsync --rsync-path=~/rsync -e ssh --perms --checksum "
                             + scpLocationFromURI(source) + " " + scpLocationFromURI(destination)
                     )) {
                 throw new IOException(executor.getErrors());
