@@ -37,6 +37,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.google.common.collect.Collections2.filter;
 import static java.util.Arrays.asList;
@@ -78,11 +79,9 @@ public class SubmissionDaoImpl extends AbstractDaoImpl<Submission> implements Su
 
     @Override
     public Collection<Submission> getSubmissions(final User user) {
-        return filter(getSubmissions(), new Predicate<Submission>() {
-            public boolean apply(@Nullable Submission input) {
-                return input != null && user.isAllowed(input, Permission.VIEW);
-            }
-        });
+        return getSubmissions().stream()
+                .filter(input -> input != null && user.isAllowed(input, Permission.VIEW))
+                .collect(Collectors.toList());
     }
 
     @Override

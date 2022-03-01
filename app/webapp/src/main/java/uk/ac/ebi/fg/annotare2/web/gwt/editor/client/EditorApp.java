@@ -23,34 +23,27 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.datepicker.client.CalendarUtil;
 import com.google.web.bindery.event.shared.EventBus;
-import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.ServerWatchdog;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.CookieDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.Accession;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.EditorGinjector;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceFactory;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceHistoryMapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.*;
-
-import java.util.Date;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignLayout;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorLayout;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorStartLayout;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ExperimentLayout;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType.EXPERIMENT;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
@@ -93,16 +86,23 @@ public class EditorApp implements EntryPoint {
     }
 
     private void getSubmissionCountAndInit(final HasWidgets root, final SubmissionDetails details, SubmissionServiceAsync submissionService) {
+        renameBrowserTab(details);
+        init(root, details);
         submissionService.getSubmissionCountForCurrentUser( AsyncCallbackWrapper.callbackWrap(
                 new ReportingAsyncCallback<Integer>() {
                     @Override
                     public void onSuccess(Integer count) {
                         submissionCount = count;
-                        renameBrowserTab(details);
-                        init(root, details);
+                        showNotificationMole();
                     }
                 }
         ));
+    }
+
+    private void showNotificationMole() {
+        if (submissionCount==1) {
+            NotificationPopupPanel.message ("Annotare automatically saves any changes that you make; Simply move the cursor to a different field!", true);
+        }
     }
 
     private void renameBrowserTab(SubmissionDetails details) {
@@ -160,7 +160,6 @@ public class EditorApp implements EntryPoint {
 
     private Widget initMainLayout(SubmissionType type, EventBus eventBus) {
         EditorLayout layout = (type == EXPERIMENT) ? new ExperimentLayout(eventBus, submissionCount) : new ArrayDesignLayout();
-
         ActivityMapper topBarActivityMapper = injector.getTopBarActivityMapper();
         ActivityManager topBarActivityManager = new ActivityManager(topBarActivityMapper, eventBus);
         topBarActivityManager.setDisplay(layout.getTopBarDisplay());
