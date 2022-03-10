@@ -71,8 +71,8 @@
                 <!-- Manage the plugin's JDBC dependency -->
                 <dependencies>
                     <dependency>
-                        <groupId>com.oracle</groupId>
-                        <artifactId>ojdbc14</artifactId>
+                        <groupId>com.oracle.database.jdbc</groupId>
+                        <artifactId>ojdbc8</artifactId>
                         <version>${oracle-jdbc.version}</version>
                     </dependency>
                 </dependencies>
@@ -132,8 +132,8 @@
             <artifactId>HikariCP</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc14</artifactId>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
