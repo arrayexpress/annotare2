@@ -63,10 +63,12 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.*;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.Queues.newArrayDeque;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static uk.ac.ebi.fg.annotare2.ae.AEConnection.SubmissionState.*;
@@ -402,24 +404,35 @@ public class AeIntegrationWatchdog {
 
             if (dataFiles.size() > 0) {
                 logger.debug("Will copy {} data files", dataFiles.size());
-                for (DataFile dataFile : dataFiles) {
+                Queue<DataFile> dataFileQueue = newArrayDeque();
+                dataFileQueue.addAll(dataFiles);
+                while (!dataFileQueue.isEmpty()) {
+                    DataFile dataFile = dataFileQueue.poll();
                     logger.debug("Processing data file {}", dataFile.getName());
                     if (DataFileStatus.STORED == dataFile.getStatus()) {
                         URI destinationURI = (isSequencing && rawDataFiles.contains(dataFile))
                                 ? new URI(ftpManager.getDirectory(ftpSubDirectory) + URLEncoder.encode(dataFile.getName(), StandardCharsets.UTF_8.toString()))
                                 : new File(unpackedExportDirectory, dataFile.getName()).toURI();
                         DataFileHandle source = dataFileManager.getFileHandle(dataFile);
-                        DataFileHandle destination = source.copyTo(destinationURI);
-                        logger.debug("Copied data file {} to {}", dataFile.getName(), destinationURI);
-                        if (!isNullOrEmpty(dataFilesPostProcessingScript) && destination instanceof LocalFileHandle) {
-                            LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
-                            if (executor.execute(dataFilesPostProcessingScript + " " + destination.getUri().getPath())) {
-                                logger.info(isNullOrEmpty(
-                                        executor.getOutput()) ?
-                                        "Ran post-processing script on " + destination.getName() : executor.getOutput()
-                                );
-                            } else {
-                                logger.error("Data file post-processing script returned an error: {}", executor.getErrors());
+                        try{
+                            DataFileHandle destination = source.copyTo(destinationURI);
+                            logger.debug("Copied data file {} to {}", dataFile.getName(), destinationURI);
+                            if (!isNullOrEmpty(dataFilesPostProcessingScript) && destination instanceof LocalFileHandle) {
+                                LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
+                                if (executor.execute(dataFilesPostProcessingScript + " " + destination.getUri().getPath())) {
+                                    logger.info(isNullOrEmpty(
+                                            executor.getOutput()) ?
+                                            "Ran post-processing script on " + destination.getName() : executor.getOutput()
+                                    );
+                                } else {
+                                    logger.error("Data file post-processing script returned an error: {}", executor.getErrors());
+                                }
+                            }
+                        } catch (IOException e){
+                            if(e.getMessage() != null && e.getMessage().contains("ssh_exchange_identification")){
+                                dataFileQueue.add(dataFile);
+                            }else{
+                                throw new SubsTrackingException(e);
                             }
                         }
                     } else if (!dataFile.getStatus().isOk()) {
