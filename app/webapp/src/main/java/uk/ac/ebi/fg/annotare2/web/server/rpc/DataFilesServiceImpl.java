@@ -261,7 +261,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                 dataFileManager.renameDataFile(dataFile, fileName);
                 URI remoteURI = new URI(ftpManager.getDirectory(experimentSubmission.getFtpSubDirectory()) + URLEncoder.encode(dataFile.getName(), StandardCharsets.UTF_8.toString()));
                 DataFileHandle dataFileHandle = DataFileHandle.createFromUri(remoteURI);
-                if(dataFileHandle.exists()){
+                if(dataFileHandle.exists() && !(dataFileHandle.getName().equals(fileName))){
                     dataFileHandle.rename(fileName);
                 }
                 save(submission);
