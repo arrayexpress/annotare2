@@ -18,7 +18,7 @@ pipeline {
         stage ('Build') {
             steps{
                    configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {
-                        sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML clean package'
+                        sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f ${workspace}/${JOB_NAME}/app/pom.xml clean package'
                         archiveArtifacts artifacts: 'app/webapp/target/annotare2-web*.war', fingerprint: true
                     }
                 }
