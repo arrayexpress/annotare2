@@ -1,4 +1,7 @@
 pipeline {
+    options {
+        copyArtifactPermission('Annotare_create_release');
+    }
     agent any
     tools {
         maven 'maven-3.8.5'
@@ -22,9 +25,6 @@ pipeline {
                         archiveArtifacts artifacts: 'app/webapp/target/annotare2-web*.war', fingerprint: true
                     }
                 }
-            options {
-                copyArtifactPermission('Annotare_create_release');
-            }
         }
 
         post {
