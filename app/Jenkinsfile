@@ -26,16 +26,10 @@ pipeline {
                     }
                 }
         }
-    }
-    post {
-        success {
-            input {
-                message "Create a release ?"
-                ok "Yes"
-            }
-            script {
-                build job: 'my-downstream-project',
-                     parameters: [string(name: 'upstreamJobName', value: env.BRANCH_NAME)]
+
+        stage ('Release') {
+            steps{
+                build job: 'Annotare_create_release', parameters: [string(name: 'upstreamJobName', value: env.BRANCH_NAME)]
             }
         }
     }
