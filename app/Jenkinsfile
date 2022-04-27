@@ -22,6 +22,22 @@ pipeline {
                         archiveArtifacts artifacts: 'app/webapp/target/annotare2-web*.war', fingerprint: true
                     }
                 }
+            options {
+                copyArtifactPermission('Annotare_create_release');
+            }
+        }
+
+        post {
+           success {
+               input {
+                   message "Create a release ?"
+                   ok "Yes"
+               }
+               script {
+                   build job: 'my-downstream-project',
+                         parameters: [string(name: 'upstreamJobName', value: env.BRANCH_NAME)]
+               }
+           }
         }
     }
 }
