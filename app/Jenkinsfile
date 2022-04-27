@@ -29,7 +29,7 @@ pipeline {
 
         stage ('Release') {
             steps{
-                build job: 'Annotare_create_release', parameters: [string(name: 'upstreamJobName', value: env.BRANCH_NAME)]
+                release job: 'Annotare-web-app/jenkinsCIPipelineSetup', parameters: [string(name: 'releaseVersion', value: "1")]
             }
         }
     }
