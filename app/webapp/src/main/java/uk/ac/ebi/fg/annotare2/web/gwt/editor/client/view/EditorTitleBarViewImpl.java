@@ -151,7 +151,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
         //set status and type
         SubmissionStatus status = submissionDetails.getStatus();
-        submitButton.setVisible(status.canSubmit(isCurator));
+        submitButton.setVisible(false && status.canSubmit(isCurator)); //Tmp disabled submit button to stop submissions
         validateButton.setVisible(submissionDetails.getType().isExperiment() && status.canSubmit(isCurator));
         exportButton.setVisible(submissionDetails.getType().isExperiment());
         editButton.setVisible(editButton.isVisible() && status.canAssign());

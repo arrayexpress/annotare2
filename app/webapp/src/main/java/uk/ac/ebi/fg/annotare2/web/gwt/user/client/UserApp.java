@@ -93,20 +93,31 @@ public class UserApp implements EntryPoint {
         showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "Notice_11122020_Shown"; // change name according to the cookie display date ddmmyy
+    private final static String NOTICE_COOKIE = "Notice_04052022_Shown"; // change name according to the cookie display date ddmmyy
     private void showNotice() {
         Date stopNoticeDate = new Date();
-        stopNoticeDate.setTime(1610366399000L); // stop showing on 11th January 2021 (http://www.epochconverter.com/)
+        stopNoticeDate.setTime(8000000000000L); // stop showing on 11th January 2021 (http://www.epochconverter.com/)
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE)) && (new Date().before(stopNoticeDate))) {
             Date expiryDate = new Date();
             expiryDate.setTime(8000000000000L);
+//            CookieDialog dialogBox = new CookieDialog(
+//                    "Christmas(hooray!) Downtime notice",
+//                    "<p>Dear submitter,</p>" +
+//                            "<p>The curation team will be on holiday from 21st December 2020 until 6th January 2021. " +
+//                            "This will mean a delay in processing datasets for ArrayExpress." +
+//                            "<p>Please submit early! Happy holidays!</p>" +
+//                            "<p>Best Regards,<br>Annotare Team",
+//                    NOTICE_COOKIE, expiryDate
+//            );
             CookieDialog dialogBox = new CookieDialog(
-                    "Christmas(hooray!) Downtime notice",
-                    "<p>Dear submitter,</p>" +
-                            "<p>The curation team will be on holiday from 21st December 2020 until 6th January 2021. " +
-                            "This will mean a delay in processing datasets for ArrayExpress." +
-                            "<p>Please submit early! Happy holidays!</p>" +
-                            "<p>Best Regards,<br>Annotare Team",
+                    "Submission Service Disruption",
+                    "<p>Dear submitters,</p>" +
+                            "<p>All submissions to ArrayExpress are currently disabled. Due to technical issues " +
+                            "we are unfortunately unable to accept and process any submissions until further notice.</p>" +
+                            "<p>You can continue to upload files, complete the metadata forms in Annotare and validate," +
+                            " but not submit.</p>" +
+                            "<p>Please accept our sincere apologies for any trouble this causes!</p>" +
+                            "<p><br>The ArrayExpress submissions team</p>",
                     NOTICE_COOKIE, expiryDate
             );
             dialogBox.show();
