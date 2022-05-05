@@ -96,7 +96,7 @@ public class UserApp implements EntryPoint {
     private final static String NOTICE_COOKIE = "Notice_04052022_Shown"; // change name according to the cookie display date ddmmyy
     private void showNotice() {
         Date stopNoticeDate = new Date();
-        stopNoticeDate.setTime(8000000000000L); // stop showing on 11th January 2021 (http://www.epochconverter.com/)
+        stopNoticeDate.setTime(1651739615000L); // stop showing on 05th May 2022 (http://www.epochconverter.com/)
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE)) && (new Date().before(stopNoticeDate))) {
             Date expiryDate = new Date();
             expiryDate.setTime(8000000000000L);
