@@ -50,7 +50,7 @@ pipeline {
                 }
             }
             steps{
-                release job: 'Annotare-release-wwwdev', parameters: [string(name: 'artifactBuildNumber', value: env.BUILD_NUMBER), string(name: 'branch_name', value: env.BRANCH_NAME)]
+                release job: 'Annotare-web-app-release-wwwdev', parameters: [string(name: 'artifactBuildNumber', value: env.BUILD_NUMBER), string(name: 'branch_name', value: env.BRANCH_NAME)]
             }
         }
 
@@ -59,7 +59,7 @@ pipeline {
                 branch 'master'
             }
             steps{
-                release job: 'Annotare-release-prod', parameters: [string(name: 'artifactBuildNumber', value: env.BUILD_NUMBER), string(name: 'branch_name', value: env.BRANCH_NAME)]
+                release job: 'Annotare-web-app-release-prod', parameters: [string(name: 'artifactBuildNumber', value: env.BUILD_NUMBER), string(name: 'branch_name', value: env.BRANCH_NAME)]
             }
         }
     }
