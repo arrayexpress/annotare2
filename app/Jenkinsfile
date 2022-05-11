@@ -38,10 +38,12 @@ pipeline {
             steps{
                configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_DEV_SETTINGS_XML'),
                                     configFile(fileId: 'annotare_prod_maven_settings', variable: 'MAVEN_PROD_SETTINGS_XML')]) {
-                    if (env.BRANCH_NAME != 'master') {
-                        sh 'mvn -U --batch-mode -s $MAVEN_DEV_SETTINGS_XML -f app/pom.xml package'
-                    } else {
-                        sh 'mvn -U --batch-mode -s $MAVEN_PROD_SETTINGS_XML -f app/pom.xml package'
+                    script {
+                        if (env.BRANCH_NAME != 'master') {
+                            sh 'mvn -U --batch-mode -s $MAVEN_DEV_SETTINGS_XML -f app/pom.xml package'
+                        } else {
+                            sh 'mvn -U --batch-mode -s $MAVEN_PROD_SETTINGS_XML -f app/pom.xml package'
+                        }
                     }
                     archiveArtifacts artifacts: 'app/webapp/target/annotare2-web*.war', fingerprint: true
                }
