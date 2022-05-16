@@ -30,7 +30,7 @@ public enum  SingleCellExtractAttribute {
             "10x 5' v2 (dual index)",
             "10x feature barcode (cell surface protein profiling)",
             "10x feature barcode (sample multiplexing)",
-            "10x Ig enrichment",
+            "10x BCR enrichment",
             "10x scATAC-seq",
             "10x TCR enrichment",
             "CEL-seq",

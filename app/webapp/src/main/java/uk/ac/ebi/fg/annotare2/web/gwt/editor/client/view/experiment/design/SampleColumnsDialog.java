@@ -327,33 +327,6 @@ public class SampleColumnsDialog extends DialogBox {
         move(index, index + 1);
     }
 
-    private void addSuggestedColumns(ExperimentProfileType experimentProfileType){
-
-        List<SampleAttributeTemplate> attributeTemplates = new ArrayList<>();
-        List<SampleAttributeTemplate> suggestedTemplates = new ArrayList<>();
-
-        Set<SampleAttributeTemplate> used = getUsedTemplates();
-
-        for (ExperimentProfileTypeToAttributesMapping expTypeToAttribute:
-                ExperimentProfileTypeToAttributesMapping.values()){
-
-            if(expTypeToAttribute.isSingleCellExperiment(experimentProfileType)){
-                attributeTemplates = expTypeToAttribute.getSingleCellAttributes();
-                break;
-            }
-
-        }
-
-        for (SampleAttributeTemplate attributeTemplate:
-                attributeTemplates) {
-            if(!used.contains(attributeTemplate)){
-                suggestedTemplates.add(attributeTemplate);
-            }
-        }
-
-        addOptionalColumn(suggestedTemplates);
-    }
-
     private void addMandatoryColumns(ExperimentProfileType experimentProfileType) {
 
         List<SampleAttributeTemplate> attributeTemplates;
@@ -464,7 +437,6 @@ public class SampleColumnsDialog extends DialogBox {
                     public void onSuccess(SystemEfoTermMap systemEfoTermMap) {
                         addColumn(templates, systemEfoTermMap);
                         setMandatoryColumn();
-                        addSuggestedColumns(experimentProfileType);
                         updateTemplates();
 
                     }
