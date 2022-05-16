@@ -37,7 +37,7 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
     private final static String _10xV5_2 = "10x 5' v2 (dual index)";
     private final static String _10xFB_1 = "10x feature barcode (cell surface protein profiling)";
     private final static String _10xFB_2 = "10x feature barcode (sample multiplexing)";
-    private final static String _10xIGE = "10x Ig enrichment";
+    private final static String _10xBCRE = "10x BCR enrichment";
     private final static String _10xATAC = "10x scATAC-seq";
     private final static String _10xTCR = "10x TCR enrichment";
     private final static String DROP_SEQ = "Drop-seq";
@@ -297,7 +297,7 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
             }
             else if(value.equalsIgnoreCase(_10xFB_1) ||
                     value.equalsIgnoreCase(_10xFB_2) ||
-                    value.equalsIgnoreCase(_10xIGE) ||
+                    value.equalsIgnoreCase(_10xBCRE) ||
                     value.equalsIgnoreCase(_10xATAC) ||
                     value.equalsIgnoreCase((_10xTCR))){
                 preFillOther10xValues(row, value);
@@ -380,7 +380,7 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
 
     private void preFillOther10xValues(SingleCellExtractAttributesRow row, String value){
         row.setValue("10x technology", SINGLE_CELL_ISOLATION);
-        if(value.equalsIgnoreCase(_10xIGE) || value.equalsIgnoreCase(_10xTCR)){
+        if(value.equalsIgnoreCase(_10xBCRE) || value.equalsIgnoreCase(_10xTCR)){
             row.setValue("polyA RNA", INPUT_MOLECULE);
             row.setValue("oligo-dT", PRIMER);
             row.setValue("5 prime tag", END_BIAS);
