@@ -431,7 +431,13 @@ public class AeIntegrationWatchdog {
                         } catch (IOException e){
                             if(e.getMessage() != null && e.getMessage().contains("ssh_exchange_identification")){
                                 dataFileQueue.add(dataFile);
-                            }else{
+                            }else if(e.getMessage() != null && e.getMessage().contains("failed to set permissions")){
+                                logger.error(e.getMessage());
+                                logger.info("Data file {} removed.", destinationURI);
+                                DataFileHandle.createFromUri(destinationURI).delete();
+                                dataFileQueue.add(dataFile);
+                                logger.info("Will attempt to copy {} to {} ", source.getUri(), destinationURI);
+                            }else {
                                 throw new SubsTrackingException(e);
                             }
                         }
