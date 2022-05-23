@@ -40,6 +40,8 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
     private final static String _10xBCRE = "10x BCR enrichment";
     private final static String _10xATAC = "10x scATAC-seq";
     private final static String _10xTCR = "10x TCR enrichment";
+
+    private final static String _10xVISIUM = "10X Visium";
     private final static String DROP_SEQ = "Drop-seq";
     private final static String DRONC_SEQ = "DroNc-seq";
     private final static String IN_DROP = "inDrop";
@@ -299,7 +301,8 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
                     value.equalsIgnoreCase(_10xFB_2) ||
                     value.equalsIgnoreCase(_10xBCRE) ||
                     value.equalsIgnoreCase(_10xATAC) ||
-                    value.equalsIgnoreCase((_10xTCR))){
+                    value.equalsIgnoreCase((_10xTCR)) ||
+                    value.equalsIgnoreCase(_10xVISIUM)){
                 preFillOther10xValues(row, value);
             }
             else if(value.equalsIgnoreCase(DROP_SEQ) ||
@@ -395,6 +398,22 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
             row.setValue("0", cDNA_READ_OFFSET);
             row.setValue("50", cDNA_READ_SIZE);
             row.setValue("index2", SAMPLE_BARCODE_READ);
+            row.setValue("0", SAMPLE_BARCODE_OFFSET);
+            row.setValue("8", SAMPLE_BARCODE_SIZE);
+        } else if (value.equalsIgnoreCase(_10xVISIUM)) {
+            row.setValue("polyA RNA", INPUT_MOLECULE);
+            row.setValue("3 prime tag", END_BIAS);
+            row.setValue("oligo-dT", PRIMER);
+            row.setValue("read1" , UMI_BARCODE_READ);
+            row.setValue("16", UMI_BARCODE_OFFSET);
+            row.setValue("12", UMI_BARCODE_SIZE);
+            row.setValue("read1", CELL_BARCODE_READ);
+            row.setValue("0", CELL_BARCODE_OFFSET);
+            row.setValue("16", CELL_BARCODE_SIZE);
+            row.setValue("read2", cDNA_READ);
+            row.setValue("", cDNA_READ_OFFSET);
+            row.setValue("", cDNA_READ_SIZE);
+            row.setValue("index1", SAMPLE_BARCODE_READ);
             row.setValue("0", SAMPLE_BARCODE_OFFSET);
             row.setValue("8", SAMPLE_BARCODE_SIZE);
         }
