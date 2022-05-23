@@ -32,6 +32,7 @@ public enum  SingleCellExtractAttribute {
             "10x feature barcode (sample multiplexing)",
             "10x BCR enrichment",
             "10x TCR enrichment",
+            "10X Visium",
             "10x scATAC-seq",
             "CEL-seq",
             "CEL-seq2",
