@@ -41,7 +41,7 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
     private final static String _10xATAC = "10x scATAC-seq";
     private final static String _10xTCR = "10x TCR enrichment";
 
-    private final static String _10xVISIUM = "10X Visium";
+    private final static String _10xVISIUM = "10x Visium";
     private final static String DROP_SEQ = "Drop-seq";
     private final static String DRONC_SEQ = "DroNc-seq";
     private final static String IN_DROP = "inDrop";
