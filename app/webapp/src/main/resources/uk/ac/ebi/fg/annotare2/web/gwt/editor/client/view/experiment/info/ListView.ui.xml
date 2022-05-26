@@ -35,6 +35,7 @@
                 <g:Image resource="{res.trashIcon}" ui:field="removeIcon" addStyleNames="{style.button}"/>
             </div>
             <div style="padding-left:10px;padding-right:10px">
+                <span ui:field="messageSpan" />
                 <g:VerticalPanel ui:field="listPanel" width="100%"/>
             </div>
         </g:HTMLPanel>
