@@ -93,10 +93,10 @@ public class UserApp implements EntryPoint {
         showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "Notice_04052022_Shown"; // change name according to the cookie display date ddmmyy
+    private final static String NOTICE_COOKIE = "Notice_30052022_Shown"; // change name according to the cookie display date ddmmyy
     private void showNotice() {
         Date stopNoticeDate = new Date();
-        stopNoticeDate.setTime(1651739615000L); // stop showing on 05th May 2022 (http://www.epochconverter.com/)
+        stopNoticeDate.setTime(1654506000000L); // stop showing on 06th June 2022 (http://www.epochconverter.com/)
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE)) && (new Date().before(stopNoticeDate))) {
             Date expiryDate = new Date();
             expiryDate.setTime(8000000000000L);
@@ -110,14 +110,11 @@ public class UserApp implements EntryPoint {
 //                    NOTICE_COOKIE, expiryDate
 //            );
             CookieDialog dialogBox = new CookieDialog(
-                    "Submission Service Disruption",
+                    "[UK Bank Holiday/Jubilee Notice]",
                     "<p>Dear submitters,</p>" +
-                            "<p>All submissions to ArrayExpress are currently disabled. Due to technical issues " +
-                            "we are unfortunately unable to accept and process any submissions until further notice.</p>" +
-                            "<p>You can continue to upload files, complete the metadata forms in Annotare and validate," +
-                            " but not submit.</p>" +
-                            "<p>Please accept our sincere apologies for any trouble this causes!</p>" +
-                            "<p><br>The ArrayExpress submissions team</p>",
+                            "<p>Please be aware the 2nd and 3rd of June are UK bank holidays so the curation team will be away.</p>" +
+                            "<p>We apologise for any delay in submission processing and replying to help queries.</p>" +
+                            "<p><br>The ArrayExpress curation team</p>",
                     NOTICE_COOKIE, expiryDate
             );
             dialogBox.show();
