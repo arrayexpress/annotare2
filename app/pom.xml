@@ -48,7 +48,7 @@
     <properties>
         <java.version>1.8</java.version>
         <limpopo.version>2.0.4</limpopo.version>
-        <magetabcheck.version>1.28</magetabcheck.version>
+        <magetabcheck.version>1.29</magetabcheck.version>
         <resumable-gwt.version>1.0.2</resumable-gwt.version>
         <gwt.version>2.9.0</gwt.version>
         <gwtupload.version>1.0.3</gwtupload.version>
