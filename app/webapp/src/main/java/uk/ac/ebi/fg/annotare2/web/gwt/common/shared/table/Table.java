@@ -96,6 +96,23 @@ public class Table implements IsSerializable {
 
     public void cleanUp(){
         int rowWidth = getWidth();
+        for(int i = 1; i<rows.size(); i++){
+            int noOfFactorValueColums = 0;
+            String factorValueColHeader;
+            String factorValue;
+            for(int j = 0; j<rowWidth; j++){
+                if(rows.get(0).getValue(j).contains("Factor Value")){
+                    factorValueColHeader = rows.get(0).getValue(j);
+                    factorValue = rows.get(i).getValue(j);
+                    if(!isUnassignedOrEmpty(factorValue)){
+                        noOfFactorValueColums ++;
+                        rows.get(0).setValue(rowWidth+noOfFactorValueColums-1, factorValueColHeader);
+                        rows.get(i).setValue(rowWidth+noOfFactorValueColums-1, factorValue);
+                        rows.get(i).setValue(j, null);
+                    }
+                }
+            }
+        }
         for(int i = 0; i < rowWidth; i++){
             if(isUnassignedOrEmpty(rows.get(1).getValue(i))){
                 boolean emptyColumn = true;
