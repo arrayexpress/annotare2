@@ -74,6 +74,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Collections2.transform;
@@ -121,7 +122,9 @@ public class SubmissionValidator {
         try (final CloseableHttpClient httpclient = HttpClients.createDefault()) {
             final HttpPost httpPost = new HttpPost(properties.getSubmissionValidatorURL());
             ObjectMapper om = new ObjectMapper();
-            httpPost.setEntity(new StringEntity(om.writer().writeValueAsString(new ValidatorRequest(submission.getExperimentJSON(), submission.getFiles())).replace("\\","")));
+            httpPost.setEntity(new StringEntity(om.writer()
+                    .writeValueAsString(new ValidatorRequest(submission.getExperimentJSON(), submission.getFiles().stream().map(DataFile::getName).collect(Collectors.toList())))
+                    .replace("\\","")));
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
 
