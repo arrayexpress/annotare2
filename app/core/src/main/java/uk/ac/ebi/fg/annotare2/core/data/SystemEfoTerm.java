@@ -68,7 +68,9 @@ public enum SystemEfoTerm {
     // Previously removed attribute
     // TODO: Make these invisible in the UI
     ENVIRONMENTAL_HISTORY("Environmental History", "environmental_history"),
-    SPECIMEN_WITH_KNOWN_STORAGE_STATE("Specimen With Known Storage State", "specimen_with_known_storage_state")
+    SPECIMEN_WITH_KNOWN_STORAGE_STATE("Specimen With Known Storage State", "specimen_with_known_storage_state"),
+
+    IMMUNOPHENOTYPE("Immunophenotype", "immunophenotype")
 
     ;
     private final String name;
