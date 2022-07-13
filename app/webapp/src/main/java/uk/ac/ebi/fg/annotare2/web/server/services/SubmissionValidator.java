@@ -16,10 +16,21 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.inject.Inject;
+import org.apache.hc.client5.http.ClientProtocolException;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.mged.magetab.error.ErrorItem;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
@@ -36,13 +47,20 @@ import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.ImportedExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
+import uk.ac.ebi.fg.annotare2.integration.ExtendedAnnotareProperties;
 import uk.ac.ebi.fg.annotare2.magetabcheck.MageTabChecker;
-import uk.ac.ebi.fg.annotare2.magetabcheck.checker.*;
+import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckModality;
+import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckPosition;
+import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
+import uk.ac.ebi.fg.annotare2.magetabcheck.checker.ExperimentType;
+import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UnknownExperimentTypeException;
 import uk.ac.ebi.fg.annotare2.magetabcheck.modelimpl.limpopo.LimpopoBasedExperiment;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.model.FileColumn;
 import uk.ac.ebi.fg.annotare2.submission.model.FileRef;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
+import uk.ac.ebi.fg.annotare2.submission.model.ValidationResponse;
+import uk.ac.ebi.fg.annotare2.submission.model.ValidatorRequest;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileConnector;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.FileAvailabilityChecker;
@@ -51,8 +69,8 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -67,25 +85,28 @@ public class SubmissionValidator {
     private final DataFileManagerImpl dataFileManager;
     private final DataFileConnector dataFileConnector;
     private final EfoSearch efoSearch;
+    private final ExtendedAnnotareProperties properties;
 
     @Inject
     public SubmissionValidator(MageTabChecker checker,
                                DataFileManagerImpl dataFileManager,
                                DataFileConnector dataFileConnector,
-                               EfoSearch efoSearch) {
+                               EfoSearch efoSearch,
+                               ExtendedAnnotareProperties properties) {
         this.checker = checker;
         this.dataFileManager = dataFileManager;
         this.dataFileConnector = dataFileConnector;
         this.efoSearch = efoSearch;
+        this.properties = properties;
     }
 
-    public Collection<CheckResult> validate(Submission submission) throws IOException,
+    public Collection<ValidationResponse> validate(Submission submission) throws IOException,
             ParseException, UnknownExperimentTypeException, DataSerializationException {
 
         if (submission instanceof ExperimentSubmission) {
-            return validateExperimentSubmission((ExperimentSubmission)submission);
+            return validateSubmission((ExperimentSubmission) submission);
         } else if (submission instanceof ImportedExperimentSubmission) {
-            return validateImportedExperimentSubmission((ImportedExperimentSubmission)submission);
+            return Collections.EMPTY_LIST;
         } else {
             throw new IllegalArgumentException("Unable to validate a submission of " + submission.getClass().getName() + " type");
         }
@@ -94,6 +115,33 @@ public class SubmissionValidator {
     private boolean validateRelatedAccessionNumber(String relatedAccessionNumber) {
         RegExp regex = RegExp.compile("^\\t*\\s*(?:(?:[E]-[A-Z]{4}-\\d+,\\t*\\s*)|(?:[A-Z]{3}\\d{6},\\t*\\s*)|(EGA[D,S]\\d{11},\\t*\\s*))*(?:(?:[E]-[A-Z]{4}-\\d+)|(?:[A-Z]{3}\\d{6})|(EGA[D,S]\\d{11}))$");
         return regex.test(relatedAccessionNumber);
+    }
+
+    private Collection<ValidationResponse> validateSubmission(ExperimentSubmission submission) throws  IOException {
+        try (final CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            final HttpPost httpPost = new HttpPost(properties.getSubmissionValidatorURL());
+            ObjectMapper om = new ObjectMapper();
+            httpPost.setEntity(new StringEntity(om.writer().writeValueAsString(new ValidatorRequest(submission.getExperimentJSON(), submission.getFiles())).replace("\\","")));
+            httpPost.setHeader("Accept", "application/json");
+            httpPost.setHeader("Content-type", "application/json");
+
+            // Create a custom response handler
+            final HttpClientResponseHandler<Collection<ValidationResponse>> responseHandler = response -> {
+                final int status = response.getCode();
+                if (status >= HttpStatus.SC_SUCCESS && status < HttpStatus.SC_REDIRECTION) {
+                    final HttpEntity entity = response.getEntity();
+                    try {
+                        return om.readValue(EntityUtils.toString(entity), new TypeReference<Collection<ValidationResponse>>(){});
+
+                    } catch (org.apache.hc.core5.http.ParseException e) {
+                        throw new ClientProtocolException(e);
+                    }
+                } else {
+                    throw new ClientProtocolException("Unexpected response status: " + status);
+                }
+            };
+            return httpclient.execute(httpPost, responseHandler);
+        }
     }
 
     private Collection<CheckResult> validateExperimentSubmission(ExperimentSubmission submission) throws IOException,
