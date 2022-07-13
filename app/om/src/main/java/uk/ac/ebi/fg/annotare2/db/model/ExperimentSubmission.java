@@ -53,6 +53,10 @@ public class ExperimentSubmission extends Submission {
         this.experimentString = writeExperiment(exp, getVersion());
     }
 
+    public String getExperimentJSON() {
+        return experimentString;
+    }
+
     @Override
     public boolean hasNoData() {
         return isNullOrEmpty(experimentString);
