@@ -88,7 +88,7 @@ public enum SampleAttributeTemplate {
     KARYOTYPE_ATTRIBUTE(KARYOTYPE),
     PHENOTYPE_ATTRIBUTE(PHENOTYPE),
     TUMOR_GRADING_ATTRIBUTE(TUMOR_GRADING),
-
+    IMMUNOPHENOTYPE_ATTRIBUTE(IMMUNOPHENOTYPE),
     //This need to changed to USER_DEFINED but instead of changing the code it should be done in database "template" field of SampleAttribute Json needs to be changed
 
     USER_DEFIED_ATTRIBUTE(ValueRange.<String>any(), ValueRange.<SystemEfoTerm>any(), ValueRange.<SystemEfoTerm>any(), range(CHARACTERISTIC, FACTOR_VALUE), false, true),
@@ -98,6 +98,7 @@ public enum SampleAttributeTemplate {
     // TODO: Make these invisible in the UI
     ENVIRONMENTAL_HISTORY_ORIGIN(ENVIRONMENTAL_HISTORY),
     SPECIMEN_ORIGIN(SPECIMEN_WITH_KNOWN_STORAGE_STATE)
+
 
     ;
     private final ValueRange<String> nameRange;
