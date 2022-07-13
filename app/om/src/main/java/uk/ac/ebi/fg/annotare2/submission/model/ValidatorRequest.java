@@ -15,8 +15,8 @@ public class ValidatorRequest {
     @JsonProperty("data_files")
     private List<String> dataFiles;
 
-    public ValidatorRequest(String experimentJSON, Set<DataFile> files) {
+    public ValidatorRequest(String experimentJSON, List<String> files) {
         this.experimentJSON = experimentJSON;
-        dataFiles = files.stream().map(DataFile::getName).collect(Collectors.toList());
+        this.dataFiles = files;
     }
 }
