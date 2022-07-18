@@ -1,0 +1,81 @@
+pipeline {
+    options {
+        copyArtifactPermission('Annotare-web-app-release-wwwdev, Annotare-web-app-release-prod');
+    }
+    agent any
+    tools {
+        maven 'maven-3.8.5'
+        jdk 'jdk-8'
+    }
+    stages {
+        stage ('Initialize') {
+            steps {
+                sh '''
+                    echo "PATH = ${PATH}"
+                    echo "M2_HOME = ${M2_HOME}"
+                    echo "JAVA_HOME = ${JAVA_HOME}"
+                '''
+            }
+        }
+
+        //External maven-settings.xml file provided from jenkins through configFileProvider plugin
+        stage ('Compile') {
+            steps{
+               configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {
+                    sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/pom.xml clean compile'
+                }
+            }
+        }
+
+        //External maven-settings.xml file provided from jenkins through configFileProvider plugin
+        stage ('Test') {
+            steps{
+               configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {
+                    sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/pom.xml test'
+                }
+            }
+        }
+
+        //External maven-settings.xml file provided from jenkins through configFileProvider plugin
+        //Since database properties defined in maven-settings.xml, configured two different maven settings for wwwdev and prod
+        stage ('Build Artifacts') {
+            stages{
+                stage('Build') {
+                    when { not { branch 'master'}}
+                    steps{
+                        configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_DEV_SETTINGS_XML')]){
+                            sh 'mvn -U --batch-mode -s $MAVEN_DEV_SETTINGS_XML -f app/pom.xml package -DskipTests'
+                        }
+                    }
+                }
+                stage('Master Build') {
+                    when { branch 'master'}
+                    steps{
+                        configFileProvider([configFile(fileId: 'annotare_prod_maven_settings', variable: 'MAVEN_PROD_SETTINGS_XML')]) {
+                            sh 'mvn -U --batch-mode -s $MAVEN_PROD_SETTINGS_XML -f app/pom.xml package -DskipTests'
+                        }
+                    }
+                }
+                stage('Archive artifacts') {
+                    steps{
+                        archiveArtifacts artifacts: 'app/webapp/target/annotare2-web*.war', fingerprint: true
+                    }
+                }
+            }
+        }
+
+        stage ('Release') {
+            when { not { branch 'master'}}
+            steps{
+                release job: 'Annotare-web-app-release-wwwdev', parameters: [string(name: 'artifactBuildNumber', value: env.BUILD_NUMBER), string(name: 'branch_name', value: env.BRANCH_NAME)]
+            }
+        }
+
+        stage ('Production Release') {
+            when { branch 'master'}
+            steps{
+                release job: 'Annotare-web-app-release-prod', parameters: [string(name: 'artifactBuildNumber', value: env.BUILD_NUMBER), string(name: 'branch_name', value: env.BRANCH_NAME)]
+            }
+        }
+    }
+}

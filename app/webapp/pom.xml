@@ -375,7 +375,7 @@
                 <version>2.1.1</version>
                 <executions>
                     <execution>
-                        <phase>compile</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>exploded</goal>
                         </goals>
