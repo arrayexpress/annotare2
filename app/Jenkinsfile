@@ -31,10 +31,7 @@ pipeline {
         stage ('Test') {
             steps{
                configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {
-                    sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/core/pom.xml install'
-                    sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/om/pom.xml install'
-                    sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/integration/pom.xml install'
-                    sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/pom.xml surefire:test'
+                    sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/pom.xml test'
                 }
             }
         }
