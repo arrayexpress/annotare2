@@ -57,7 +57,9 @@ pipeline {
                     }
                 }
                 stage('Archive artifacts') {
-                    archiveArtifacts artifacts: 'app/webapp/target/annotare2-web*.war', fingerprint: true
+                    steps{
+                        archiveArtifacts artifacts: 'app/webapp/target/annotare2-web*.war', fingerprint: true
+                    }
                 }
             }
         }
