@@ -39,19 +39,26 @@ pipeline {
         //External maven-settings.xml file provided from jenkins through configFileProvider plugin
         //Since database properties defined in maven-settings.xml, configured two different maven settings for wwwdev and prod
         stage ('Build Artifacts') {
-            steps{
-               configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_DEV_SETTINGS_XML'),
-                                    configFile(fileId: 'annotare_prod_maven_settings', variable: 'MAVEN_PROD_SETTINGS_XML')]) {
+            stages{
+                stage(){
                     when { not { branch 'master'}}
                     steps{
-                        sh 'mvn -U --batch-mode -s $MAVEN_DEV_SETTINGS_XML -f app/pom.xml package'
+                        configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_DEV_SETTINGS_XML')]){
+                            sh 'mvn -U --batch-mode -s $MAVEN_DEV_SETTINGS_XML -f app/pom.xml package'
+                        }
                     }
+                }
+                stage(){
                     when { branch 'master'}
                     steps{
-                        sh 'mvn -U --batch-mode -s $MAVEN_PROD_SETTINGS_XML -f app/pom.xml package'
+                        configFileProvider([configFile(fileId: 'annotare_prod_maven_settings', variable: 'MAVEN_PROD_SETTINGS_XML')]) {
+                            sh 'mvn -U --batch-mode -s $MAVEN_PROD_SETTINGS_XML -f app/pom.xml package'
+                        }
                     }
+                }
+                stage(){
                     archiveArtifacts artifacts: 'app/webapp/target/annotare2-web*.war', fingerprint: true
-               }
+                }
             }
         }
 
