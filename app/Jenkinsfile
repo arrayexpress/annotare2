@@ -31,7 +31,10 @@ pipeline {
         stage ('Test') {
             steps{
                configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {
-                    sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/pom.xml install surefire:test'
+                    sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/core/pom.xml install'
+                    sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/om/pom.xml install'
+                    sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/integration/pom.xml install'
+                    sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/pom.xml surefire:test'
                 }
             }
         }
@@ -52,7 +55,7 @@ pipeline {
                     when { branch 'master'}
                     steps{
                         configFileProvider([configFile(fileId: 'annotare_prod_maven_settings', variable: 'MAVEN_PROD_SETTINGS_XML')]) {
-                            sh 'mvn -U --batch-mode -s $MAVEN_PROD_SETTINGS_XML -f app/pom.xml package'
+                            sh 'mvn -U --batch-mode -s $MAVEN_PROD_SETTINGS_XML -f app/pom.xml package -DskipTests'
                         }
                     }
                 }
