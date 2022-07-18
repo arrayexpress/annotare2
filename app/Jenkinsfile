@@ -40,7 +40,7 @@ pipeline {
         //Since database properties defined in maven-settings.xml, configured two different maven settings for wwwdev and prod
         stage ('Build Artifacts') {
             stages{
-                stage(){
+                stage('Build') {
                     when { not { branch 'master'}}
                     steps{
                         configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_DEV_SETTINGS_XML')]){
@@ -48,7 +48,7 @@ pipeline {
                         }
                     }
                 }
-                stage(){
+                stage('Master Build') {
                     when { branch 'master'}
                     steps{
                         configFileProvider([configFile(fileId: 'annotare_prod_maven_settings', variable: 'MAVEN_PROD_SETTINGS_XML')]) {
@@ -56,7 +56,7 @@ pipeline {
                         }
                     }
                 }
-                stage(){
+                stage('Archive artifacts') {
                     archiveArtifacts artifacts: 'app/webapp/target/annotare2-web*.war', fingerprint: true
                 }
             }
