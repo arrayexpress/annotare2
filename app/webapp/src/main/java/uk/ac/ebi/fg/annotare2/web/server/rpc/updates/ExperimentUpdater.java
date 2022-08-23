@@ -28,6 +28,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdatePerfo
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
@@ -306,6 +307,13 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
             protocol = exp.updateProtocolFields(protocol);
             protocol.setName(newName("Protocol", existedNames, newNames));
             newNames.add(protocol.getName());
+
+            if(protocol.getSubjectType().equals(ProtocolSubjectType.PROCESSED_FILE)){
+                Set<String> assignments = new HashSet<>();
+                exp.getFileColumns(FileType.PROCESSED_FILE).forEach(col->assignments.addAll(col.getFileRefs().stream().map(ref->ref.getHash()+"|"+ref.getName()).collect(Collectors.toSet())));
+                updateProtocolAssignments(new ProtocolAssignmentProfileUpdates(protocol.getId(), assignments));
+            }
+
         }
     }
 
