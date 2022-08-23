@@ -2,7 +2,7 @@ pipeline {
     options {
         copyArtifactPermission('Annotare-web-app-release-wwwdev, Annotare-web-app-release-prod');
     }
-    agent {label 'lsf-codon-ma-svc'}
+    agent {label 'lsf-codon-submitter'}
     tools {
         maven 'maven-3.8.5'
         jdk 'jdk-8'
