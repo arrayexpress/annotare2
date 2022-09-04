@@ -492,7 +492,8 @@ public class MageTabGenerator {
                 //        nextLayer.put(leId, createScanNode(nextLayer.get(leId), Collections.<Protocol>emptyList()));
                 //    }
                 //}
-                SDRFNode fileNode = createFileNode(nextLayer.get(leId), fileColumn.getType(), fileRef, protocols, labeledExtract.getExtract().getId());
+                Integer extractId = labeledExtract != null ? labeledExtract.getExtract().getId() : null;
+                SDRFNode fileNode = createFileNode(nextLayer.get(leId), fileColumn.getType(), fileRef, protocols, extractId);
                 nextLayer.put(leId, fileNode);
             }
         }
@@ -650,8 +651,8 @@ public class MageTabGenerator {
         LabelAttribute labelAttribute = new LabelAttribute();
         labelAttribute.setAttributeValue(label);
         labeledExtractNode.label = labelAttribute;
-
-        connect(extractNode, labeledExtractNode, protocols, labeledExtract.getExtract().getId());
+        Integer extractId = labeledExtract != null ? labeledExtract.getExtract().getId() : null;
+        connect(extractNode, labeledExtractNode, protocols, extractId);
         return labeledExtractNode;
     }
 

@@ -308,10 +308,9 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
             protocol.setName(newName("Protocol", existedNames, newNames));
             newNames.add(protocol.getName());
 
+            //Assign all processed data files to Normalization protocol by default.
             if(protocol.getSubjectType().equals(ProtocolSubjectType.PROCESSED_FILE)){
-                Set<String> assignments = new HashSet<>();
-                exp.getFileColumns(FileType.PROCESSED_FILE).forEach(col->assignments.addAll(col.getFileRefs().stream().map(ref->ref.getHash()+"|"+ref.getName()).collect(Collectors.toSet())));
-                updateProtocolAssignments(new ProtocolAssignmentProfileUpdates(protocol.getId(), assignments));
+                updateDefaultFileAssignmentsToProtocol(protocol);
             }
 
         }
@@ -374,6 +373,18 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         for (String labeledExtractId : column.getLabeledExtractIds()) {
             fileColumn.setFileRef(labeledExtractId, column.getFileRef(labeledExtractId));
         }
+
+        //Assign all processed data files to Normalization protocol by default.
+        exp.getProtocols()
+                .stream()
+                .filter(protocol -> protocol.getSubjectType().equals(ProtocolSubjectType.PROCESSED_FILE))
+                .forEach(this::updateDefaultFileAssignmentsToProtocol);
+    }
+
+    private void updateDefaultFileAssignmentsToProtocol(Protocol protocol) {
+        Set<String> assignments = new HashSet<>();
+        exp.getFileColumns(FileType.PROCESSED_FILE).forEach(col->assignments.addAll(col.getFileRefs().stream().map(ref->ref.getHash()+"|"+ref.getName()).collect(Collectors.toSet())));
+        updateProtocolAssignments(new ProtocolAssignmentProfileUpdates(protocol.getId(), assignments));
     }
 
     @Override
