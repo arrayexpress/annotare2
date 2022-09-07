@@ -52,6 +52,10 @@ public class ContactListViewImpl extends ListView<ContactDto.Editor> implements 
                 removeSelectedContacts();
             }
         });
+
+        messageSpan.setInnerHTML("⚠️ The \"submitter\" contact will be the data owner in ArrayExpress/BioStudies, " +
+                "who gets notified upon data loading and will be responsible for post-submission modifications " +
+                "with instructions how to view/modify the experiment in BioStudies.");
     }
 
     @Override

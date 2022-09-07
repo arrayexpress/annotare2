@@ -1,6 +1,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
@@ -33,6 +34,9 @@ public class ListView<T> extends Composite {
 
     @UiField
     protected Image removeIcon;
+
+    @UiField
+    SpanElement messageSpan;
 
     private int selection = 0;
 
