@@ -524,19 +524,22 @@ public class AeIntegrationWatchdog {
             // check if the submission has been rejected
             if (!isInCuration(submission.getSubsTrackingId())) {
                 reOpenSubmission(submission);
-            } else if (properties.isAeConnectionEnabled()) {
-                String accession = submission.getAccession();
-                if (!isNullOrEmpty(accession)) {
-                    AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
-                    if (PRIVATE == state) {
-                        submission.setStatus(SubmissionStatus.PRIVATE_IN_AE);
-                        submissionManager.save(submission);
-                    } else if (PUBLIC == state) {
-                        submission.setStatus(SubmissionStatus.PUBLIC_IN_AE);
-                        submissionManager.save(submission);
-                    }
-                }
             }
+
+            // This status change functionality migrated to submissions manager service.
+//            else if (properties.isAeConnectionEnabled()) {
+////                String accession = submission.getAccession();
+////                if (!isNullOrEmpty(accession)) {
+////                    AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
+////                    if (PRIVATE == state) {
+////                        submission.setStatus(SubmissionStatus.PRIVATE_IN_AE);
+////                        submissionManager.save(submission);
+////                    } else if (PUBLIC == state) {
+////                        submission.setStatus(SubmissionStatus.PUBLIC_IN_AE);
+////                        submissionManager.save(submission);
+////                    }
+////                }
+//            }
         }
     }
 
@@ -549,15 +552,8 @@ public class AeIntegrationWatchdog {
             reOpenSubmission(submission);
         }
         else{
-            if (!isNullOrEmpty(accession)) {
-                if (properties.isAeConnectionEnabled()) {
-                    AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
-                    if (PUBLIC == state) {
-                        submission.setStatus(SubmissionStatus.PUBLIC_IN_AE);
-                        submissionManager.save(submission);
-                    }
-                }
-            } else {
+            // Status change functionality migrated to submissions manager service.
+            if (isNullOrEmpty(accession)) {
                 submission.setStatus(SubmissionStatus.IN_CURATION);
                 submissionManager.save(submission);
             }
@@ -592,15 +588,8 @@ public class AeIntegrationWatchdog {
             reOpenSubmission(submission);
         }
         else{
-            if (!isNullOrEmpty(accession)) {
-                if (properties.isAeConnectionEnabled()) {
-                    AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
-                    if (PRIVATE == state) {
-                        submission.setStatus(SubmissionStatus.PRIVATE_IN_AE);
-                        submissionManager.save(submission);
-                    }
-                }
-            } else {
+            // Status change functionality migrated to submissions manager service.
+            if (isNullOrEmpty(accession))  {
                 submission.setStatus(SubmissionStatus.IN_CURATION);
                 submissionManager.save(submission);
             }
