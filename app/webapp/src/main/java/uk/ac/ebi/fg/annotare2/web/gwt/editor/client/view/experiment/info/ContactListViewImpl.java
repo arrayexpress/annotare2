@@ -53,9 +53,11 @@ public class ContactListViewImpl extends ListView<ContactDto.Editor> implements 
             }
         });
 
-        messageSpan.setInnerHTML("⚠️ The \"submitter\" contact will be the data owner in ArrayExpress/BioStudies, " +
-                "who gets notified upon data loading and will be responsible for post-submission modifications " +
-                "with instructions how to view/modify the experiment in BioStudies.");
+        messageSpan.setInnerHTML("⚠️ The \"submitter\" contact will be the data owner in BioStudies. " +
+                "This person gets notified upon data loading and will be responsible for " +
+                "<a href=\"https://www.ebi.ac.uk/fg/annotare/help/after_sub_modify_data.html\" target=\"_blank\">" +
+                "post-submission modifications (e.g. release date change)</a> " +
+                "in BioStudies.<br><br>");
     }
 
     @Override
