@@ -53,11 +53,10 @@ public class ContactListViewImpl extends ListView<ContactDto.Editor> implements 
             }
         });
 
-        messageSpan.setInnerHTML("⚠️ The \"submitter\" contact will be the data owner in BioStudies. " +
-                "This person gets notified upon data loading and will be responsible for " +
+        messageSpan.setInnerHTML("⚠️ The \"submitter\" contact will be the person who gets notified " +
+                "upon archival of the dataset in BioStudies and will be responsible for " +
                 "<a href=\"https://www.ebi.ac.uk/fg/annotare/help/after_sub_modify_data.html\" target=\"_blank\">" +
-                "post-submission modifications (e.g. release date change)</a> " +
-                "in BioStudies.<br><br>");
+                "post-submission modifications (e.g. release date change)</a>.<br><br>");
     }
 
     @Override

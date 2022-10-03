@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.ae.AEConnection;
 import uk.ac.ebi.fg.annotare2.ae.AeConnectionProperties;
-import uk.ac.ebi.fg.annotare2.ae.ArrayExpressProperties;
+import uk.ac.ebi.fg.annotare2.ae.BiostudiesProperties;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTracking;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingProperties;
 import uk.ac.ebi.fg.annotare2.core.AnnotarePluginModule;
@@ -48,7 +48,7 @@ public class ArrayExpressIntegrationPlugin extends AbstractModule {
         bind(ExtendedAnnotareProperties.class).asEagerSingleton();
 
         bind(AnnotareProperties.class).to(ExtendedAnnotareProperties.class);
-        bind(ArrayExpressProperties.class).to(ExtendedAnnotareProperties.class);
+        bind(BiostudiesProperties.class).to(ExtendedAnnotareProperties.class);
         bind(SubsTrackingProperties.class).to(ExtendedAnnotareProperties.class);
         bind(AeConnectionProperties.class).to(ExtendedAnnotareProperties.class);
     }

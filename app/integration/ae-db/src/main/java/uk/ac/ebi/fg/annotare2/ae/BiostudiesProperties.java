@@ -17,6 +17,8 @@
 
 package uk.ac.ebi.fg.annotare2.ae;
 
-public interface ArrayExpressProperties {
-    String getArrayExpressArrayListUrl();
+public interface BiostudiesProperties {
+    String getBiostudiesArrayListUrl();
+
+    String getBiostudiesArrayListFallBackDir();
 }
