@@ -44,9 +44,9 @@
 </script>
 <section id="homepage-left-section" class="column medium-8" style="padding-top:31px;padding-left: 26px;">
     <div class="row">
-        <h4>Welcome to Annotare, the ArrayExpress submission tool</h4>
-        <p>Annotare is a tool for submitting functional genomics experiments,
-            microarray or next-generation sequencing, to <a href="https://www.ebi.ac.uk/arrayexpress">ArrayExpress</a>
+        <h4>Welcome to Annotare</h4>
+        <p>Annotare is a tool for submitting functional genomics data to
+            <a href="https://www.ebi.ac.uk/biostudies/arrayexpress" target="_blank">the ArrayExpress collection in BioStudies</a>
             in
             <a href="http://fged.org/projects/mage-tab/">MAGE-TAB</a> format, supporting high metadata standards in
             compliance with MIAME/MINSEQE guidelines.</p>
@@ -54,7 +54,7 @@
     <div class="row">
         <h4>Overview of the submission process</h4>
         <p style="border: 1px solid #d7d7d7;">
-            <img src="../assets/images/submission_overview_big.png" alt="submission_overview"/>
+            <img src="../assets/images/Submission_overview_BioStudies.png" alt="submission_overview"/>
         </p>
     </div>
     <div class="row">

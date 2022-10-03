@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.integration;
 
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.ae.AeConnectionProperties;
-import uk.ac.ebi.fg.annotare2.ae.ArrayExpressProperties;
+import uk.ac.ebi.fg.annotare2.ae.BiostudiesProperties;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingProperties;
 import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.core.properties.DataFileStoreProperties;
@@ -28,7 +28,7 @@ import uk.ac.ebi.fg.annotare2.otrs.OtrsProperties;
 import java.io.File;
 
 public class ExtendedAnnotareProperties extends AnnotareProperties implements DataFileStoreProperties,
-        ArrayExpressProperties, SubsTrackingProperties, AeConnectionProperties, OtrsProperties, FileValidationProperties, RtProperties {
+        BiostudiesProperties, SubsTrackingProperties, AeConnectionProperties, OtrsProperties, FileValidationProperties, RtProperties {
 
     @Inject
     public ExtendedAnnotareProperties(MageTabCheckProperties mageTabCheckProperties) {
@@ -36,8 +36,13 @@ public class ExtendedAnnotareProperties extends AnnotareProperties implements Da
     }
 
     @Override
-    public String getArrayExpressArrayListUrl() {
-        return getProperty("arrayexpress.arraylist.url");
+    public String getBiostudiesArrayListUrl() {
+        return getProperty("biostudies.arraylist.url");
+    }
+
+    @Override
+    public String getBiostudiesArrayListFallBackDir() {
+        return getProperty("biostudies.arraylist.fallback.dir");
     }
 
     @Override

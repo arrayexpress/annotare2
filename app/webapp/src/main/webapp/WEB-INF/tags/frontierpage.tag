@@ -134,7 +134,7 @@
                     <ul id="local-nav" class="menu float-left" data-description="navigational">
                         <li class="first"><a href="${pageContext.request.contextPath}/"
                                              title="Annotare ${project.version} rev.${buildNumber}">Home</a></li>
-                        <li class="first"><a href="http://www.ebi.ac.uk/arrayexpress">Go to ArrayExpress</a></li>
+                        <li class="first"><a href="https://www.ebi.ac.uk/biostudies/" target="_blank">Go to BioStudies</a></li>
                         <li${helpClass}><a href="${pageContext.request.contextPath}/help">Submission Guide</a></li>
                         <li class="last${aboutClass}"><a href="${pageContext.request.contextPath}/about">About
                             Annotare</a></li>

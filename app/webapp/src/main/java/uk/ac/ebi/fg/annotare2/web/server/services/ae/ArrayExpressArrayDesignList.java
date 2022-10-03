@@ -25,7 +25,7 @@ import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.ae.ArrayExpressProperties;
+import uk.ac.ebi.fg.annotare2.ae.BiostudiesProperties;
 import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 
 import javax.annotation.PostConstruct;
@@ -34,6 +34,7 @@ import java.io.*;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -58,13 +59,13 @@ public class ArrayExpressArrayDesignList {
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    private final ArrayExpressProperties properties;
+    private final BiostudiesProperties properties;
     private final Messenger messenger;
 
     private ArrayDesignList list;
 
     @Inject
-    public ArrayExpressArrayDesignList(ArrayExpressProperties properties, Messenger messenger) throws IOException {
+    public ArrayExpressArrayDesignList(BiostudiesProperties properties, Messenger messenger) throws IOException {
         this.properties = properties;
         this.messenger = messenger;
         reload();
@@ -85,7 +86,7 @@ public class ArrayExpressArrayDesignList {
             }
 
         };
-        if (!isNullOrEmpty(properties.getArrayExpressArrayListUrl())) {
+        if (!isNullOrEmpty(properties.getBiostudiesArrayListUrl())) {
             scheduler.scheduleAtFixedRate(periodicProcess, 0, 1, HOURS);
         }
     }
@@ -101,12 +102,14 @@ public class ArrayExpressArrayDesignList {
 
         File adFile = new File(arrayDesignListLocation);
         if (adFile.exists() && adFile.canRead()) {
-            list.load(new FileInputStream(adFile));
+            list.load(Files.newInputStream(adFile.toPath()));
         }
 
         if (list.isEmpty()) {
-            InputStream in = getClass().getResourceAsStream("/ArrayExpressArrayDesigns-01072014.txt");
-            list.load(in);
+            adFile = new File(properties.getBiostudiesArrayListFallBackDir());
+            if (adFile.exists() && adFile.canRead()) {
+                list.load(Files.newInputStream(adFile.toPath()));
+            }
         }
         return list;
     }
@@ -115,7 +118,7 @@ public class ArrayExpressArrayDesignList {
         InputStream is = null;
         FileOutputStream fos = null;
         try {
-            URL adSource = new URL(properties.getArrayExpressArrayListUrl());
+            URL adSource = new URL(properties.getBiostudiesArrayListUrl());
             is = adSource.openStream();
             if (null != is) {
                 ReadableByteChannel rbc = Channels.newChannel(is);
