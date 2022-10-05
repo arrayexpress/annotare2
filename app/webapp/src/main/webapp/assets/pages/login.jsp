@@ -45,10 +45,10 @@
 <section id="homepage-left-section" class="column medium-8" style="padding-top:31px;padding-left: 26px;">
     <div class="row">
         <h4>Welcome to Annotare</h4>
-        <p>Annotare is a tool for submitting functional genomics data to
-            <a href="https://www.ebi.ac.uk/biostudies/arrayexpress" target="_blank">the ArrayExpress collection in BioStudies</a>
-            in
-            <a href="http://fged.org/projects/mage-tab/">MAGE-TAB</a> format, supporting high metadata standards in
+        <p>Annotare is a tool for submitting functional genomics data to the
+            <a href="https://www.ebi.ac.uk/biostudies/arrayexpress" target="_blank">ArrayExpress collection in BioStudies</a>.
+            It generates
+            <a href="http://fged.org/projects/mage-tab/">MAGE-TAB</a> format and supports high metadata standards in
             compliance with MIAME/MINSEQE guidelines.</p>
     </div>
     <div class="row">
@@ -67,7 +67,7 @@
             </div>
             <div class="column medium-4">
                 <p>I want to <b>change the release date</b> or <b>add publication details</b></p>
-                <p><a href="https://www.ebi.ac.uk/fg/acext/" target="_blank" class="readmore">Access control tool</a>
+                <p><a href="https://www.ebi.ac.uk/fg/annotare/help/after_sub_modify_data.html" target="_blank" class="readmore">Read more</a>
                 </p>
             </div>
             <div class="column medium-4">
@@ -81,7 +81,7 @@
         <h4>Questions?</h4>
         <p>
             <a href="${pageContext.request.contextPath}/help" target="_blank">See full submission guide</a> or
-            <a href="https://www.ebi.ac.uk/training/online/course/arrayexpress-why-and-how-submit-your-data"
+            <a href="https://www.youtube.com/watch?v=ANr2PTVy7JA"
                target="_blank">watch the video tutorial</a>
         </p>
     </div>
