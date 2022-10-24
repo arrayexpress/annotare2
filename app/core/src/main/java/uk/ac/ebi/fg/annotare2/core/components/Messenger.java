@@ -34,6 +34,8 @@ public interface Messenger {
 
     void send(String note, Throwable x, User user);
 
+    void send(String note, Throwable x, Submission submission);
+
     void updateTicket(Map<String, String> params, String ticketNumber) throws Exception;
 
     boolean checkRtServerStatus(int submissionId) throws Exception;

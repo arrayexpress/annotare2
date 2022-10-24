@@ -52,6 +52,8 @@ public class MessengerImpl implements Messenger {
     public static final String CHANGE_PASSWORD_REQUEST_TEMPLATE = "change-password-request";
     public static final String CHANGE_PASSWORD_CONFIRMATION_TEMPLATE = "change-password-confirmation";
     public static final String EXCEPTION_REPORT_TEMPLATE = "exception-report";
+
+    public static final String SUBMISSION_PROCESSING_EXCEPTION_TEMPLATE = "submission-processing-exception-report";
     public static final String SUBMISSION_FEEDBACK_TEMPLATE = "submission-feedback";
     public static final String CONTACT_US_TEMPLATE = "contact-us";
 
@@ -68,7 +70,7 @@ public class MessengerImpl implements Messenger {
 
     @Override
     public void send(String note, Throwable x) {
-        send(note, x, null);
+        send(note, x, (User) null);
     }
 
     @Override
@@ -93,6 +95,35 @@ public class MessengerImpl implements Messenger {
                     ),
                     user,
                     null,
+                    true
+            );
+        } catch (Throwable xxx) {
+            log.error("[SEVERE] Unable to send exception report, error:", xxx);
+        }
+    }
+
+    @Override
+    public void send(String note, Throwable x, Submission submission) {
+        try {
+            Thread currentThread = Thread.currentThread();
+            String hostName = "unknown";
+            try {
+                InetAddress localMachine = InetAddress.getLocalHost();
+                hostName = localMachine.getHostName();
+            } catch (UnknownHostException xx) {
+                log.error("Unable to obtain a hostname", xx);
+            }
+            send(
+                    SUBMISSION_PROCESSING_EXCEPTION_TEMPLATE,
+                    ImmutableMap.of(
+                            "application.host", hostName,
+                            "application.thread", currentThread.getName(),
+                            "exception.note", note,
+                            "exception.message", (null != x && null != x.getMessage()) ? x.getMessage() : "",
+                            "exception.stack", getStackTrace(x)
+                    ),
+                    null,
+                    submission,
                     true
             );
         } catch (Throwable xxx) {

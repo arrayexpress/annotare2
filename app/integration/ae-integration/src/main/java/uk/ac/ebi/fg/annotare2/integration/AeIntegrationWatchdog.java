@@ -323,18 +323,24 @@ public class AeIntegrationWatchdog {
 
     }
 
-    public void processSubmitted(Submission submission) throws SubsTrackingException, InterruptedException {
-        Pair<SubmissionOutcome, Integer> submissionOutcomeIntegerPair = submitSubmission(submission);
-        SubmissionOutcome outcome = submissionOutcomeIntegerPair.getLeft();
-        Integer substrackingId = submissionOutcomeIntegerPair.getRight();
-        if (SubmissionOutcome.SUBMISSION_FAILED != outcome) {
-            File exportDir = copyDataFiles(submission, substrackingId);
-            // Reopening session in case existing session closes after long file copy task(More than 8hrs).
-            sessionFactory.openSession();
-            addFilesToSubstracking(submission, substrackingId, exportDir);
-            submissionPostProcessor.add(Pair.of(submission, outcome));
-            logger.debug("Submission: {} added to post processing queue", submission.getId());
+    public void processSubmitted(Submission submission) throws SubsTrackingException {
+        try {
+            Pair<SubmissionOutcome, Integer> submissionOutcomeIntegerPair = submitSubmission(submission);
+            SubmissionOutcome outcome = submissionOutcomeIntegerPair.getLeft();
+            Integer substrackingId = submissionOutcomeIntegerPair.getRight();
+            if (SubmissionOutcome.SUBMISSION_FAILED != outcome) {
+                File exportDir = copyDataFiles(submission, substrackingId);
+                // Reopening session in case existing session closes after long file copy task(More than 8hrs).
+                sessionFactory.openSession();
+                addFilesToSubstracking(submission, substrackingId, exportDir);
+                submissionPostProcessor.add(Pair.of(submission, outcome));
+                logger.debug("Submission: {} added to post processing queue", submission.getId());
+            }
+        } catch (Throwable x){
+            logger.error("Submission watchdog process caught an exception:", x);
+            messenger.send("Error in submission watchdog process:", x, submission);
         }
+
     }
 
     @Transactional(rollbackOn = {SubsTrackingException.class})
