@@ -332,8 +332,23 @@ public class AeIntegrationWatchdog {
             // Reopening session in case existing session closes after long file copy task(More than 8hrs).
             sessionFactory.openSession();
             addFilesToSubstracking(submission, substrackingId, exportDir);
+            moveExportDirectory(exportDir);
             submissionPostProcessor.add(Pair.of(submission, outcome));
             logger.debug("Submission: {} added to post processing queue", submission.getId());
+        }
+    }
+
+    private void moveExportDirectory(File exportDir) throws SubsTrackingException {
+        LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
+        String lsfToDatamoverScript = properties.getLSFtoDataMoverScript() + " \"" + exportDir.getPath() + "\"";
+        try {
+            logger.info("Moving export directory {} to codon started.", exportDir.getPath());
+            executor.execute("ssh codon-login \"bash -s\" < " + lsfToDatamoverScript);
+            logger.info("Moving export directory {} to codon finished.", exportDir.getPath());
+            executor.execute("rm -rf " + exportDir.getPath());
+            logger.info("Export directory {} deleted.", exportDir.getPath());
+        } catch (IOException e) {
+            throw new SubsTrackingException(e);
         }
     }
 
