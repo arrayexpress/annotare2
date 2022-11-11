@@ -93,10 +93,10 @@ public class UserApp implements EntryPoint {
         showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "Notice_04112022_Shown"; // change name according to the cookie display date ddmmyy
+    private final static String NOTICE_COOKIE = "Notice_11112022_Shown"; // change name according to the cookie display date ddmmyy
     private void showNotice() {
         Date stopNoticeDate = new Date();
-        stopNoticeDate.setTime(1668189600000L); // stop showing on 11th November 2022 (http://www.epochconverter.com/)
+        stopNoticeDate.setTime(1670000400000L); // stop showing on 2nd December 2022 (http://www.epochconverter.com/)
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE)) && (new Date().before(stopNoticeDate))) {
             Date expiryDate = new Date();
             expiryDate.setTime(8000000000000L);
@@ -110,11 +110,10 @@ public class UserApp implements EntryPoint {
 //                    NOTICE_COOKIE, expiryDate
 //            );
             CookieDialog dialogBox = new CookieDialog(
-                    "[Delay notice] Submission Service Disruption",
+                    "[Delay notice]",
                     "<p>Dear submitters,</p>" +
-                            "<p>Unfortunately, the FTP/Aspera file upload is currently unavailable. Please use \"Upload Files\" button to upload files directly.</p>" +
-                            "<p>This will mean a delay in processing datasets for ArrayExpress collection in BioStudies.</p>" +
-                            "<p>Please accept our sincere apologies for any trouble this causes!</p>" +
+                            "<p>We are currently receiving a large number of submissions.</p>" +
+                            "<p>This will mean a delay in processing datasets for ArrayExpress collection in BioStudies. Thank you for your patience</p>" +
                             "<p><br>The ArrayExpress curation team</p>",
                     NOTICE_COOKIE, expiryDate
             );
