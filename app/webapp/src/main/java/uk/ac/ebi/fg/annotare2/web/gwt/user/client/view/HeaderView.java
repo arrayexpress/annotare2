@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.CookiePopupDeatils;
 
 /**
  * @author Olga Melnichuk
@@ -24,4 +25,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface HeaderView extends IsWidget {
 
     void setUserName(String name);
+
+    void setNoticeCookie(CookiePopupDeatils cookiePopupDeatils);
 }

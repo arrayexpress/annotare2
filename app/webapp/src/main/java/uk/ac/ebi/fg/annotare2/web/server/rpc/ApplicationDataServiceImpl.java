@@ -32,6 +32,7 @@ import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ApplicationDataService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.CookiePopupDeatils;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
@@ -41,9 +42,13 @@ import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressExperimentTypeList;
 
 import javax.annotation.Nullable;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.regex.Pattern;
 
 import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.collect.Collections2.transform;
@@ -183,6 +188,34 @@ public class ApplicationDataServiceImpl extends ErrorReportingRemoteServiceServl
     @Override
     public ArrayList<String> getSequencingHardware() {
         return newArrayList(properties.getSequencingHardware());
+    }
+
+    @Override
+    public CookiePopupDeatils getCookiePopupDetails() throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(properties.getCookiePopupTemplatePath()));
+        String strCurrentLine;
+        String[] tokens;
+        CookiePopupDeatils cookiePopupDeatils = new CookiePopupDeatils();
+        Pattern pattern = Pattern.compile("^notice.*=");
+        while ((strCurrentLine = reader.readLine()) != null){
+            if(pattern.matcher(strCurrentLine).find()){
+                tokens = strCurrentLine.split("=");
+                if(tokens[0].endsWith("name")){
+                    cookiePopupDeatils.setName(tokens[1]);
+                } else if(tokens[0].endsWith("expiryDate")){
+                    cookiePopupDeatils.setExpiryDate(Long.parseLong(tokens[1]));
+                } else if(tokens[0].endsWith("stopNoticeDate")){
+                    cookiePopupDeatils.setStopNoticeDate(Long.parseLong(tokens[1]));
+                } else if(tokens[0].endsWith("title")){
+                    cookiePopupDeatils.setTitle(tokens[1]);
+                } else if(tokens[0].endsWith("html")){
+                    cookiePopupDeatils.appendHTML(tokens[1]);
+                }
+            } else{
+                cookiePopupDeatils.appendHTML(strCurrentLine);
+            }
+        }
+        return cookiePopupDeatils;
     }
 
     @Override

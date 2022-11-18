@@ -22,10 +22,12 @@ import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.CookiePopupDeatils;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -59,4 +61,6 @@ public interface ApplicationDataService extends RemoteService {
     ArrayList<String> getMaterialTypes();
 
     ArrayList<String> getSequencingHardware();
+
+    CookiePopupDeatils getCookiePopupDetails() throws IOException;
 }

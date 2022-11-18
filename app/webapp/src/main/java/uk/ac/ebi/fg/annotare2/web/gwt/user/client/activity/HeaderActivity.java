@@ -22,10 +22,12 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ApplicationDataServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.CookiePopupDeatils;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.HeaderView;
 
@@ -38,13 +40,17 @@ public class HeaderActivity extends AbstractActivity {
     private final PlaceController placeController;
     private final CurrentUserAccountServiceAsync userService;
 
+    private final ApplicationDataServiceAsync applicationDataService;
+
     @Inject
     public HeaderActivity(HeaderView view,
                           PlaceController placeController,
-                          CurrentUserAccountServiceAsync userService) {
+                          CurrentUserAccountServiceAsync userService,
+                          ApplicationDataServiceAsync applicationDataService) {
         this.view = view;
         this.placeController = placeController;
         this.userService = userService;
+        this.applicationDataService = applicationDataService;
     }
 
     public HeaderActivity withPlace(Place place) {
@@ -62,6 +68,15 @@ public class HeaderActivity extends AbstractActivity {
     }
 
     private void initAsync() {
+
+        applicationDataService.getCookiePopupDetails(AsyncCallbackWrapper.callbackWrap(
+                new ReportingAsyncCallback<CookiePopupDeatils>(ReportingAsyncCallback.FailureMessage.GENERIC_FAILURE) {
+                    @Override
+                    public void onSuccess(CookiePopupDeatils result) {
+                        view.setNoticeCookie(result);
+                    }
+                }
+        ));
         userService.me(AsyncCallbackWrapper.callbackWrap(
                 new ReportingAsyncCallback<UserDto>(FailureMessage.UNABLE_TO_LOAD_USER_INFORMATION) {
                     @Override

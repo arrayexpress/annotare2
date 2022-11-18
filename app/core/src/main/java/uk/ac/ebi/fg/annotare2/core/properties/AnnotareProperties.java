@@ -178,6 +178,10 @@ public class AnnotareProperties implements DataFileStoreProperties {
         return mageTabCheckProperties;
     }
 
+    public String getCookiePopupTemplatePath(){
+        return getProperty("cookie.popup.template.path");
+    }
+
     protected File getDirProperty(String name) {
         String property = getProperty(name);
         File dir = isNullOrEmpty(property) ?
