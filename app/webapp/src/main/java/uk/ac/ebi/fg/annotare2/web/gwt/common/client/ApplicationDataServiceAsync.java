@@ -21,6 +21,7 @@ import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.CookiePopupDeatils;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
@@ -52,4 +53,6 @@ public interface ApplicationDataServiceAsync {
     void getMaterialTypes(AsyncCallback<ArrayList<String>> async);
 
     void getSequencingHardware(AsyncCallback<ArrayList<String>> async);
+
+    void getCookiePopupDetails(AsyncCallback<CookiePopupDeatils> async);
 }

@@ -332,6 +332,10 @@
     width:30%;
 }
 
+.app-CookieDialog table {
+    width: 100%;
+}
+
 .app-MessageDialog {
     width: 30%;
 }

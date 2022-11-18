@@ -22,20 +22,17 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.ServerWatchdog;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.CookieDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.gin.UserAppGinjector;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.mvp.UserAppPlaceFactory;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.mvp.UserAppPlaceHistoryMapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.AppLayout;
 
-import java.util.Date;
 import java.util.logging.Logger;
 
 /**
@@ -90,26 +87,5 @@ public class UserApp implements EntryPoint {
         historyHandler.handleCurrentHistory();
 
         ServerWatchdog.start();
-        showNotice();
-    }
-
-    private final static String NOTICE_COOKIE = "Notice_11122020_Shown"; // change name according to the cookie display date ddmmyy
-    private void showNotice() {
-        Date stopNoticeDate = new Date();
-        stopNoticeDate.setTime(1610366399000L); // stop showing on 11th January 2021 (http://www.epochconverter.com/)
-        if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE)) && (new Date().before(stopNoticeDate))) {
-            Date expiryDate = new Date();
-            expiryDate.setTime(8000000000000L);
-            CookieDialog dialogBox = new CookieDialog(
-                    "Christmas(hooray!) Downtime notice",
-                    "<p>Dear submitter,</p>" +
-                            "<p>The curation team will be on holiday from 21st December 2020 until 6th January 2021. " +
-                            "This will mean a delay in processing datasets for ArrayExpress." +
-                            "<p>Please submit early! Happy holidays!</p>" +
-                            "<p>Best Regards,<br>Annotare Team",
-                    NOTICE_COOKIE, expiryDate
-            );
-            dialogBox.show();
-        }
     }
 }
