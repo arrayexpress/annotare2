@@ -174,7 +174,7 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
 
     private String scpLocationFromURI(URI uri) throws IOException {
         if (isSupported(uri)) {
-            return uri.getHost() + ":\"" + escapeFilePath(uri.getPath()) + "\"";
+            return uri.getHost() + ":" + escapeFilePath(uri.getPath());
         } else if (isLocal(uri)) {
             return uri.getPath();
         } else {
