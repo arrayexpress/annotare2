@@ -27,24 +27,27 @@ import uk.ac.ebi.fg.annotare2.core.AccessControlException;
 import uk.ac.ebi.fg.annotare2.core.components.EfoSearch;
 import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.core.magetab.MageTabGenerator;
-import uk.ac.ebi.fg.annotare2.core.magetab.MageTabUtils;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.core.utils.NamingPatternUtil;
+import uk.ac.ebi.fg.annotare2.core.utils.ValidatorUtils;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionFeedbackDao;
 import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
-import uk.ac.ebi.fg.annotare2.db.model.*;
+import uk.ac.ebi.fg.annotare2.db.model.ArrayDesignSubmission;
+import uk.ac.ebi.fg.annotare2.db.model.DataFile;
+import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.db.model.Submission;
+import uk.ac.ebi.fg.annotare2.db.model.SubmissionFeedback;
+import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
-import uk.ac.ebi.fg.annotare2.db.model.enums.Role;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
-import uk.ac.ebi.fg.annotare2.integration.EmailTemplates;
-import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UnknownExperimentTypeException;
 import uk.ac.ebi.fg.annotare2.submission.model.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.submission.model.ValidationResponse;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
@@ -58,7 +61,11 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateComm
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
-import uk.ac.ebi.fg.annotare2.web.server.services.*;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
+import uk.ac.ebi.fg.annotare2.web.server.services.DataFileManagerImpl;
+import uk.ac.ebi.fg.annotare2.web.server.services.MessengerImpl;
+import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManagerImpl;
+import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionValidator;
 import uk.ac.ebi.fg.annotare2.web.server.services.utils.tsv.TsvParser;
 import uk.org.lidalia.slf4jext.Logger;
 import uk.org.lidalia.slf4jext.LoggerFactory;
@@ -67,7 +74,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static uk.ac.ebi.fg.annotare2.core.magetab.MageTabGenerator.restoreOriginalNameValues;
@@ -368,18 +381,15 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
         try {
             Submission submission = getSubmission(id, Permission.VIEW);
-            Collection<CheckResult> results = validator.validate(submission);
-            for (CheckResult cr : results) {
-                if ( MageTabUtils.isObsoleteError(cr.getReference()) || MageTabUtils.isObsoleteWarning(cr.getReference())) continue;
-                switch (cr.getStatus()) {
+            Collection<ValidationResponse> results = validator.validate(submission);
+            for (ValidationResponse validationResponse : results) {
+                if ( ValidatorUtils.isObsoleteError(validationResponse.getCode()) || ValidatorUtils.isObsoleteWarning(validationResponse.getCode())) continue;
+                switch (validationResponse.getSeverity()) {
                     case WARNING:
-                        warnings.add("WARNING: " + MageTabUtils.getWarningString(cr));
+                        warnings.add("WARNING: " + ValidatorUtils.getWarningString(validationResponse));
                         break;
                     case ERROR:
-                        errors.add("ERROR: " + MageTabUtils.getErrorString(cr));
-                        break;
-                    case FAILURE:
-                        failures.add("FAILURE: " + MageTabUtils.getErrorString(cr));
+                        errors.add("ERROR: " + ValidatorUtils.getErrorString(validationResponse));
                         break;
                 }
             }

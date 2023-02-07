@@ -174,6 +174,10 @@ public class AnnotareProperties implements DataFileStoreProperties {
         return getProperty("db.connection.password");
     }
 
+    public String getSubmissionValidatorURL(){
+        return getProperty("submission.validator.url");
+    }
+
     public EfoServiceProperties getEfoServiceProperties() {
         return mageTabCheckProperties;
     }
