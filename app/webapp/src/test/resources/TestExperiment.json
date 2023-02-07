@@ -1,0 +1,179 @@
+{  
+        "nextId": 10,  
+        "type": "SEQUENCING",  
+        "title": "Testing file validation of unpaired reads",  
+        "description": "files from E-MTAB-9157",  
+        "publicReleaseDate": 1593298800000,  
+        "aeExperimentType": "RNA-seq of coding RNA",  
+        "labels": [],  
+        "experimentalDesigns": [],  
+        "contacts": [  
+            {  
+                "id": 3,  
+                "firstName": "Annotare",  
+                "lastName": "",  
+                "email": "curator@ebi.ac.uk",  
+                "affiliation": "asdf",  
+                "address": "asdf",  
+                "roles": [  
+                    "submitter"  
+                ]  
+            }  
+        ],  
+        "publications": [],  
+        "protocols": [  
+            {  
+                "id": 6,  
+                "type": {  
+                    "accession": "EFO_0005518",  
+                    "label": "sample collection protocol"  
+                },  
+                "name": "Protocol 1",  
+                "description": "asd",  
+                "parameters": [],  
+                "subjectType": "SAMPLE"  
+            },  
+            {  
+                "id": 7,  
+                "type": {  
+                    "accession": "EFO_0002944",  
+                    "label": "nucleic acid extraction protocol"  
+                },  
+                "name": "Protocol 2",  
+                "description": "fg",  
+                "parameters": [],  
+                "subjectType": "SAMPLE"  
+            },  
+            {  
+                "id": 8,  
+                "type": {  
+                    "accession": "EFO_0004184",  
+                    "label": "nucleic acid library construction protocol"  
+                },
+                "name": "Protocol 3",  
+                "description": "fgh",  
+                "parameters": [],  
+                "subjectType": "SAMPLE"  
+            },  
+            {  
+                "id": 9,  
+                "type": {  
+                    "accession": "EFO_0004170",  
+                    "label": "nucleic acid sequencing protocol"  
+                },  
+                "name": "Protocol 4",  
+                "description": "fdh",  
+                "hardware": "Illumina HiSeq 4000",  
+                "performer": "cg",  
+                "parameters": [],  
+                "subjectType": "EXTRACT"  
+            }  
+        ],  
+        "sampleAttributes": [  
+            {  
+                "id": 4,  
+                "name": "Material Type",  
+                "type": "MATERIAL_TYPE",  
+                "template": "MATERIAL_TYPE_ATTRIBUTE"  
+            },  
+            {  
+                "id": 5,  
+                "name": "Organism",  
+                "type": "CHARACTERISTIC",  
+                "term": {  
+                    "accession": "OBI_0100026",  
+                    "label": "organism"  
+                },  
+                "template": "ORGANISM_ATTRIBUTE"  
+            },  
+            {  
+                "id": 10,  
+                "name": "test",  
+                "type": "CHARACTERISTIC_AND_FACTOR_VALUE",  
+                "template": "USER_DEFIED_ATTRIBUTE"  
+            }  
+        ],  
+        "samples": [  
+            {  
+                "id": 1,  
+                "name": "Sample 1",  
+                "values": {  
+                    "4": "whole organism",  
+                    "5": "Homo sapiens",  
+                    "10": "yes"  
+                }  
+            }  
+        ],  
+        "extracts": [  
+            {  
+                "id": 2,  
+                "name": "Sample 1",  
+                "attributeValues": {  
+                    "NOMINAL_SDEV": "1",  
+                    "LIBRARY_STRATEGY": "WGS",  
+                    "NOMINAL_LENGTH": "130",  
+                    "LIBRARY_SOURCE": "GENOMIC",  
+                    "LIBRARY_SELECTION": "RANDOM",  
+                    "LIBRARY_LAYOUT": "PAIRED"  
+                },  
+                "singleCellAttributeValues": {}  
+            }  
+        ],  
+        "labeledExtracts": [  
+            {  
+                "extractId": 2,  
+                "id": "2"  
+            }  
+        ],  
+        "sampleId2ExtractIds": {  
+            "1": [  
+                2  
+            ]  
+        },  
+        "fileColumns": [  
+            {  
+                "type": "RAW_FILE",  
+                "leId2FileRefMap": {  
+                    "2": {  
+                        "name": "HNJVNBGXC_chip_beaf_Cp190_19s004595-1-1_Rodriguez-Viales_lane1InputBeaf68hWTrep2_1_sequence.txt.gz",  
+                        "hash": "fb40fbab07f19ee206126d534d525d58"  
+                    }  
+                }  
+            },  
+            {  
+                "type": "RAW_FILE",  
+                "leId2FileRefMap": {  
+                    "2": {  
+                        "name": "HNJVNBGXC_chip_beaf_Cp190_19s004595-1-1_Rodriguez-Viales_lane1InputBeaf68hWTrep2_2_sequence.txt.gz",  
+                        "hash": "1f012b04680a24d7c3eb7a6ac2a1b485"  
+                    }  
+                }  
+            }  
+        ],  
+        "protocolId2SampleIds": {  
+            "6": [],  
+            "7": [],  
+            "8": [],  
+            "9": []  
+        },  
+        "protocolId2ExtractIds": {  
+            "6": [],  
+            "7": [],  
+            "8": [],  
+            "9": []  
+        },  
+        "protocolId2LabeledExtractIds": {  
+            "6": [],  
+            "7": [],  
+            "8": [],  
+            "9": []  
+        },  
+        "protocolId2FileRefs": {  
+            "6": [],  
+            "7": [],  
+            "8": [],  
+            "9": []  
+        },  
+        "anonymousReview": false,  
+        "relatedAccessionNumber": ""  
+    }
