@@ -68,6 +68,7 @@ import uk.ac.ebi.fg.annotare2.web.server.services.files.FileAvailabilityChecker;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -124,7 +125,7 @@ public class SubmissionValidator {
             ObjectMapper om = new ObjectMapper();
             httpPost.setEntity(new StringEntity(om.writer()
                     .writeValueAsString(new ValidatorRequest(submission.getExperimentJSON(), submission.getFiles().stream().map(DataFile::getName).collect(Collectors.toList())))
-                    .replace("\\","")));
+                    .replace("\\",""), StandardCharsets.UTF_8));
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
 
