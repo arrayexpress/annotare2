@@ -215,7 +215,9 @@ public class AeIntegrationWatchdog {
                 }
             }
             finally {
-                session.close();
+                if(session.isOpen()){
+                    session.close();
+                }
             }
         }
     }
