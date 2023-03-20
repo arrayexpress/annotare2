@@ -21,6 +21,7 @@ import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -56,6 +57,9 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
 
     @UiField
     HorizontalPanel tools;
+
+    @UiField
+    SpanElement notePanel;
 
     private CustomDataGrid<R> dataGrid;
     private MultiSelectionModel<R> selectionModel;
@@ -353,6 +357,10 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
         if (dataGrid != null) {
             dataGrid.redraw();
         }
+    }
+
+    public void addNote(String note) {
+        notePanel.setInnerHTML(note);
     }
 
     @Override

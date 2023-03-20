@@ -36,5 +36,8 @@
         <g:center>
             <g:SimpleLayoutPanel ui:field="gridPanel" width="100%" addStyleNames="{style.grid}"/>
         </g:center>
+        <g:south size="40">
+            <g:HTML><span ui:field="notePanel" /></g:HTML>
+        </g:south>
     </g:DockLayoutPanel>
 </ui:UiBinder>
