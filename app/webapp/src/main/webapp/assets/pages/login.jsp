@@ -48,8 +48,8 @@
         <p>Annotare is a tool for submitting functional genomics data to the
             <a href="https://www.ebi.ac.uk/biostudies/arrayexpress" target="_blank">ArrayExpress collection in BioStudies</a>.
             It generates
-            <a href="http://fged.org/projects/mage-tab/">MAGE-TAB</a> format and supports high metadata standards in
-            compliance with MIAME/MINSEQE guidelines.</p>
+            <a href="http://www.fged.org/projects/mage-tab/">MAGE-TAB</a> format and supports high metadata standards in
+            compliance with <a href="http://www.fged.org/projects/miame/">MIAME</a>/<a href="http://www.fged.org/projects/minseqe/">MINSEQE</a>/<a href="https://doi.org/10.1038/s41587-020-00744-z">MINSCE</a> guidelines.</p>
     </div>
     <div class="row">
         <h4>Overview of the submission process</h4>

@@ -150,11 +150,11 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         };
         grid.addResizableColumn(dateColumn, "Date");
         grid.setColumnWidth(dateColumn, 25, Style.Unit.PCT);
+        Column<DataFileRow, String> statusText = new Column<DataFileRow, String>(nameCell) {
 
-        Column<DataFileRow, DataFileRow> statusText = new Column<DataFileRow, DataFileRow>(new DownloadLinkStatusCell(this)) {
             @Override
-            public DataFileRow getValue(DataFileRow object) {
-                return object;
+            public String getValue(DataFileRow row) {
+                return row.getStatus().getTitle();
             }
         };
         statusText.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
@@ -271,38 +271,5 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         void renameFile(DataFileRow dataFileRow, String newFileName, AsyncCallback<Void> callback);
 
         void removeFiles(Set<DataFileRow> dataFileRow, AsyncCallback<Void> callback);
-    }
-
-    static class DownloadLinkStatusCell extends AbstractCell<DataFileRow> {
-
-        interface Templates extends SafeHtmlTemplates {
-            @SafeHtmlTemplates.Template(
-                    "<a href=\"{1}\">{0}</a>")
-            SafeHtml item(SafeHtml label, SafeUri url);
-        }
-
-        private static Templates templates = GWT.create(Templates.class);
-
-        private final DataFileListPanel panel;
-        private final String fileDownloadUrl;
-
-        DownloadLinkStatusCell(DataFileListPanel panel) {
-            this.panel = panel;
-            fileDownloadUrl = GWT.getModuleBaseURL().replace("/" + GWT.getModuleName(), "") + "download";
-        }
-
-        @Override
-        public void render(Context context, DataFileRow fileRow, SafeHtmlBuilder sb) {
-            sb.appendHtmlConstant("<div>");
-            if (null != fileRow && fileRow.getStatus() == DataFileStatus.STORED) {
-                sb.append(templates.item(
-                        SafeHtmlUtils.fromString(fileRow.getStatus().getTitle()),
-                        UriUtils.fromString(fileDownloadUrl + "?submissionId=" + panel.submissionId + "&fileId=" + fileRow.getId())
-                ));
-            } else {
-                sb.append(SafeHtmlUtils.fromString(null != fileRow ? fileRow.getStatus().getTitle() : ""));
-            }
-            sb.appendHtmlConstant("</div>");
-        }
     }
 }

@@ -76,6 +76,8 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     @UiField
     VerticalPanel progressPanel;
 
+    private final Long MAX_FILE_SIZE_IN_BYTES = 1073741824L;
+
     private final FTPUploadDialog ftpUploadDialog;
 
     // private UploadProgressPopupPanel progressPanel = null;
@@ -419,6 +421,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
             boolean shouldUpload = true;
             boolean fileBlocked = false;
             boolean invalidFileName = false;
+            boolean exceedMaxFileSize = false;
             StringBuilder duplicateFilesMsg = new StringBuilder();
             duplicateFilesMsg.append("The file(s) already exist.<br/>To re-upload, please delete and upload again.<br/><br/>"); //<br/> added here because Notification panel display this as HTML so simple new line character won't work.
 
@@ -432,6 +435,10 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
                     if(!file.getFileName().matches("^(?!\\#)[_a-zA-Z0-9\\-\\.\\#]+$")){
                         invalidFileName = true;
                         shouldUpload = false;
+                        uploader.removeFile(file);
+                    } else if(file.getSize() > MAX_FILE_SIZE_IN_BYTES) {
+                        shouldUpload = false;
+                        exceedMaxFileSize = true;
                         uploader.removeFile(file);
                     } else if (!isDuplicateFile(file.getFileName())) {
                         logger.info("Batch added file " + file.getFileName() + ", size " + file.getSize());
@@ -456,6 +463,12 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
                 }
                 else if(invalidFileName){
                     NotificationPopupPanel.error("File names can not contain spaces or special characters (except '_', '-', '.', '#').", true, false);
+                }
+                else if(exceedMaxFileSize){
+                    NotificationPopupPanel.error("Your file exceeds the 1GB limit.\n" +
+                            "Please use the FTP/Aspera upload option for your file(s)\n" +
+                            "Help page instructions can be found here: " +
+                            "<a href='https://www.ebi.ac.uk/fg/annotare/help/ftp_upload.html' target='_blank'>Annotare Submission Guide</a>", true, true);
                 }
                 else {
                     NotificationPopupPanel.error(duplicateFilesMsg.toString(), true, false);

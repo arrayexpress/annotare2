@@ -42,11 +42,13 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmen
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.AsyncOptionProvider;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditListCell;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditSelectionCell;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolDetail;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Olga Melnichuk
@@ -109,6 +111,8 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
             }
         });
         gridView.addTool(button);
+
+        gridView.addNote("** Mandatory field for nucleic acid sequencing protocol");
 
         initWidget(gridView);
 
@@ -342,7 +346,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
                 return v1.compareTo(v2);
             }
         };
-        gridView.addPermanentColumn("Hardware", column, comparator, 150, Style.Unit.PX, "Mandatory for sequencing experiment: select name of the sequencing machine");
+        gridView.addPermanentColumn("Hardware **", column, comparator, 150, Style.Unit.PX, "Mandatory for sequencing experiment: select name of the sequencing machine");
     }
 
     private void addSoftwareColumn() {
@@ -408,7 +412,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
                 return v1.compareTo(v2);
             }
         };
-        gridView.addPermanentColumn("Performer", column, comparator, 150, Style.Unit.PX, "Mandatory for sequencing experiment: the university/institute/facility which performed the sequencing");
+        gridView.addPermanentColumn("Performer **", column, comparator, 150, Style.Unit.PX, "Mandatory for sequencing experiment: the university/institute/facility which performed the sequencing");
     }
 
     private void updateProtocolAssignments(ProtocolAssignmentProfileUpdates updates) {
