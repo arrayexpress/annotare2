@@ -10,27 +10,26 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
-import uk.ac.ebi.fg.annotare2.submission.model.FileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.proxy.DataFilesProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DataFilesUploadView;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumn;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumnsAndRows;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.UploadedFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFileDeletedEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFileDeletedEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFileRenamedEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFileRenamedEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ApplicationDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ExperimentDataProxy;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.DataUploadAndAssignmentView;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -49,6 +48,8 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
     private final DataFilesUploadView view;
     private final ApplicationDataProxy appDataService;
     private final ExperimentDataProxy expDataService;
+
+    private final CurrentUserAccountServiceAsync userService;
     private final DataFilesProxy filesService;
 
     private EventBus eventBus;
@@ -60,11 +61,13 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
     public DataFileUploadActivity(DataFilesUploadView view,
                                            ApplicationDataProxy appDataService,
                                            ExperimentDataProxy expDataService,
-                                           DataFilesProxy filesService) {
+                                           DataFilesProxy filesService,
+                                  CurrentUserAccountServiceAsync userService) {
         this.view = view;
         this.appDataService = appDataService;
         this.expDataService = expDataService;
         this.filesService = filesService;
+        this.userService = userService;
     }
 
     public Activity withPlace(Place place) {
@@ -105,6 +108,7 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
 
         loadAppDataAsync();
         loadExpDataAsync();
+        loadCurrentUserAsync();
         loadFilesAsync();
     }
 
@@ -163,6 +167,16 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
                     }
                 }
         );
+    }
+
+    private void loadCurrentUserAsync() {
+        userService.me(AsyncCallbackWrapper.callbackWrap(
+                new ReportingAsyncCallback<UserDto>(FailureMessage.UNABLE_TO_LOAD_USER_INFORMATION) {
+                    @Override
+                    public void onSuccess(UserDto result) {
+                        view.setCurator(result.isCurator());
+                    }
+                }));
     }
 
     @Override

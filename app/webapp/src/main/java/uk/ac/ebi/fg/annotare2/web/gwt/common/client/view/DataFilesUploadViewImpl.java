@@ -32,7 +32,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.SelectionChangeEvent;
@@ -97,13 +96,15 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     private ExperimentProfileType experimentProfileType;
     private List<String> blockedFileExtensions;
 
+    private boolean isCurator;
+
     interface Binder extends UiBinder<Widget, DataFilesUploadViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
     public DataFilesUploadViewImpl() {
         initWidget(Binder.BINDER.createAndBindUi(this));
-
+        this.isCurator = false;
         ftpUploadDialog = new FTPUploadDialog();
 
         fileListPanel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
@@ -347,6 +348,14 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     public void onResize() {
         if (getWidget() instanceof RequiresResize) {
             ((RequiresResize) getWidget()).onResize();
+        }
+    }
+
+    @Override
+    public void setCurator(boolean isCurator) {
+        if (!this.isCurator && isCurator) {
+            this.isCurator = true;
+            fileListPanel.setDownloadCell();
         }
     }
 

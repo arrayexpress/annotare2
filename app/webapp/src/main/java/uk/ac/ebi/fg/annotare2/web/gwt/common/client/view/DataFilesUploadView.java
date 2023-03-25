@@ -40,6 +40,8 @@ public interface DataFilesUploadView extends IsWidget {
 
     void setApplicationProperties(ApplicationProperties properties);
 
+    void setCurator(boolean isCurator);
+
     interface Presenter extends FTPUploadDialog.Presenter, DataFileListPanel.Presenter {
 
         void initSubmissionFtpDirectory(AsyncCallback<String> callback);
