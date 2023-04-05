@@ -197,7 +197,6 @@ public class ValidatorUtils {
         obsoleteWarnings.add("PN04");
         obsoleteWarnings.add("PN07");
         obsoleteWarnings.add("PR04");
-        obsoleteWarnings.add("PR06");
         obsoleteWarnings.add("PR07");
         obsoleteWarnings.add("PV01");
         obsoleteWarnings.add("PV02");
