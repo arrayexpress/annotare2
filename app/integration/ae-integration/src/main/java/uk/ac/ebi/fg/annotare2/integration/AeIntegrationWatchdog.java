@@ -176,12 +176,12 @@ public class AeIntegrationWatchdog {
             Session session = sessionFactory.openSession();
             try{
                 if (addSubmissionToSubmissionProcessingSet(submission)) {
+                    logger.debug("Thread {} processing submission {}: {}", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
                     try {
                         switch (submission.getStatus()) {
                             case SUBMITTED:
                             case RESUBMITTED:
                                 if(!submissionPostProcessor.isPresent(submission)){
-                                    logger.debug("Thread {} processing submission {}: {}", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
                                     processSubmitted(submission);
                                 }
                                 break;
