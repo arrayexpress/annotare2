@@ -191,4 +191,33 @@
             alter table data_files modify status enum ('TO_BE_STORED', 'STORED', 'TO_BE_ASSOCIATED', 'ASSOCIATED', 'MD5_ERROR', 'FILE_NOT_FOUND_ERROR', 'ERROR', 'REMOVED') not null;
         </sql>
     </changeSet>
+    <changeSet id="addStatusHistoryTable" author="sandeep">
+        <sql splitStatements="true" endDelimiter=";">
+            create table if not exists submission_status_history
+            (
+                id            bigint auto_increment
+                primary key,
+                submission_id bigint                              not null,
+                status        varchar(255)                        not null,
+                changed_at    timestamp default CURRENT_TIMESTAMP not null,
+                changed_by    varchar(255)                        null,
+                constraint submission_id_fk
+                foreign key (submission_id) references submissions (id)
+                on delete cascade
+                )
+                charset = utf8mb4;
+
+            create index idx_created_at
+                on submission_status_history (changed_at);
+
+            create index idx_submission_id
+                on submission_status_history (submission_id);
+        </sql>
+    </changeSet>
+    <changeSet id="addtokenExpiryTimeColumnInUsersTable" author="sandeep">
+        <sql>
+            alter table users
+                add tokenExpiryTime timestamp null;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
