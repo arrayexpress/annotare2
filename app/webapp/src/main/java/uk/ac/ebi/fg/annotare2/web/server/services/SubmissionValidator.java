@@ -16,6 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Function;
@@ -123,12 +125,13 @@ public class SubmissionValidator {
         try (final CloseableHttpClient httpclient = HttpClients.createDefault()) {
             final HttpPost httpPost = new HttpPost(properties.getSubmissionValidatorURL());
             ObjectMapper om = new ObjectMapper();
-            httpPost.setEntity(new StringEntity(om.writer()
-                    .writeValueAsString(new ValidatorRequest(submission.getExperimentJSON(), submission.getFiles().stream().map(DataFile::getName).collect(Collectors.toList())))
-                    .replace("\\",""), StandardCharsets.UTF_8));
+            om.configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, true);
+            om.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
+            om.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+            ValidatorRequest request = new ValidatorRequest(submission.getExperimentJSON(), submission.getFiles().stream().map(DataFile::getName).collect(Collectors.toList()));
+            httpPost.setEntity(new StringEntity(om.writeValueAsString(request), StandardCharsets.UTF_8));
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
-
             // Create a custom response handler
             final HttpClientResponseHandler<Collection<ValidationResponse>> responseHandler = response -> {
                 final int status = response.getCode();
