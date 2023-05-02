@@ -34,7 +34,8 @@
         <property name="hibernate.format_sql">true</property>
 
         <property name="hibernate.current_session_context_class">thread</property>
-        <property name="hibernate.transaction.factory_class">org.hibernate.engine.transaction.internal.jdbc.JdbcTransactionFactory</property>
+        <property name="hibernate.transaction.coordinator_class">jdbc</property>
+        <property name="hibernate.id.new_generator_mappings">false</property>
 
         <mapping class="uk.ac.ebi.fg.annotare2.db.model.User" />
         <mapping class="uk.ac.ebi.fg.annotare2.db.model.UserRole" />
@@ -47,7 +48,6 @@
         <mapping class="uk.ac.ebi.fg.annotare2.db.model.SubmissionFeedback" />
         <mapping class="uk.ac.ebi.fg.annotare2.db.model.DataFile" />
         <mapping class="uk.ac.ebi.fg.annotare2.db.model.Message" />
-
     </session-factory>
 </hibernate-configuration>
 

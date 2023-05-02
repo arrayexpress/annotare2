@@ -109,7 +109,10 @@ public class AccountServiceImpl implements AccountService {
                         throw new AccountServiceException("Change password request is invalid; please try again");
                     } else if (!accountManager.isVerificationTokenValid(params.getEmail(), params.getToken())) {
                         errors.append(FormParams.TOKEN_PARAM, "Incorrect code; please try again or request a new one");
-                    } else if (null != params.getPassword()) {
+                    } else if(accountManager.isVerificationTokenExpired(params.getEmail())) {
+                        errors.append(FormParams.TOKEN_PARAM, "Token expired. Please request a new one");
+                    }
+                    else if (null != params.getPassword()) {
                         User user = accountManager.processChangePassword(params.getEmail(), params.getPassword());
                         try {
                             messenger.send(
