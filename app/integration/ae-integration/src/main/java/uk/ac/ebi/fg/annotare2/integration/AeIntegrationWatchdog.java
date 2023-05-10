@@ -31,13 +31,18 @@ import uk.ac.ebi.fg.annotare2.ae.AEConnection;
 import uk.ac.ebi.fg.annotare2.ae.AEConnectionException;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTracking;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingException;
-import uk.ac.ebi.fg.annotare2.core.components.*;
+import uk.ac.ebi.fg.annotare2.core.components.DataFileManager;
+import uk.ac.ebi.fg.annotare2.core.components.EfoSearch;
+import uk.ac.ebi.fg.annotare2.core.components.FtpManager;
+import uk.ac.ebi.fg.annotare2.core.components.Messenger;
+import uk.ac.ebi.fg.annotare2.core.components.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.core.files.DataFileHandle;
 import uk.ac.ebi.fg.annotare2.core.files.LocalFileHandle;
 import uk.ac.ebi.fg.annotare2.core.magetab.MageTabFiles;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.core.utils.LinuxShellCommandExecutor;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
+import uk.ac.ebi.fg.annotare2.db.dao.SubmissionExceptionDao;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionFeedbackDao;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
@@ -49,7 +54,6 @@ import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.integration.FileValidationService.FileValidationStatus;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
-
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -65,13 +69,16 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Queues.newArrayDeque;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static uk.ac.ebi.fg.annotare2.ae.AEConnection.SubmissionState.*;
 
 public class AeIntegrationWatchdog {
 
@@ -92,6 +99,7 @@ public class AeIntegrationWatchdog {
     private ScheduledExecutorService scheduler;
     private BlockingQueue<Long> submissionsBeingProcessed;
     private final SubmissionPostProcessor submissionPostProcessor;
+    private final SubmissionExceptionDao submissionExceptionDao;
 
     enum SubmissionOutcome {
         INITIAL_SUBMISSION_OK,
@@ -111,7 +119,8 @@ public class AeIntegrationWatchdog {
                                  FileValidationService fileValidationService, FtpManager ftpManager,
                                  EfoSearch efoSearch,
                                  Messenger messenger,
-                                 SubmissionPostProcessor submissionPostProcessor) {
+                                 SubmissionPostProcessor submissionPostProcessor,
+                                 SubmissionExceptionDao submissionExceptionDao) {
         this.sessionFactory = sessionFactory;
         this.subsTracking = subsTracking;
         this.aeConnection = aeConnection;
@@ -127,6 +136,7 @@ public class AeIntegrationWatchdog {
         this.scheduler = Executors.newScheduledThreadPool(properties.getWatchdogThreadCount());
         this.submissionsBeingProcessed = new ArrayBlockingQueue<>(properties.getWatchdogThreadCount());
         this.submissionPostProcessor = submissionPostProcessor;
+        this.submissionExceptionDao = submissionExceptionDao;
     }
 
     @PostConstruct
@@ -169,54 +179,55 @@ public class AeIntegrationWatchdog {
                 , SubmissionStatus.IN_CURATION
                 , SubmissionStatus.PRIVATE_IN_AE
                 , SubmissionStatus.PUBLIC_IN_AE
-        );
+        ).stream().filter(s->s.getExceptions().size() == 0).collect(Collectors.toList());
 
         for (Submission submission : submissions) {
-            //Reopening session for each submission to avoid invalid session issue after long process of a submission
-            Session session = sessionFactory.openSession();
-            try{
-                if (addSubmissionToSubmissionProcessingSet(submission)) {
-                    logger.debug("Thread {} processing submission {}: {}", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
-                    try {
-                        switch (submission.getStatus()) {
-                            case SUBMITTED:
-                            case RESUBMITTED:
-                                if(!submissionPostProcessor.isPresent(submission)){
-                                    processSubmitted(submission);
-                                }
-                                break;
-                            case IN_CURATION:
-                                processInCuration(submission);
-                                break;
+            if(submission.getExceptions().isEmpty()){
+                //Reopening session for each submission to avoid invalid session issue after long process of a submission
+                Session session = sessionFactory.openSession();
+                try{
+                    if (addSubmissionToSubmissionProcessingSet(submission)) {
+                        try {
+                            switch (submission.getStatus()) {
+                                case SUBMITTED:
+                                case RESUBMITTED:
+                                    if(!submissionPostProcessor.isPresent(submission)){
+                                        logger.debug("Thread {} processing submission {}: {}", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
+                                        processSubmitted(submission);
+                                    }
+                                    break;
+                                case IN_CURATION:
+                                    processInCuration(submission);
+                                    break;
 
-                            case PRIVATE_IN_AE:
-                                processPrivateInAE(submission);
-                                break;
+                                case PRIVATE_IN_AE:
+                                    processPrivateInAE(submission);
+                                    break;
 
-                            case PUBLIC_IN_AE:
-                                processPublicInAE(submission);
-                                break;
+                                case PUBLIC_IN_AE:
+                                    processPublicInAE(submission);
+                                    break;
 
-                            case AWAITING_FILE_VALIDATION:
-                                processAwaitingFileValidation(submission);
-                                break;
+                                case AWAITING_FILE_VALIDATION:
+                                    processAwaitingFileValidation(submission);
+                                    break;
 
-                            case VALIDATING_FILES:
-                                processValidatingFiles(submission);
-                                break;
-                        }
-                    } finally {
-                        removeSubmissionFromSubmissionProcessingSet(submission);
-                        if(submission.getStatus() == SubmissionStatus.SUBMITTED || submission.getStatus() == SubmissionStatus.RESUBMITTED) {
-                            logger.debug("Thread {} removed submission {}: {} from current processing submission set.", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
+                                case VALIDATING_FILES:
+                                    processValidatingFiles(submission);
+                                    break;
+                            }
+                        } finally {
+                            removeSubmissionFromSubmissionProcessingSet(submission);
+                            if(submission.getStatus() == SubmissionStatus.SUBMITTED || submission.getStatus() == SubmissionStatus.RESUBMITTED) {
+                                logger.debug("Thread {} removed submission {}: {} from current processing submission set.", Thread.currentThread().getId(), submission.getId(), submission.getStatus());
+                            }
                         }
                     }
-
                 }
-            }
-            finally {
-                if(session.isOpen()){
-                    session.close();
+                finally {
+                    if(session.isOpen()){
+                        session.close();
+                    }
                 }
             }
         }
@@ -325,18 +336,23 @@ public class AeIntegrationWatchdog {
 
     }
 
-    public void processSubmitted(Submission submission) throws SubsTrackingException, InterruptedException {
-        Pair<SubmissionOutcome, Integer> submissionOutcomeIntegerPair = submitSubmission(submission);
-        SubmissionOutcome outcome = submissionOutcomeIntegerPair.getLeft();
-        Integer substrackingId = submissionOutcomeIntegerPair.getRight();
-        if (SubmissionOutcome.SUBMISSION_FAILED != outcome) {
-            File exportDir = copyDataFiles(submission, substrackingId);
-            // Reopening session in case existing session closes after long file copy task(More than 8hrs).
-            sessionFactory.openSession();
-            addFilesToSubstracking(submission, substrackingId, exportDir);
-            moveExportDirectory(exportDir);
-            submissionPostProcessor.add(Pair.of(submission, outcome));
-            logger.debug("Submission: {} added to post processing queue", submission.getId());
+    public void processSubmitted(Submission submission) throws SubsTrackingException {
+        try{
+            Pair<SubmissionOutcome, Integer> submissionOutcomeIntegerPair = submitSubmission(submission);
+            SubmissionOutcome outcome = submissionOutcomeIntegerPair.getLeft();
+            Integer substrackingId = submissionOutcomeIntegerPair.getRight();
+            if (SubmissionOutcome.SUBMISSION_FAILED != outcome) {
+                File exportDir = copyDataFiles(submission, substrackingId);
+                // Reopening session in case existing session closes after long file copy task(More than 8hrs).
+                sessionFactory.openSession();
+                addFilesToSubstracking(submission, substrackingId, exportDir);
+                moveExportDirectory(exportDir);
+                submissionPostProcessor.add(Pair.of(submission, outcome));
+                logger.debug("Submission: {} added to post processing queue", submission.getId());
+            }
+        } catch (SubsTrackingException e) {
+            submissionExceptionDao.logExceptioninDB(submission, e);
+            throw e;
         }
     }
 
@@ -489,79 +505,69 @@ public class AeIntegrationWatchdog {
     }
 
     @Transactional
-    public void processInCuration(Submission submission) throws SubsTrackingException, AEConnectionException {
+    public void processInCuration(Submission submission) throws SubsTrackingException {
         Integer subsTrackingId = submission.getSubsTrackingId();
         if (null != subsTrackingId) {
+            try{
+                // check if the accession has been assigned or updated in subs tracking
+                String subsTrackingAccession = getSubsTrackingAccession(subsTrackingId);
+                if (!Objects.equal(submission.getAccession(), subsTrackingAccession)) {
+                    String oldFtpSubDirectory = submission.getFtpSubDirectory();
+                    submission.setAccession(subsTrackingAccession);
 
-            // check if the accession has been assigned or updated in subs tracking
-            String subsTrackingAccession = getSubsTrackingAccession(subsTrackingId);
-            if (!Objects.equal(submission.getAccession(), subsTrackingAccession)) {
-                String oldFtpSubDirectory = submission.getFtpSubDirectory();
-                submission.setAccession(subsTrackingAccession);
-
-                try {
-                    messenger.updateTicket(
-                            new ImmutableMap.Builder<String, String>()
-                                    .put(RtFieldNames.ACCESSION_NUMBER, submission.getAccession())
-                                    .build(),
-                            submission.getRtTicketNumber()
-                    );
-                } catch (Exception x) {
-                    messenger.send("There was a problem updating Accession Number " + submission.getRtTicketNumber(), x);
-                }
-                if (ftpManager.doesExist(oldFtpSubDirectory)) {
-                    String newFtpSubDirectory = submissionManager.generateUniqueFtpSubDirectory(submission);
-                    submission.setFtpSubDirectory(newFtpSubDirectory);
                     try {
-                        DataFileHandle dirToRename = DataFileHandle.createFromUri(
-                                new URI(ftpManager.getRoot() + oldFtpSubDirectory)
+                        messenger.updateTicket(
+                                new ImmutableMap.Builder<String, String>()
+                                        .put(RtFieldNames.ACCESSION_NUMBER, submission.getAccession())
+                                        .build(),
+                                submission.getRtTicketNumber()
                         );
-                        dirToRename.rename(newFtpSubDirectory);
-                    } catch (URISyntaxException | IOException e) {
-                        throw new SubsTrackingException(e);
+                    } catch (Exception x) {
+                        messenger.send("There was a problem updating Accession Number " + submission.getRtTicketNumber(), x);
+                        throw new SubsTrackingException(x);
                     }
+                    if (ftpManager.doesExist(oldFtpSubDirectory)) {
+                        String newFtpSubDirectory = submissionManager.generateUniqueFtpSubDirectory(submission);
+                        submission.setFtpSubDirectory(newFtpSubDirectory);
+                        try {
+                            DataFileHandle dirToRename = DataFileHandle.createFromUri(
+                                    new URI(ftpManager.getRoot() + oldFtpSubDirectory)
+                            );
+                            dirToRename.rename(newFtpSubDirectory);
+                        } catch (URISyntaxException | IOException e) {
+                            throw new SubsTrackingException(e);
+                        }
+                    }
+
+                    submissionManager.save(submission);
+
+                    sendEmail(
+                            EmailTemplates.ACCESSION_UPDATE_TEMPLATE,
+                            new ImmutableMap.Builder<String, String>()
+                                    .put("to.name", submission.getCreatedBy().getName())
+                                    .put("to.email", submission.getCreatedBy().getEmail())
+                                    .put("submission.id", String.valueOf(submission.getId()))
+                                    .put("submission.title", submission.getTitle())
+                                    .put("submission.accession", submission.getAccession())
+                                    .put("submission.date", submission.getUpdated().toString())
+                                    .build(),
+                            submission
+                    );
                 }
 
-                submissionManager.save(submission);
-
-                sendEmail(
-                        EmailTemplates.ACCESSION_UPDATE_TEMPLATE,
-                        new ImmutableMap.Builder<String, String>()
-                                .put("to.name", submission.getCreatedBy().getName())
-                                .put("to.email", submission.getCreatedBy().getEmail())
-                                .put("submission.id", String.valueOf(submission.getId()))
-                                .put("submission.title", submission.getTitle())
-                                .put("submission.accession", submission.getAccession())
-                                .put("submission.date", submission.getUpdated().toString())
-                                .build(),
-                        submission
-                );
+                // check if the submission has been rejected
+                if (!isInCuration(submission.getSubsTrackingId())) {
+                    reOpenSubmission(submission);
+                }
+            } catch (SubsTrackingException e){
+                submissionExceptionDao.logExceptioninDB(submission, e);
+                throw e;
             }
-
-            // check if the submission has been rejected
-            if (!isInCuration(submission.getSubsTrackingId())) {
-                reOpenSubmission(submission);
-            }
-
-            // This status change functionality migrated to submissions manager service.
-//            else if (properties.isAeConnectionEnabled()) {
-////                String accession = submission.getAccession();
-////                if (!isNullOrEmpty(accession)) {
-////                    AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
-////                    if (PRIVATE == state) {
-////                        submission.setStatus(SubmissionStatus.PRIVATE_IN_AE);
-////                        submissionManager.save(submission);
-////                    } else if (PUBLIC == state) {
-////                        submission.setStatus(SubmissionStatus.PUBLIC_IN_AE);
-////                        submissionManager.save(submission);
-////                    }
-////                }
-//            }
         }
     }
 
     @Transactional(rollbackOn = {AEConnectionException.class})
-    public void processPrivateInAE(Submission submission) throws AEConnectionException, SubsTrackingException {
+    public void processPrivateInAE(Submission submission) throws SubsTrackingException {
 
             String accession = submission.getAccession();
         // check if the submission has been rejected
@@ -597,7 +603,7 @@ public class AeIntegrationWatchdog {
     }
 
     @Transactional(rollbackOn = {AEConnectionException.class})
-    public void processPublicInAE(Submission submission) throws AEConnectionException, SubsTrackingException {
+    public void processPublicInAE(Submission submission) throws SubsTrackingException {
 
             String accession = submission.getAccession();
         // check if the submission has been rejected

@@ -1,0 +1,1 @@
+package uk.ac.ebi.fg.annotare2.db.dao;import uk.ac.ebi.fg.annotare2.db.model.Submission;import uk.ac.ebi.fg.annotare2.db.model.SubmissionException;public interface SubmissionExceptionDao {    SubmissionException logExceptioninDB(Submission submission, Exception e);    void save(SubmissionException se);}

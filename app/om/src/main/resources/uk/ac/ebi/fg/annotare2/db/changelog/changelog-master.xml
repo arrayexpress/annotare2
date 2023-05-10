@@ -220,4 +220,28 @@
                 add tokenExpiryTime timestamp null;
         </sql>
     </changeSet>
+    <changeSet id="addSubmissionExceptionsTable" author="sandeep">
+        <sql splitStatements="true" endDelimiter=";">
+            create table submissions_exceptions
+            (
+                id                   BIGINT auto_increment,
+                submission_id        BIGINT    not null,
+                created              TIMESTAMP not null,
+                exception_message    TEXT      not null,
+                exception_stacktrace TEXT      not null,
+                is_fixed             boolean   not null,
+                constraint submissions_exceptions_pk
+                    primary key (id),
+                constraint submissions_exceptions_fk
+                    foreign key (submission_id) references submissions (id)
+                        on delete cascade
+            );
+
+            create index submissions_exceptions_idx_created
+                on submissions_exceptions (created desc);
+
+            create index submissions_exceptions_idx_submission_id
+                on submissions_exceptions (submission_id);
+        </sql>
+    </changeSet>
 </databaseChangeLog>
