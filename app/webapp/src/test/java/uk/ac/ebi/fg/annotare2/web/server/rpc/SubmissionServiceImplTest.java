@@ -11,6 +11,7 @@ import uk.ac.ebi.fg.annotare2.core.components.EfoSearch;
 import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionFeedbackDao;
+import uk.ac.ebi.fg.annotare2.db.dao.SubmissionStatusHistoryDao;
 import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
@@ -60,7 +61,8 @@ public class SubmissionServiceImplTest {
                         createMock(UserDao.class),
                         createMock(SubmissionFeedbackDao.class),
                         createMock(EfoSearch.class),
-                        createMock(Messenger.class))
+                        createMock(Messenger.class),
+                        createMock(SubmissionStatusHistoryDao.class))
                 .addMockedMethods("getSubmission", "unexpected")
                 .createMock();
     }
