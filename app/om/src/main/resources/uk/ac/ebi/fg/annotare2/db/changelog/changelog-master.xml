@@ -244,4 +244,10 @@
                 on submissions_exceptions (submission_id);
         </sql>
     </changeSet>
+    <changeSet id="addModifiedTimeToDataFilesTable" author="sandeepkurri">
+        <sql>
+            alter table data_files
+                add modified timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

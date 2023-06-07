@@ -21,6 +21,7 @@ import uk.ac.ebi.fg.annotare2.core.AccessControlException;
 import uk.ac.ebi.fg.annotare2.core.components.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
+import uk.ac.ebi.fg.annotare2.db.dao.SubmissionStatusHistoryDao;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
@@ -36,10 +37,13 @@ public class SubmissionManagerImpl implements SubmissionManager {
 
     private final SubmissionDao submissionDao;
     private final SecureRandom random;
+    private final SubmissionStatusHistoryDao statusHistoryDao;
 
     @Inject
-    public SubmissionManagerImpl(SubmissionDao submissionDao) {
+    public SubmissionManagerImpl(SubmissionDao submissionDao,
+                                 SubmissionStatusHistoryDao statusHistoryDao) {
         this.submissionDao = submissionDao;
+        this.statusHistoryDao = statusHistoryDao;
         random = new SecureRandom();
     }
 
@@ -78,6 +82,7 @@ public class SubmissionManagerImpl implements SubmissionManager {
         submission.setAcl(submissionDao.getAcl());
         submission.setFtpSubDirectory(generateUniqueFtpSubDirectory(submission));
         submissionDao.save(submission);
+        statusHistoryDao.saveStatusHistory(submission);
         return submission;
     }
 
