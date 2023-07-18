@@ -32,6 +32,7 @@ import uk.ac.ebi.fg.annotare2.core.utils.NamingPatternUtil;
 import uk.ac.ebi.fg.annotare2.core.utils.ValidatorUtils;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionFeedbackDao;
+import uk.ac.ebi.fg.annotare2.db.dao.SubmissionStatusHistoryDao;
 import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
 import uk.ac.ebi.fg.annotare2.db.model.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
@@ -101,6 +102,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     private final SubmissionFeedbackDao feedbackDao;
     private final EfoSearch efoSearch;
     private final Messenger messenger;
+    private final SubmissionStatusHistoryDao submissionStatusHistoryDao;
 
     @Inject
     public SubmissionServiceImpl(AccountService accountService,
@@ -110,7 +112,8 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                                  UserDao userDao,
                                  SubmissionFeedbackDao feedbackDao,
                                  EfoSearch efoSearch,
-                                 Messenger messenger) {
+                                 Messenger messenger,
+                                 SubmissionStatusHistoryDao submissionStatusHistoryDao) {
         super(accountService, submissionManager, messenger);
         this.dataFileManager = dataFileManager;
         this.validator = validator;
@@ -118,6 +121,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         this.feedbackDao = feedbackDao;
         this.efoSearch = efoSearch;
         this.messenger = messenger;
+        this.submissionStatusHistoryDao = submissionStatusHistoryDao;
     }
 
     @Transactional
@@ -446,6 +450,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                 submission.setStatus(nextStatus);
                 submission.setOwnedBy(userDao.getCuratorUser());
                 save(submission);
+                submissionStatusHistoryDao.saveStatusHistory(submission);
             }
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);

@@ -191,4 +191,63 @@
             alter table data_files modify status enum ('TO_BE_STORED', 'STORED', 'TO_BE_ASSOCIATED', 'ASSOCIATED', 'MD5_ERROR', 'FILE_NOT_FOUND_ERROR', 'ERROR', 'REMOVED') not null;
         </sql>
     </changeSet>
+    <changeSet id="addStatusHistoryTable" author="sandeep">
+        <sql splitStatements="true" endDelimiter=";">
+            create table if not exists submission_status_history
+            (
+                id            bigint auto_increment
+                primary key,
+                submission_id bigint                              not null,
+                status        varchar(255)                        not null,
+                changed_at    timestamp default CURRENT_TIMESTAMP not null,
+                changed_by    varchar(255)                        null,
+                constraint submission_id_fk
+                foreign key (submission_id) references submissions (id)
+                on delete cascade
+                )
+                charset = utf8mb4;
+
+            create index submission_status_history_idx_created_at
+                on submission_status_history (changed_at);
+
+            create index submission_status_history_idx_submission_id
+                on submission_status_history (submission_id);
+        </sql>
+    </changeSet>
+    <changeSet id="addtokenExpiryTimeColumnInUsersTable" author="sandeep">
+        <sql>
+            alter table users
+                add tokenExpiryTime timestamp null;
+        </sql>
+    </changeSet>
+    <changeSet id="addSubmissionExceptionsTable" author="sandeep">
+        <sql splitStatements="true" endDelimiter=";">
+            create table submissions_exceptions
+            (
+                id                   BIGINT auto_increment,
+                submission_id        BIGINT    not null,
+                created              TIMESTAMP not null,
+                exception_message    TEXT      not null,
+                exception_stacktrace TEXT      not null,
+                is_fixed             boolean   not null,
+                constraint submissions_exceptions_pk
+                    primary key (id),
+                constraint submissions_exceptions_fk
+                    foreign key (submission_id) references submissions (id)
+                        on delete cascade
+            );
+
+            create index submissions_exceptions_idx_created
+                on submissions_exceptions (created desc);
+
+            create index submissions_exceptions_idx_submission_id
+                on submissions_exceptions (submission_id);
+        </sql>
+    </changeSet>
+    <changeSet id="addModifiedTimeToDataFilesTable" author="sandeepkurri">
+        <sql>
+            alter table data_files
+                add modified timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

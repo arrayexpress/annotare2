@@ -23,4 +23,5 @@ public class FilterNames {
 
     public static final String NOT_DELETED_SUBMISSION_FILTER = "NotDeletedSubmission";
     public static final String NOT_DELETED_DATA_FILE_FILTER = "NotDeletedDataFile";
+    public static final String NOT_FIXED_SUBMISSION_EXCEPTION_FILTER = "notFixedSubmissionException";
 }

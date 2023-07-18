@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
 import uk.ac.ebi.fg.annotare2.db.dao.UserRoleDao;
@@ -26,6 +27,7 @@ import uk.ac.ebi.fg.annotare2.db.model.enums.Role;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 
 import static com.google.common.base.Strings.nullToEmpty;
 import static uk.ac.ebi.fg.annotare2.core.utils.DigestUtil.md5Hex;
@@ -39,11 +41,15 @@ public class AccountManager {
     private final UserRoleDao userRoleDao;
     private final SecureRandom random;
 
+    private final AnnotareProperties properties;
+
+
     @Inject
-    public AccountManager(UserDao userDao, UserRoleDao userRoleDao) {
+    public AccountManager(UserDao userDao, UserRoleDao userRoleDao, AnnotareProperties properties) {
         this.userDao = userDao;
         this.userRoleDao = userRoleDao;
         this.random = new SecureRandom();
+        this.properties = properties;
     }
 
     public boolean doesExist(final String email) {
@@ -70,6 +76,15 @@ public class AccountManager {
         User user = getByEmail(email);
 
         return null != user && nullToEmpty(user.getVerificationToken()).equals(token);
+    }
+
+    public boolean isVerificationTokenExpired(final String email) {
+        User user = getByEmail(email);
+        return isVerificationTokenExpired(user);
+    }
+
+    private boolean isVerificationTokenExpired(final User user) {
+        return user.getTokenExpiryTime().isBefore(LocalDateTime.now());
     }
 
     public boolean isPrivacyNoticeAccepted(final String email){
@@ -128,9 +143,12 @@ public class AccountManager {
     public User requestChangePassword(final String email) {
         User user = getByEmail(email);
         if (null != user) {
+            if(null == user.getVerificationToken() || isVerificationTokenExpired(user)){
+                user.setVerificationToken(generateToken());
+            }
             user.setPassword("void");
             user.setPasswordChangeRequested(true);
-            user.setVerificationToken(generateToken());
+            user.setTokenExpiryTime(LocalDateTime.now().plusMinutes(Long.parseLong(properties.getTokenExpiryTime())));
             userDao.save(user);
         }
         return user;
@@ -142,6 +160,7 @@ public class AccountManager {
             user.setPasswordChangeRequested(false);
             user.setPassword(md5Hex(password));
             user.setVerificationToken(null);
+            user.setTokenExpiryTime(null);
             userDao.save(user);
         }
         return user;

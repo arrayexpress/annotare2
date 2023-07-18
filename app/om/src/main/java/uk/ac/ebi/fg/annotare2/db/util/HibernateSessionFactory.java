@@ -3,9 +3,10 @@ package uk.ac.ebi.fg.annotare2.db.util;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import uk.ac.ebi.fg.annotare2.db.model.FilterNames;
 
 /**
@@ -45,7 +46,9 @@ public class HibernateSessionFactory {
     }
 
     public Session openSession() {
-        return openSessionWithFilters(FilterNames.NOT_DELETED_SUBMISSION_FILTER, FilterNames.NOT_DELETED_DATA_FILE_FILTER);
+        return openSessionWithFilters(FilterNames.NOT_DELETED_SUBMISSION_FILTER,
+                FilterNames.NOT_DELETED_DATA_FILE_FILTER,
+                FilterNames.NOT_FIXED_SUBMISSION_EXCEPTION_FILTER);
     }
 
     public void closeSession() throws HibernateException {
@@ -57,10 +60,15 @@ public class HibernateSessionFactory {
     }
 
     public static HibernateSessionFactory create() throws HibernateException {
-        Configuration configuration = new Configuration();
-        configuration.configure();
-        ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(configuration.getProperties()).buildServiceRegistry();
-        return new HibernateSessionFactory(configuration.buildSessionFactory(serviceRegistry));
+        StandardServiceRegistry standardRegistry = new StandardServiceRegistryBuilder()
+                .configure()
+                .build();
+        Metadata metadata = new MetadataSources( standardRegistry )
+                .getMetadataBuilder()
+                .build();
+        SessionFactory sessionFactory = metadata.getSessionFactoryBuilder()
+                .build();
+        return new HibernateSessionFactory(sessionFactory);
     }
 
     public void close() throws HibernateException {

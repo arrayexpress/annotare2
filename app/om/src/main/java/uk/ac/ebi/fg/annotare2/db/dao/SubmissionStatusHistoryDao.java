@@ -1,0 +1,1 @@
+package uk.ac.ebi.fg.annotare2.db.dao;import uk.ac.ebi.fg.annotare2.db.model.Submission;import uk.ac.ebi.fg.annotare2.db.model.SubmissionStatusHistory;public interface SubmissionStatusHistoryDao {    void saveStatusHistory(Submission submission);    void save(SubmissionStatusHistory history);}

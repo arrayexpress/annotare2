@@ -30,6 +30,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static uk.ac.ebi.fg.annotare2.db.model.FilterNames.NOT_DELETED_DATA_FILE_FILTER;
@@ -103,6 +104,10 @@ public abstract class Submission implements HasEffectiveAcl {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "submission")
     @OrderBy("created ASC")
     private Set<Message> messages;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "submission")
+    @OrderBy("created DESC")
+    private Set<SubmissionException> exceptions;
 
     @Column(name = "ftpSubDirectory")
     private String ftpSubDirectory;
@@ -252,6 +257,17 @@ public abstract class Submission implements HasEffectiveAcl {
 
     public EffectiveAcl getEffectiveAcl() {
         return new EffectiveAcl(acl, Optional.of(createdBy), Optional.of(ownedBy));
+    }
+
+    public Set<SubmissionException> getExceptions() {
+        return exceptions.stream().filter(e->!e.isFixed()).collect(Collectors.toSet());
+    }
+
+    public void addExceptions(SubmissionException exception) {
+        if(null != this.exceptions){
+            this.exceptions = newHashSet();
+        }
+        this.exceptions.add(exception);
     }
 
     protected InputStream asStream(String str) {

@@ -20,6 +20,7 @@ import org.hibernate.annotations.Filter;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -59,6 +60,9 @@ public class User {
 
     @Column(name = "privacyNoticeVersion", columnDefinition = "INT default 0")
     private int privacyNoticeVersion;
+
+    @Column(name = "tokenExpiryTime", columnDefinition = "TIMESTAMP", nullable = true)
+    private LocalDateTime tokenExpiryTime;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @OrderBy("role ASC")
@@ -147,6 +151,14 @@ public class User {
 
     public void setPrivacyNoticeVersion(int privacyNoticeVersion) {
         this.privacyNoticeVersion = privacyNoticeVersion;
+    }
+
+    public LocalDateTime getTokenExpiryTime() {
+        return tokenExpiryTime;
+    }
+
+    public void setTokenExpiryTime(LocalDateTime tokenExpiryTime) {
+        this.tokenExpiryTime = tokenExpiryTime;
     }
 
     public boolean isAllowed(HasEffectiveAcl obj, Permission permission) {
