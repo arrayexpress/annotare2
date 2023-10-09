@@ -785,9 +785,15 @@ public class MageTabGenerator {
                 fileNode = getOrCreateNode(ArrayDataMatrixNode.class, uniqueNameValue.next(fileName));
                 break;
             case PROCESSED_FILE:
+                if(exp.getType().isMicroarray() || exp.getType().isMethylationMicroarray()){
+                    fileName = uniqueNameValue.next(fileName);
+                }
                 fileNode = getOrCreateNode(DerivedArrayDataNode.class, fileName);
                 break;
             case PROCESSED_MATRIX_FILE:
+                if(exp.getType().isMicroarray() || exp.getType().isMethylationMicroarray()){
+                    fileName = uniqueNameValue.next(fileName);
+                }
                 fileNode = getOrCreateNode(DerivedArrayDataMatrixNode.class, fileName);
                 break;
             default:
