@@ -87,7 +87,7 @@
         </repository>
         <repository>
             <id>FG-local-repo</id>
-            <url>http://45.88.81.176:80/artifactory/maven-local/</url>
+            <url>http://45.88.81.166:80/artifactory/maven-local/</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>

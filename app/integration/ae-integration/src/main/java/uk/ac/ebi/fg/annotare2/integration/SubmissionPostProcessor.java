@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.core.components.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
+import uk.ac.ebi.fg.annotare2.db.dao.SubmissionStatusHistoryDao;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
@@ -41,12 +42,14 @@ public class SubmissionPostProcessor {
     private final HibernateSessionFactory sessionFactory;
     private final ExtendedAnnotareProperties properties;
     private final Messenger messenger;
+    private final SubmissionStatusHistoryDao statusHistoryDao;
 
     @Inject
     public SubmissionPostProcessor(SubmissionManager submissionManager,
                                    HibernateSessionFactory sessionFactory,
                                    ExtendedAnnotareProperties properties,
-                                   Messenger messenger){
+                                   Messenger messenger,
+                                   SubmissionStatusHistoryDao statusHistoryDao){
         this.submissionManager = submissionManager;
         this.sessionFactory = sessionFactory;
         this.properties = properties;
@@ -55,6 +58,7 @@ public class SubmissionPostProcessor {
         submissionsSet = new HashSet<>();
         this.scheduler = Executors.newScheduledThreadPool(1); //scheduler thread starts tasks in periodic intervals.
         this.worker = Executors.newFixedThreadPool(2); //Worker threads actually executes the status change process.
+        this.statusHistoryDao = statusHistoryDao;
     }
 
     @PostConstruct
@@ -98,6 +102,7 @@ public class SubmissionPostProcessor {
             submission = submissionsPair.getLeft();
             submission.setStatus(SubmissionStatus.IN_CURATION);
             submissionManager.save(submission);
+            statusHistoryDao.saveStatusHistory(submission);
             LOGGER.debug("Submission: {} status updated to IN_CURATION", submission.getId());
             submissionsQueue.remove(submissionsPair);
             submissionsSet.remove(submission.getId());

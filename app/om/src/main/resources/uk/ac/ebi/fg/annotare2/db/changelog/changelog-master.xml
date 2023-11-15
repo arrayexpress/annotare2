@@ -250,4 +250,10 @@
                 add modified timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP;
         </sql>
     </changeSet>
+    <changeSet id="addPairingColumnToSubmissionsTable" author="sandeepkurri">
+        <sql>
+            alter table submissions
+                add pairing MEDIUMTEXT;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
