@@ -44,6 +44,7 @@ import uk.ac.ebi.fg.annotare2.core.utils.LinuxShellCommandExecutor;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionExceptionDao;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionFeedbackDao;
+import uk.ac.ebi.fg.annotare2.db.dao.SubmissionStatusHistoryDao;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.ImportedExperimentSubmission;
@@ -101,6 +102,8 @@ public class AeIntegrationWatchdog {
     private final SubmissionPostProcessor submissionPostProcessor;
     private final SubmissionExceptionDao submissionExceptionDao;
 
+    private final SubmissionStatusHistoryDao statusHistoryDao;
+
     enum SubmissionOutcome {
         INITIAL_SUBMISSION_OK,
         REPEAT_SUBMISSION_OK,
@@ -120,7 +123,8 @@ public class AeIntegrationWatchdog {
                                  EfoSearch efoSearch,
                                  Messenger messenger,
                                  SubmissionPostProcessor submissionPostProcessor,
-                                 SubmissionExceptionDao submissionExceptionDao) {
+                                 SubmissionExceptionDao submissionExceptionDao,
+                                 SubmissionStatusHistoryDao statusHistoryDao) {
         this.sessionFactory = sessionFactory;
         this.subsTracking = subsTracking;
         this.aeConnection = aeConnection;
@@ -137,6 +141,7 @@ public class AeIntegrationWatchdog {
         this.submissionsBeingProcessed = new ArrayBlockingQueue<>(properties.getWatchdogThreadCount());
         this.submissionPostProcessor = submissionPostProcessor;
         this.submissionExceptionDao = submissionExceptionDao;
+        this.statusHistoryDao = statusHistoryDao;
     }
 
     @PostConstruct
@@ -346,7 +351,7 @@ public class AeIntegrationWatchdog {
                 // Reopening session in case existing session closes after long file copy task(More than 8hrs).
                 sessionFactory.openSession();
                 addFilesToSubstracking(submission, substrackingId, exportDir);
-                moveExportDirectory(exportDir);
+
                 submissionPostProcessor.add(Pair.of(submission, outcome));
                 logger.debug("Submission: {} added to post processing queue", submission.getId());
             }
@@ -386,7 +391,7 @@ public class AeIntegrationWatchdog {
                 } else if (submission instanceof ImportedExperimentSubmission) {
                     exportImportedExperimentSubmissionFiles(subsTrackingConnection, (ImportedExperimentSubmission) submission, exportDir);
                 }
-
+                moveExportDirectory(exportDir);
                 subsTracking.sendSubmission(subsTrackingConnection, substrackingId);
                 subsTrackingConnection.commit();
             }
@@ -589,6 +594,7 @@ public class AeIntegrationWatchdog {
         submission.setSubmitted(null);
         submission.setOwnedBy(submission.getCreatedBy());
         submissionManager.save(submission);
+        statusHistoryDao.saveStatusHistory(submission);
         sendEmail(
                 EmailTemplates.REJECTED_SUBMISSION_TEMPLATE,
                 new ImmutableMap.Builder<String, String>()
