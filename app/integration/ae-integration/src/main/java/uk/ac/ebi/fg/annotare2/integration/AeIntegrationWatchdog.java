@@ -391,7 +391,12 @@ public class AeIntegrationWatchdog {
                 } else if (submission instanceof ImportedExperimentSubmission) {
                     exportImportedExperimentSubmissionFiles(subsTrackingConnection, (ImportedExperimentSubmission) submission, exportDir);
                 }
+                subsTrackingConnection.commit();
+                subsTracking.releaseConnection(subsTrackingConnection);
+
                 moveExportDirectory(exportDir);
+
+                subsTrackingConnection = subsTracking.getConnection();
                 subsTracking.sendSubmission(subsTrackingConnection, substrackingId);
                 subsTrackingConnection.commit();
             }
