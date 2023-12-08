@@ -397,6 +397,7 @@ public class AeIntegrationWatchdog {
                 moveExportDirectory(exportDir);
 
                 subsTrackingConnection = subsTracking.getConnection();
+                subsTrackingConnection.setAutoCommit(false);
                 subsTracking.sendSubmission(subsTrackingConnection, substrackingId);
                 subsTrackingConnection.commit();
             }
