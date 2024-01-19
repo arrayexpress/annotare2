@@ -92,6 +92,8 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
 
     private Map<String, OntologyTerm> experimentalDesigns;
 
+    private boolean isUpdateAllowed;
+
     @Inject
     public ExperimentDetailsViewImpl() {
         experimentalDesigns = new LinkedHashMap<>();
@@ -147,6 +149,14 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void setUpdateAllowed(Boolean isUpdateAllowed) {
+        this.isUpdateAllowed = isUpdateAllowed;
+        if(!this.isUpdateAllowed) {
+            dateOfPublicRelease.setEnabled(false);
+        }
     }
 
     @Override

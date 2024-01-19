@@ -61,7 +61,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
-import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
 import uk.ac.ebi.fg.annotare2.web.server.services.DataFileManagerImpl;
 import uk.ac.ebi.fg.annotare2.web.server.services.MessengerImpl;
@@ -88,6 +87,7 @@ import static uk.ac.ebi.fg.annotare2.core.magetab.MageTabGenerator.restoreOrigin
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentBuilderFactory.createExperimentProfile;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiArrayDesignDetails;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiSubmissionDetails;
+import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiUser;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.experimentUpdater;
 
 public class SubmissionServiceImpl extends SubmissionBasedRemoteService implements SubmissionService {
@@ -425,6 +425,19 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         }
     }
 
+    @Override
+    public boolean isUpdateAllowed(int submissionId) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            Submission submission = getSubmission(submissionId, Permission.VIEW);
+            User currentUser = getCurrentUser();
+            return uiUser(currentUser).isCurator() || currentUser.isAllowed(submission, Permission.UPDATE);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        }
+    }
+
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
     public void submitSubmission(final long id)
@@ -432,7 +445,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         try {
             Submission submission = getSubmission(id, Permission.UPDATE);
             User currentUser = getCurrentUser();
-            boolean isCurator = UIObjectConverter.uiUser(currentUser).isCurator();
+            boolean isCurator = uiUser(currentUser).isCurator();
             boolean isSequencing = false;
 
 

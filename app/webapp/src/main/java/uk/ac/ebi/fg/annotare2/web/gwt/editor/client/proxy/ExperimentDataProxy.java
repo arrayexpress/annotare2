@@ -19,13 +19,62 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
-import uk.ac.ebi.fg.annotare2.submission.model.*;
+import uk.ac.ebi.fg.annotare2.submission.model.Contact;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.submission.model.Extract;
+import uk.ac.ebi.fg.annotare2.submission.model.FileColumn;
+import uk.ac.ebi.fg.annotare2.submission.model.FileRef;
+import uk.ac.ebi.fg.annotare2.submission.model.FileType;
+import uk.ac.ebi.fg.annotare2.submission.model.LabeledExtract;
+import uk.ac.ebi.fg.annotare2.submission.model.Protocol;
+import uk.ac.ebi.fg.annotare2.submission.model.Publication;
+import uk.ac.ebi.fg.annotare2.submission.model.Sample;
+import uk.ac.ebi.fg.annotare2.submission.model.SampleAttribute;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumn;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumnsAndRows;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExtractAttributesRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.LabeledExtracts;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.LabeledExtractsRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfile;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfileUpdates;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRowsAndColumns;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SingleCellExtractAttributesRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.CreateContactCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.CreateDataAssignmentColumnCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.CreateProtocolCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.CreatePublicationCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.CreateSamplesCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.MoveProtocolCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.RemoveContactsCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.RemoveDataAssignmentColumnsCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.RemoveProtocolsCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.RemovePublicationsCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.RemoveSamplesCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateContactCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateDataAssignmentColumnCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateExperimentDetailsCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateExperimentSettingsCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateExtractAttributesRowCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateExtractLabelsRowCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateProtocolAssignmentsCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateProtocolCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdatePublicationCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateSampleColumnsCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateSampleRowCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateSingleCellExtractAttributesRowCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ExperimentUpdateEvent;
 
 import java.util.ArrayList;
@@ -538,5 +587,19 @@ public class ExperimentDataProxy {
 
     public void updateExperimentSettings(ExperimentSettings settings) {
         updateQueue.add(new UpdateExperimentSettingsCommand(settings));
+    }
+
+    public void isUpdateAllowedAsync(AsyncCallback<Boolean> reportingAsyncCallback) {
+        submissionService.isUpdateAllowed(getSubmissionId(), new AsyncCallbackWrapper<Boolean>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                reportingAsyncCallback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(Boolean result) {
+                reportingAsyncCallback.onSuccess(result);
+            }
+        }.wrap());
     }
 }
