@@ -33,12 +33,14 @@ public interface ContactListView extends IsWidget {
 
     List<ContactDto> getContacts();
 
+    void submitterRoleError();
+
     public interface Presenter extends ContactView.Presenter {
 
         void createContact();
 
         void removeContacts(List<ContactDto> indices);
 
-        void updateContact(ContactDto contact);
+        void updateContact(ContactView contact);
     }
 }

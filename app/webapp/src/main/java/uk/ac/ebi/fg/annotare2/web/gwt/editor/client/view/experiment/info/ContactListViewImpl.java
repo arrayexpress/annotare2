@@ -20,6 +20,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ContentChangeEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ContentChangeEventHandler;
@@ -70,6 +71,11 @@ public class ContactListViewImpl extends ListView<ContactDto.Editor> implements 
     }
 
     @Override
+    public void submitterRoleError() {
+        NotificationPopupPanel.error("Only one contact can have the \"submitter\" role.", true, false);
+    }
+
+    @Override
     public void setContacts(List<ContactDto> contacts) {
         clear();
         for (ContactDto p : contacts) {
@@ -102,7 +108,7 @@ public class ContactListViewImpl extends ListView<ContactDto.Editor> implements 
             @Override
             public void onContentChange(ContentChangeEvent event) {
                 if (presenter != null) {
-                    presenter.updateContact(view.getContact());
+                    presenter.updateContact(view);
                 }
             }
         });
