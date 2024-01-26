@@ -40,8 +40,12 @@
             <c:DataFileListPanel ui:field="fileListPanel" addStyleNames="{style.grid}"/>
         </g:center>
         <g:south size="100">
-            <g:VerticalPanel ui:field="progressPanel">
-            </g:VerticalPanel>
+            <g:FlowPanel>
+                <g:VerticalPanel ui:field="progressPanel">
+                </g:VerticalPanel>
+                <g:InlineHTML ui:field="messageSpan">
+                </g:InlineHTML>
+            </g:FlowPanel>
         </g:south>
     </g:DockLayoutPanel>
 
