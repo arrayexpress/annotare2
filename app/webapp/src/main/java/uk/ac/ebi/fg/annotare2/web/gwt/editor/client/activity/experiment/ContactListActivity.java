@@ -97,16 +97,31 @@ public class ContactListActivity extends AbstractActivity implements ContactList
                 new ReportingAsyncCallback<List<ContactDto>>(FailureMessage.UNABLE_TO_LOAD_CONTACT_LIST) {
                     @Override
                     public void onSuccess(List<ContactDto> result) {
-                        List<String> currentRoles = new ArrayList<String>();
-                        for(ContactDto contact : result) {
-                            currentRoles.addAll(contact.getRoles());
-                        }
-                        if(contactView.getContact().getRoles().contains("submitter") && currentRoles.contains("submitter")){
+                        if(hasDuplicateSubmitterRole(result)){
                             contactView.removeSelectedRole("submitter");
                             view.submitterRoleError();
                         }else{
                             experimentDataProxy.updateContact(contactView.getContact());
                         }
+                    }
+
+                    private boolean hasDuplicateSubmitterRole(List<ContactDto> contactDtos) {
+                        return contactDtos.stream()
+                                .anyMatch(this::isDuplicateSubmitter);
+                    }
+
+                    private boolean isDuplicateSubmitter(ContactDto contactDto) {
+                        return isDifferentEmail(contactDto) && bothHaveSubmitterRole(contactDto);
+                    }
+
+                    private boolean bothHaveSubmitterRole(ContactDto contactDto) {
+                        String submitterRole = "submitter";
+                        return contactDto.getRoles().contains(submitterRole) &&
+                                contactView.getContact().getRoles().contains(submitterRole);
+                    }
+
+                    private boolean isDifferentEmail(ContactDto contactDto) {
+                        return (null != contactView.getContact() && null != contactDto.getEmail() && !contactDto.getEmail().equalsIgnoreCase(contactView.getContact().getEmail()));
                     }
                 }
         );
