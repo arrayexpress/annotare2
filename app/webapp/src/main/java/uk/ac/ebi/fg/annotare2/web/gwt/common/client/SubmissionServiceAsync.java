@@ -51,4 +51,6 @@ public interface SubmissionServiceAsync {
     /*void getSubmissionCountForCurrentUser(AsyncCallback<Integer> async);*/
 
     void checkRtServerStatus(int submissionId, AsyncCallback<Boolean> async);
+
+    void isUpdateAllowed(int submissionId, AsyncCallback<Boolean> async);
 }

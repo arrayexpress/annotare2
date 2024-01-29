@@ -74,4 +74,6 @@ public interface SubmissionService extends RemoteService {
     /*int getSubmissionCountForCurrentUser();*/
 
     boolean checkRtServerStatus(int submissionId) throws Exception;
+
+    boolean isUpdateAllowed(int submissionId) throws ResourceNotFoundException, NoPermissionException;
 }
