@@ -23,6 +23,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONNumber;
@@ -35,7 +36,6 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -82,7 +82,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     VerticalPanel progressPanel;
 
     @UiField
-    InlineHTML messageSpan;
+    SpanElement messageSpan;
 
     private final Long MAX_FILE_SIZE_IN_BYTES = 1073741824L;
 
@@ -150,10 +150,10 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
         progressPanel.getElement().appendChild(errorElement);
 
-        messageSpan.setHTML("<span>Please be advised to maintain a local copy of your data files following their upload to our service " +
+        messageSpan.setInnerHTML("⚠️ Please be advised to maintain a local copy of your data files following their upload to our service " +
                 "until the dataset has been successfully processed and archived. " +
                 "For more information, please refer to the " +
-                "<a href=\"https://www.ebi.ac.uk/fg/annotare/help/after_sub_data_availability.html#retention\" target=\"_blank\">Annotare data retention policy</a>.</span>");
+                "<a href=\"https://www.ebi.ac.uk/fg/annotare/help/after_sub_data_availability.html#retention\" target=\"_blank\">Annotare data retention policy</a>.");
 
         blockedFileExtensions = new ArrayList<>(Arrays.asList("doc","docx","rtf","xls","xlsx","ppt","ppdt","pptx","pdf","gif","rar","zip","tar","tar.gz","fastq","fq","fq_gz","fastq_gz","fq_bz2","fastq_bz2","7z"));
 
