@@ -195,6 +195,12 @@ public class ContactView extends ItemView<ContactDto.Editor> {
         setItem(contact.editor());
     }
 
+    public void removeSelectedRole(String role) {
+        List<String> selectedRoles = roles.getValue();
+        selectedRoles.remove(role);
+        roles.setValue(selectedRoles, true);
+    }
+
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }

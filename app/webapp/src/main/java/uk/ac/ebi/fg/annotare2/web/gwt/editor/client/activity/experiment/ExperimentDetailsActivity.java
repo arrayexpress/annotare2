@@ -94,6 +94,16 @@ public class ExperimentDetailsActivity extends AbstractActivity implements Exper
     }
 
     private void loadAsync() {
+        experimentDataProxy.isUpdateAllowedAsync(
+                new ReportingAsyncCallback<Boolean>(FailureMessage.UNABLE_TO_CHECK_SUBMISSION_UPDATE_PERMISSION) {
+                    @Override
+                    public void onSuccess(Boolean result) {
+                        System.out.println("ExperimentDetailsActivity.loadAsync.onSuccess");
+                        System.out.println("result = " + result);
+                        view.setUpdateAllowed(result);
+                    }
+                }
+        );
         experimentDataProxy.getExperimentProfileTypeAsync(
                 new ReportingAsyncCallback<ExperimentProfileType>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_TYPE) {
                     @Override

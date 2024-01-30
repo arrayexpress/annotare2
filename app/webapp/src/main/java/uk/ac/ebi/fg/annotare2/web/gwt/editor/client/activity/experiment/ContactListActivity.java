@@ -33,6 +33,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.OntologyDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ContactListView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,8 +92,40 @@ public class ContactListActivity extends AbstractActivity implements ContactList
     }
 
     @Override
-    public void updateContact(ContactDto contact) {
-        experimentDataProxy.updateContact(contact);
+    public void updateContact(ContactView contactView) {
+        experimentDataProxy.getContactsAsync(
+                new ReportingAsyncCallback<List<ContactDto>>(FailureMessage.UNABLE_TO_LOAD_CONTACT_LIST) {
+                    @Override
+                    public void onSuccess(List<ContactDto> result) {
+                        if(hasDuplicateSubmitterRole(result)){
+                            contactView.removeSelectedRole("submitter");
+                            view.submitterRoleError();
+                        }else{
+                            experimentDataProxy.updateContact(contactView.getContact());
+                        }
+                    }
+
+                    private boolean hasDuplicateSubmitterRole(List<ContactDto> contactDtos) {
+                        return contactDtos.stream()
+                                .anyMatch(this::isDuplicateSubmitter);
+                    }
+
+                    private boolean isDuplicateSubmitter(ContactDto contactDto) {
+                        return isDifferentEmail(contactDto) && bothHaveSubmitterRole(contactDto);
+                    }
+
+                    private boolean bothHaveSubmitterRole(ContactDto contactDto) {
+                        String submitterRole = "submitter";
+                        return contactDto.getRoles().contains(submitterRole) &&
+                                contactView.getContact().getRoles().contains(submitterRole);
+                    }
+
+                    private boolean isDifferentEmail(ContactDto contactDto) {
+                        return (null != contactView.getContact() && null != contactDto.getEmail() && !contactDto.getEmail().equalsIgnoreCase(contactView.getContact().getEmail()));
+                    }
+                }
+        );
+
     }
 
     @Override

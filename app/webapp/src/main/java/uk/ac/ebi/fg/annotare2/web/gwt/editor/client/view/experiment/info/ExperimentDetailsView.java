@@ -35,6 +35,8 @@ public interface ExperimentDetailsView extends IsWidget {
 
     public void setPresenter(Presenter presenter);
 
+    void setUpdateAllowed(Boolean isUpdateAllowed);
+
     public interface Presenter {
 
         void saveDetails(ExperimentDetailsDto details);

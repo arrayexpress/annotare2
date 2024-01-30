@@ -70,7 +70,8 @@ public abstract class ReportingAsyncCallback<T> implements AsyncCallback<T> {
         UNABLE_TO_LOAD_UPDATES("Unable to load updates"),
         UNABLE_TO_LOAD_USER_INFORMATION("Unable to load user information"),
         UNABLE_TO_SEND_UPDATES("Unable to send updates"),
-        UNABLE_TO_UPLOAD_FILES("Unable to upload files");
+        UNABLE_TO_UPLOAD_FILES("Unable to upload files"),
+        UNABLE_TO_CHECK_SUBMISSION_UPDATE_PERMISSION("Unable to check submission update permission");
 
 
         private final String message;
