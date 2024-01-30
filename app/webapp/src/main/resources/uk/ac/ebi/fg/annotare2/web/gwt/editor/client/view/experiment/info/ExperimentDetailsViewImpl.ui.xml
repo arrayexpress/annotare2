@@ -60,7 +60,7 @@
                             Description &#42;
                         </td>
                         <td>
-                            <g:PlaceholderTextArea placeholder="Describe the biological relevance and intent of the experiment. Include an overview of the experimental workflow. Avoid copy-and-pasting your manuscript's abstract." width="90%" visibleLines="4" ui:field="description"/>
+                            <g:PlaceholderTextArea placeholder="Describe the biological relevance and intent of the experiment. Include an overview of the experimental workflow. Avoid copy-and-pasting your manuscript's abstract." width="90%" visibleLines="15" ui:field="description"/>
                             <br/><span style="font-size:0.9em;font-style:italic;color:gray">(at least 50 characters)</span>
                         </td>
                     </tr>
