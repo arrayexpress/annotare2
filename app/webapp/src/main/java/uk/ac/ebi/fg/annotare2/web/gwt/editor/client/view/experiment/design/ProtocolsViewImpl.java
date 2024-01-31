@@ -31,6 +31,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.cellview.client.TextAreaEditCell;
 import uk.ac.ebi.fg.annotare2.submission.model.Protocol;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
@@ -295,7 +296,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
     }
 
     private void addDescriptionColumn() {
-        Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new EditTextCell()) {
+        Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new TextAreaEditCell()) {
             @Override
             public String getValue(ProtocolRow row) {
                 String v = row.getDescription();
