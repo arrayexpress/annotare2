@@ -41,3 +41,10 @@ a:hover {
 .fa {
     margin-right: 8px;
 }
+textarea::-webkit-resizer {
+    border : 9px solid rgba(0,0,0,.1);
+    border-bottom-color: rgba(72,135,124,1);
+    border-right-color: rgba(72,135,124,1);
+    border-top-color: transparent;
+    border-left-color: transparent;
+}
