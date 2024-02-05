@@ -140,7 +140,7 @@ public class DataFileManagerImpl implements DataFileManager {
                 throw new IOException("Unable to get data data file " + dataFile.getName() + ": invalid status " + dataFile.getStatus().getTitle());
             }
         } else{
-            return null;
+            throw new IOException("Unable to get data data file " + dataFile.getName() + ": File has been removed");
         }
     }
 
