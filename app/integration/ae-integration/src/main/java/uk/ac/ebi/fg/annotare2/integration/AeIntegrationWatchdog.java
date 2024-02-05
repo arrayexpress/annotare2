@@ -447,7 +447,7 @@ public class AeIntegrationWatchdog {
                 while (!dataFileQueue.isEmpty()) {
                     DataFile dataFile = dataFileQueue.poll();
                     logger.debug("Processing data file {}", dataFile.getName());
-                    if (DataFileStatus.STORED == dataFile.getStatus()) {
+                    if (requiresProcessing(dataFile, submission)) {
                         URI destinationURI = (isSequencing && rawDataFiles.contains(dataFile))
                                 ? new URI(ftpManager.getDirectory(ftpSubDirectory) + URLEncoder.encode(dataFile.getName(), StandardCharsets.UTF_8.toString()))
                                 : new File(unpackedExportDirectory, dataFile.getName()).toURI();
@@ -488,6 +488,15 @@ public class AeIntegrationWatchdog {
             throw new SubsTrackingException(e);
         }
         return exportDir;
+    }
+
+    private static boolean requiresProcessing(DataFile dataFile, Submission submission) {
+        if(submission.getAccession() == null){
+            return dataFile.getStatus() == DataFileStatus.STORED || dataFile.getStatus() == DataFileStatus.REMOVED;
+        }
+        else{
+            return dataFile.getStatus() == DataFileStatus.STORED;
+        }
     }
 
     private File getExportDir(Integer subsTrackingId) {
