@@ -24,7 +24,7 @@ import static com.google.gwt.dom.client.BrowserEvents.KEYUP;
 public class EditTextAreaCell extends
         AbstractEditableCell<String, EditTextAreaCell.ViewData> {
     interface Template extends SafeHtmlTemplates {
-        @Template("<textarea type=\"text\" tabindex=\"-1\" class=\"gwt-TextArea\" rows=\"5\" style=\"width:97%;max-width:97%;\">{0}</textarea>")
+        @Template("<textarea type=\"text\" tabindex=\"-1\" class=\"gwt-TextArea\" rows=\"3\" style=\"width:97%;max-width:97%;\">{0}</textarea>")
         SafeHtml input(String value);
     }
 
@@ -190,33 +190,8 @@ public class EditTextAreaCell extends
             clearViewData(key);
             viewData = null;
         }
-        String toRender = value;
-        if (viewData != null) {
-            String text = viewData.getText();
-            if (viewData.isEditing()) {
-                /*
-                 * Do not use the renderer in edit mode because the value of a text
-                 * input element is always treated as text. SafeHtml isn't valid in the
-                 * context of the value attribute.
-                 */
-                sb.append(template.input(text));
-                return;
-            } else {
-                // The user pressed enter, but view data still exists.
-                toRender = text;
-            }
-        }
-
-        if (toRender != null && !toRender.trim().isEmpty()) {
-//            sb.append(renderer.render(toRender));
-            sb.append(template.input(toRender));
-        } else {
-            /*
-             * Render a blank space to force the rendered element to have a height.
-             * Otherwise it is not clickable.
-             */
-            sb.appendHtmlConstant("\u00A0");
-        }
+        String toRender = (viewData != null) ? viewData.getText() : value;
+        sb.append(template.input(toRender));
     }
 
     @Override
@@ -239,7 +214,7 @@ public class EditTextAreaCell extends
 //        setValue(context, parent, value);
         InputElement input = getInputElement(parent);
         input.focus();
-//        input.select();
+        input.select();
     }
 
     /**
