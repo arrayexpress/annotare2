@@ -26,6 +26,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.EditTextAreaCell;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -295,7 +296,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
     }
 
     private void addDescriptionColumn() {
-        Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new EditTextCell()) {
+        Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new EditTextAreaCell()) {
             @Override
             public String getValue(ProtocolRow row) {
                 String v = row.getDescription();
