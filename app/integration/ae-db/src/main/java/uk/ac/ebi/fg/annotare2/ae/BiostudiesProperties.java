@@ -19,6 +19,4 @@ package uk.ac.ebi.fg.annotare2.ae;
 
 public interface BiostudiesProperties {
     String getBiostudiesArrayListUrl();
-
-    String getBiostudiesArrayListFallBackDir();
 }
