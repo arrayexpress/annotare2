@@ -30,15 +30,21 @@ import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.io.*;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.io.Closeables.close;
@@ -104,30 +110,25 @@ public class ArrayExpressArrayDesignList {
         if (adFile.exists() && adFile.canRead()) {
             list.load(Files.newInputStream(adFile.toPath()));
         }
-
-        if (list.isEmpty()) {
-            adFile = new File(properties.getBiostudiesArrayListFallBackDir());
-            if (adFile.exists() && adFile.canRead()) {
-                list.load(Files.newInputStream(adFile.toPath()));
-            }
-        }
         return list;
     }
 
     public void update() throws IOException {
-        InputStream is = null;
-        FileOutputStream fos = null;
-        try {
-            URL adSource = new URL(properties.getBiostudiesArrayListUrl());
-            is = adSource.openStream();
-            if (null != is) {
-                ReadableByteChannel rbc = Channels.newChannel(is);
-                fos = new FileOutputStream(arrayDesignListLocation);
-                fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-            }
-        } finally {
-            close(is, true);
-            close(fos, true);
+        try(Stream<String> lines = Files.lines(Paths.get(properties.getBiostudiesArrayListUrl()), StandardCharsets.UTF_8);
+            BufferedWriter writer = Files.newBufferedWriter(Paths.get(arrayDesignListLocation), StandardCharsets.UTF_8)) {
+            AtomicInteger lineIndex = new AtomicInteger(0);
+            lines.forEachOrdered(l->{
+                String[] parts = l.split("\t");
+                if(parts.length >= 4){
+                    String outputLine = lineIndex.getAndIncrement() + "\t" + parts[0] + "\t" + parts[3];
+                    try {
+                        writer.write(outputLine);
+                        writer.newLine();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
         }
     }
 

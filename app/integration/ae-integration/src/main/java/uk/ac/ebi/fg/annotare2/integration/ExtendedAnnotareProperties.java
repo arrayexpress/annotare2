@@ -41,11 +41,6 @@ public class ExtendedAnnotareProperties extends AnnotareProperties implements Da
     }
 
     @Override
-    public String getBiostudiesArrayListFallBackDir() {
-        return getProperty("biostudies.arraylist.fallback.dir");
-    }
-
-    @Override
     public Boolean isSubsTrackingEnabled() {
         return Boolean.parseBoolean(getProperty("ae-subs-tracking.enabled"));
     }
