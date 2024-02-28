@@ -26,7 +26,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
@@ -77,7 +76,7 @@ public class RtMessengerService extends EmailMessengerService {
                               Messenger messenger,
                               MessageDao messageDao,
                               SubmissionDao submissionDao) {
-        super(sessionFactory, properties, messageDao);
+        super(properties);
         this.messenger = messenger;
         this.properties = properties;
         this.submissionDao = submissionDao;
