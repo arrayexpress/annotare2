@@ -55,7 +55,7 @@ public class OtrsMessengerService extends EmailMessengerService {
                                 Messenger messenger,
                                 MessageDao messageDao,
                                 SubmissionDao submissionDao) {
-        super(sessionFactory, properties, messageDao);
+        super(properties);
         //this.sessionFactory = sessionFactory;
         this.messenger = messenger;
         this.properties = properties;
