@@ -150,7 +150,7 @@ public class AeIntegrationWatchdog {
             @Override
             public void run() {
                 try {
-                    processSubmissions();
+                    //processSubmissions();
                 } catch (Throwable x) {
                     logger.error("Submission watchdog process caught an exception:", x);
                     messenger.send("Error in submission watchdog process:", x);
