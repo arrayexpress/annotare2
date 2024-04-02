@@ -48,7 +48,7 @@
         <to type="forward" last="true">/static.jsp</to>
     </rule>
     <rule>
-        <from>^/help(|/(|describe_files[.]html|data_format[.]html))$</from>
+        <from>^/help(|/(|describe_files[.]html|data_format[.]html|submissions[.]html|creating_a_sdrf[.]html|creating_an_idf[.]html|third_party_tools[.]html|cpan[.]html|magetab_examples[.]html|quick_start[.]html))$</from>
         <to type="permanent-redirect" last="true">%{context-path}/help/index.html</to>
     </rule>
     <rule>
