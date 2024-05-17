@@ -363,16 +363,32 @@ public class AeIntegrationWatchdog {
 
     private void moveExportDirectory(File exportDir) throws SubsTrackingException {
         LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
-        String lsfToDatamoverScript = properties.getLSFtoDataMoverScript() + " \"" + exportDir.getPath() + "\"";
+        String moveExportDirectoryScript = properties.getMoveExportDirectoryScript() + " \"" + exportDir.getPath() + "\"";
         try {
             logger.info("Moving export directory {} to codon started.", exportDir.getPath());
-            executor.execute("ssh codon-login \"bash -s\" < " + lsfToDatamoverScript);
+            executor.execute("ssh codon-slurm-login \"bash -s\" < " + moveExportDirectoryScript);
             logger.info("Moving export directory {} to codon finished.", exportDir.getPath());
-            executor.execute("rm -rf " + exportDir.getPath());
-            logger.info("Export directory {} deleted.", exportDir.getPath());
+            if(getJobStatus(executor).equals("COMPLETED")){
+                executor.execute("rm -rf " + exportDir.getPath());
+                logger.info("Export directory {} deleted.", exportDir.getPath());
+            }
         } catch (IOException e) {
             throw new SubsTrackingException(e);
         }
+    }
+
+    private String getJobStatus(LinuxShellCommandExecutor executor) throws IOException {
+        String jobId = executor.getOutput().replaceAll("\\D+", "");
+        executor.execute("ssh codon-slurm-login \"bash -s\" < jobinfo " + jobId);
+        String[] lines = executor.getOutput().split("\n");
+        String state = null;
+        for (String line : lines) {
+            if (line.startsWith("State")) {
+                state = line.split(":")[1].trim();
+                break;
+            }
+        }
+        return state;
     }
 
     @Transactional(rollbackOn = {SubsTrackingException.class})
