@@ -365,20 +365,28 @@ public class AeIntegrationWatchdog {
         LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
         String moveExportDirectoryScript = properties.getMoveExportDirectoryScript() + " \"" + exportDir.getPath() + "\"";
         try {
-            logger.info("Moving export directory {} to codon started.", exportDir.getPath());
-            executor.execute("ssh codon-slurm-login \"bash -s\" < " + moveExportDirectoryScript);
-            logger.info("Moving export directory {} to codon finished.", exportDir.getPath());
-            if(getJobStatus(executor).equals("COMPLETED")){
-                executor.execute("rm -rf " + exportDir.getPath());
-                logger.info("Export directory {} deleted.", exportDir.getPath());
+            String jobId = submitMoveExportDirectorySlurmJob(exportDir, executor, moveExportDirectoryScript);
+            if(getSlurmJobStatus(jobId, executor).equals("COMPLETED")){
+                deleteExportDirectory(exportDir, executor);
             }
         } catch (IOException e) {
             throw new SubsTrackingException(e);
         }
     }
 
-    private String getJobStatus(LinuxShellCommandExecutor executor) throws IOException {
-        String jobId = executor.getOutput().replaceAll("\\D+", "");
+    private static void deleteExportDirectory(File exportDir, LinuxShellCommandExecutor executor) throws IOException {
+        executor.execute("rm -rf " + exportDir.getPath());
+        logger.info("Export directory {} deleted.", exportDir.getPath());
+    }
+
+    private String submitMoveExportDirectorySlurmJob(File exportDir, LinuxShellCommandExecutor executor, String moveExportDirectoryScript) throws IOException {
+        logger.info("Moving export directory {} to codon started.", exportDir.getPath());
+        executor.execute("ssh codon-slurm-login \"bash -s\" < " + moveExportDirectoryScript);
+        logger.info("Moving export directory {} to codon finished.", exportDir.getPath());
+        return !isNullOrEmpty(executor.getOutput()) ? executor.getOutput().replaceAll("\\D+", "") : null;
+    }
+
+    private String getSlurmJobStatus(String jobId, LinuxShellCommandExecutor executor) throws IOException {
         executor.execute("ssh codon-slurm-login jobinfo " + jobId);
         String[] lines = executor.getOutput().split("\n");
         String state = null;
