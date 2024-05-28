@@ -379,7 +379,7 @@ public class AeIntegrationWatchdog {
 
     private String getJobStatus(LinuxShellCommandExecutor executor) throws IOException {
         String jobId = executor.getOutput().replaceAll("\\D+", "");
-        executor.execute("ssh codon-slurm-login \"bash -s\" < jobinfo " + jobId);
+        executor.execute("ssh codon-slurm-login jobinfo " + jobId);
         String[] lines = executor.getOutput().split("\n");
         String state = null;
         for (String line : lines) {
