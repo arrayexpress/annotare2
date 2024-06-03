@@ -728,13 +728,15 @@ public class AeIntegrationWatchdog {
             boolean isSequencing = exp.getType().isSequencing();
             String ftpSubDirectory = submission.getFtpSubDirectory();
 
-            if (isSequencing && rawDataFiles.size() > 0) {
+            if(rawDataFiles.isEmpty()){
+                setDefaultExperimentFileValidationStatus(subsTrackingId, connection);
+            }else if (isSequencing) {
                 if (!ftpManager.doesExist(ftpSubDirectory)) {
                     ftpManager.createDirectory(ftpSubDirectory);
                 }
             }
 
-            if (dataFiles.size() > 0) {
+            if (!dataFiles.isEmpty()) {
                 logger.debug("Savings {} data files in the db", dataFiles.size());
                 for (DataFile dataFile : dataFiles) {
                     if (properties.isSubsTrackingEnabled()) {
@@ -744,6 +746,16 @@ public class AeIntegrationWatchdog {
             }
         } catch (Exception e) {
             throw new SubsTrackingException(e);
+        }
+    }
+
+    private void setDefaultExperimentFileValidationStatus(Integer subsTrackingId, Connection connection) {
+        if (properties.isSubsTrackingEnabled()) {
+            try {
+                subsTracking.markExperimentFilesValidated(connection, subsTrackingId);
+            } catch (SubsTrackingException e) {
+                logger.error("Error marking experiment file validation status", e);
+            }
         }
     }
 

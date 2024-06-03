@@ -63,7 +63,7 @@
         <surefire.version>2.18.1</surefire.version>
         <clover.version>3.1.3</clover.version>
         <lucene.version>4.3.0</lucene.version>
-        <jooq.version>3.1.0</jooq.version>
+        <jooq.version>3.14.16</jooq.version>
         <hickaricp.version>2.4.3</hickaricp.version>
         <tomcat.version>7.0.42</tomcat.version>
         <mysql-jdbc.version>8.0.28</mysql-jdbc.version>

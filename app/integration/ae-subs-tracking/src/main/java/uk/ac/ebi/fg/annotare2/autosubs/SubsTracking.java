@@ -41,8 +41,7 @@ import javax.annotation.PreDestroy;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static uk.ac.ebi.fg.annotare2.autosubs.jooq.Tables.*;
@@ -94,7 +93,7 @@ public class SubsTracking {
                                 .set(EXPERIMENTS.IS_DELETED, 0)
                                 .set(EXPERIMENTS.IN_CURATION, 0)
                                 .set(EXPERIMENTS.USER_ID, userId)
-                                .set(EXPERIMENTS.DATE_SUBMITTED, new Timestamp(new Date().getTime()))
+                                .set(EXPERIMENTS.DATE_SUBMITTED, LocalDateTime.now())
                                 .set(EXPERIMENTS.ACCESSION, submission.getAccession())
                                 .set(EXPERIMENTS.NAME, trimStringToSize(asciiCompliantString(submission.getTitle()), 255))
                                         .set(EXPERIMENTS.SUBMITTER_DESCRIPTION, asciiCompliantString(((ExperimentSubmission) submission).getExperimentProfile().getDescription()))
@@ -117,7 +116,7 @@ public class SubsTracking {
                             .set(EXPERIMENTS.IS_DELETED, 0)
                             .set(EXPERIMENTS.IN_CURATION, 0)
                             .set(EXPERIMENTS.USER_ID, userId)
-                            .set(EXPERIMENTS.DATE_SUBMITTED, new Timestamp(new Date().getTime()))
+                            .set(EXPERIMENTS.DATE_SUBMITTED, LocalDateTime.now())
                             .set(EXPERIMENTS.ACCESSION, submission.getAccession())
                             .set(EXPERIMENTS.NAME, asciiCompliantString(""))
                             .set(EXPERIMENTS.SUBMITTER_DESCRIPTION, asciiCompliantString(""))
@@ -140,7 +139,7 @@ public class SubsTracking {
     public void updateSubmission(Connection connection, Submission submission) throws SubsTrackingException {
         if (submission instanceof ExperimentSubmission) {
             try {
-                Timestamp updateDate = new Timestamp(new Date().getTime());
+                LocalDateTime updateDate = LocalDateTime.now();
                 ExperimentsRecord r =
                         getContext(connection).selectFrom(EXPERIMENTS)
                                 .where(EXPERIMENTS.ID.equal(submission.getSubsTrackingId()))
@@ -415,5 +414,23 @@ public class SubsTracking {
             return s.substring(0, Math.min(s.length(), index));
         }
         return null;
+    }
+
+    public void markExperimentFilesValidated(Connection connection, Integer subsTrackingId) throws SubsTrackingException {
+        if (null == subsTrackingId) {
+            throw new SubsTrackingException(SubsTrackingException.INVALID_ID_EXCEPTION);
+        }
+        ExperimentsRecord experiment = fetchExperimentRecord(connection, subsTrackingId);
+        if (experiment == null) {
+            throw new SubsTrackingException(SubsTrackingException.MISSING_RECORD_EXCEPTION);
+        }
+        experiment.setFileValidationStatus("Successful");
+        experiment.update();
+    }
+
+    private ExperimentsRecord fetchExperimentRecord(Connection connection, Integer subsTrackingId) throws SubsTrackingException {
+        return getContext(connection).selectFrom(EXPERIMENTS)
+                .where(EXPERIMENTS.ID.eq(subsTrackingId))
+                .fetchOne();
     }
 }
