@@ -72,10 +72,6 @@
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.fg.annotare2</groupId>
-            <artifactId>ae-db</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>uk.ac.ebi.fg.annotare2</groupId>
             <artifactId>otrs</artifactId>
         </dependency>
         <dependency>
