@@ -15,12 +15,8 @@
  *
  */
 
-package uk.ac.ebi.fg.annotare2.ae;
+package uk.ac.ebi.fg.annotare2.integration;
 
-public interface AeConnectionProperties {
-    boolean isAeConnectionEnabled();
-    String getAeConnectionDriverClass();
-    String getAeConnectionUrl();
-    String getAeConnectionUser();
-    String getAeConnectionPassword();
+public interface BiostudiesProperties {
+    String getBiostudiesArrayListUrl();
 }

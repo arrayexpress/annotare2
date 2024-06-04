@@ -27,8 +27,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.ae.AEConnection;
-import uk.ac.ebi.fg.annotare2.ae.AEConnectionException;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTracking;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingException;
 import uk.ac.ebi.fg.annotare2.core.components.DataFileManager;
@@ -87,7 +85,6 @@ public class AeIntegrationWatchdog {
 
     private final HibernateSessionFactory sessionFactory;
     private final SubsTracking subsTracking;
-    private final AEConnection aeConnection;
     private final SubmissionDao submissionDao;
     private final SubmissionFeedbackDao submissionFeedbackDao;
     private final SubmissionManager submissionManager;
@@ -114,7 +111,6 @@ public class AeIntegrationWatchdog {
     public AeIntegrationWatchdog(HibernateSessionFactory sessionFactory,
                                  ExtendedAnnotareProperties properties,
                                  SubsTracking subsTracking,
-                                 AEConnection aeConnection,
                                  SubmissionDao submissionDao,
                                  SubmissionFeedbackDao submissionFeedbackDao,
                                  SubmissionManager submissionManager,
@@ -127,7 +123,6 @@ public class AeIntegrationWatchdog {
                                  SubmissionStatusHistoryDao statusHistoryDao) {
         this.sessionFactory = sessionFactory;
         this.subsTracking = subsTracking;
-        this.aeConnection = aeConnection;
         this.submissionDao = submissionDao;
         this.submissionFeedbackDao = submissionFeedbackDao;
         this.submissionManager = submissionManager;
@@ -571,7 +566,7 @@ public class AeIntegrationWatchdog {
         }
     }
 
-    @Transactional(rollbackOn = {AEConnectionException.class})
+    @Transactional(rollbackOn = {SubsTrackingException.class})
     public void processPrivateInAE(Submission submission) throws SubsTrackingException {
 
             String accession = submission.getAccession();
@@ -608,7 +603,7 @@ public class AeIntegrationWatchdog {
         );
     }
 
-    @Transactional(rollbackOn = {AEConnectionException.class})
+    @Transactional(rollbackOn = {SubsTrackingException.class})
     public void processPublicInAE(Submission submission) throws SubsTrackingException {
 
             String accession = submission.getAccession();

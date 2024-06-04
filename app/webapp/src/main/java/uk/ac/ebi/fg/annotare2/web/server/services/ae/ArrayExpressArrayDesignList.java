@@ -25,7 +25,7 @@ import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.ae.BiostudiesProperties;
+import uk.ac.ebi.fg.annotare2.integration.BiostudiesProperties;
 import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 
 import javax.annotation.PostConstruct;
