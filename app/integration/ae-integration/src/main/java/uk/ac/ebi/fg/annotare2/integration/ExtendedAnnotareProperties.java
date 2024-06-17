@@ -86,8 +86,8 @@ public class ExtendedAnnotareProperties extends AnnotareProperties implements Da
     }
 
     @Override
-    public String getLSFtoDataMoverScript() {
-        return getProperty("ae-subs-tracking.export.lsf-datamover");
+    public String getMoveExportDirectoryScript() {
+        return getProperty("ae-subs-tracking.export.move-script");
     }
 
     @Override

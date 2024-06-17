@@ -30,5 +30,5 @@ public interface SubsTrackingProperties
     String getSubsTrackingConnectionUser();
     String getSubsTrackingConnectionPassword();
     String getSubsTrackingDataFilesPostProcessingScript();
-    String getLSFtoDataMoverScript();
+    String getMoveExportDirectoryScript();
 }

@@ -66,6 +66,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Queue;
@@ -363,16 +364,33 @@ public class AeIntegrationWatchdog {
 
     private void moveExportDirectory(File exportDir) throws SubsTrackingException {
         LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
-        String lsfToDatamoverScript = properties.getLSFtoDataMoverScript() + " \"" + exportDir.getPath() + "\"";
+        String moveExportDirectoryScript = properties.getMoveExportDirectoryScript() + " \"" + exportDir.getPath() + "\"";
         try {
-            logger.info("Moving export directory {} to codon started.", exportDir.getPath());
-            executor.execute("ssh codon-login \"bash -s\" < " + lsfToDatamoverScript);
-            logger.info("Moving export directory {} to codon finished.", exportDir.getPath());
-            executor.execute("rm -rf " + exportDir.getPath());
-            logger.info("Export directory {} deleted.", exportDir.getPath());
+            String jobId = submitMoveExportDirectorySlurmJob(exportDir, executor, moveExportDirectoryScript);
+            if (isSlurmJobFinished(jobId, executor)){
+                deleteExportDirectory(exportDir, executor);
+            }
         } catch (IOException e) {
             throw new SubsTrackingException(e);
         }
+    }
+
+    private static void deleteExportDirectory(File exportDir, LinuxShellCommandExecutor executor) throws IOException {
+        executor.execute("rm -rf " + exportDir.getPath());
+        logger.info("Export directory {} deleted.", exportDir.getPath());
+    }
+
+    private String submitMoveExportDirectorySlurmJob(File exportDir, LinuxShellCommandExecutor executor, String moveExportDirectoryScript) throws IOException {
+        logger.info("Moving export directory {} to codon started.", exportDir.getPath());
+        executor.execute("ssh codon-slurm-login \"bash -s\" < " + moveExportDirectoryScript);
+        logger.info("Moving export directory {} to codon finished.", exportDir.getPath());
+        return !isNullOrEmpty(executor.getOutput()) ? executor.getOutput().replaceAll("\\D+", "") : null;
+    }
+
+    private boolean isSlurmJobFinished(String jobId, LinuxShellCommandExecutor executor) throws IOException {
+        executor.execute("ssh codon-slurm-login jobinfo " + jobId);
+        String[] lines = executor.getOutput().split("\n");
+        return Arrays.stream(lines).anyMatch(text -> text.startsWith("State") && text.contains("COMPLETED"));
     }
 
     @Transactional(rollbackOn = {SubsTrackingException.class})
