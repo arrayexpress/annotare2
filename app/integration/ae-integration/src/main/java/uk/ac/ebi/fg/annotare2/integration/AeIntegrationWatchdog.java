@@ -66,6 +66,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Queue;
@@ -366,7 +367,7 @@ public class AeIntegrationWatchdog {
         String moveExportDirectoryScript = properties.getMoveExportDirectoryScript() + " \"" + exportDir.getPath() + "\"";
         try {
             String jobId = submitMoveExportDirectorySlurmJob(exportDir, executor, moveExportDirectoryScript);
-            if(getSlurmJobStatus(jobId, executor).equals("COMPLETED")){
+            if (isSlurmJobFinished(jobId, executor)){
                 deleteExportDirectory(exportDir, executor);
             }
         } catch (IOException e) {
@@ -386,17 +387,10 @@ public class AeIntegrationWatchdog {
         return !isNullOrEmpty(executor.getOutput()) ? executor.getOutput().replaceAll("\\D+", "") : null;
     }
 
-    private String getSlurmJobStatus(String jobId, LinuxShellCommandExecutor executor) throws IOException {
+    private boolean isSlurmJobFinished(String jobId, LinuxShellCommandExecutor executor) throws IOException {
         executor.execute("ssh codon-slurm-login jobinfo " + jobId);
         String[] lines = executor.getOutput().split("\n");
-        String state = null;
-        for (String line : lines) {
-            if (line.startsWith("State")) {
-                state = line.split(":")[1].trim();
-                break;
-            }
-        }
-        return state;
+        return Arrays.stream(lines).anyMatch(text -> text.startsWith("State") && text.contains("COMPLETED"));
     }
 
     @Transactional(rollbackOn = {SubsTrackingException.class})
