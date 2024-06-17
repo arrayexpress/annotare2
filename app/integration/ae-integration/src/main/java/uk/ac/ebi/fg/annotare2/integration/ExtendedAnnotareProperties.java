@@ -17,8 +17,6 @@
 package uk.ac.ebi.fg.annotare2.integration;
 
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.ae.AeConnectionProperties;
-import uk.ac.ebi.fg.annotare2.ae.BiostudiesProperties;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingProperties;
 import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.core.properties.DataFileStoreProperties;
@@ -28,7 +26,7 @@ import uk.ac.ebi.fg.annotare2.otrs.OtrsProperties;
 import java.io.File;
 
 public class ExtendedAnnotareProperties extends AnnotareProperties implements DataFileStoreProperties,
-        BiostudiesProperties, SubsTrackingProperties, AeConnectionProperties, OtrsProperties, FileValidationProperties, RtProperties {
+        BiostudiesProperties, SubsTrackingProperties, OtrsProperties, FileValidationProperties, RtProperties {
 
     @Inject
     public ExtendedAnnotareProperties(MageTabCheckProperties mageTabCheckProperties) {
@@ -88,31 +86,6 @@ public class ExtendedAnnotareProperties extends AnnotareProperties implements Da
     @Override
     public String getMoveExportDirectoryScript() {
         return getProperty("ae-subs-tracking.export.move-script");
-    }
-
-    @Override
-    public boolean isAeConnectionEnabled() {
-        return getBooleanProperty("ae-connection.enabled");
-    }
-
-    @Override
-    public String getAeConnectionDriverClass() {
-        return getProperty("ae-connection.driver");
-    }
-
-    @Override
-    public String getAeConnectionUrl() {
-        return getProperty("ae-connection.url");
-    }
-
-    @Override
-    public String getAeConnectionUser() {
-        return getProperty("ae-connection.user");
-    }
-
-    @Override
-    public String getAeConnectionPassword() {
-        return getProperty("ae-connection.password");
     }
 
     @Override
