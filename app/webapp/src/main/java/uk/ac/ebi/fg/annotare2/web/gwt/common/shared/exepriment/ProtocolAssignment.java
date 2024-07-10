@@ -175,7 +175,7 @@ public abstract class ProtocolAssignment {
 
         @Override
         protected boolean isAllowed(FileType type) {
-            return type.isProcessed();
+            return type.isProcessed() || type.isProcessedMatrix();
         }
     }
 

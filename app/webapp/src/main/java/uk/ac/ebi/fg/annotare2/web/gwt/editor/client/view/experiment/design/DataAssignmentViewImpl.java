@@ -22,7 +22,6 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
@@ -178,18 +177,27 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     private List<EnumWithHelpText> getAllowedColumnTypes() {
         List<EnumWithHelpText> types = new ArrayList<>();
         for (FileType type : FileType.values()) {
-            if(!((experimentType.isTwoColorMicroarray()) && (type.isRawMatix())))
-            {
-                if (experimentType.isSequencing()) {
-                    if (!type.isFGEM() || type.isProcessed() && (0 == countColumnsByType(type))) {
-                        types.add(type);
-                    }
-                } else if (0 == countColumnsByType(type)) {
+            if(!type.isProcessedMatrix()){
+                if (experimentType.isSequencing()){
                     types.add(type);
+                }
+                else if (experimentType.isTwoColorMicroarray()){
+                    if(!type.isRawMatix()){
+                        alwaysAddProcessedTypeToListAndOnlyAddOtherTypesOnce(type, types);
+                    }
+                }
+                else if(experimentType.isMicroarray()){
+                    alwaysAddProcessedTypeToListAndOnlyAddOtherTypesOnce(type, types);
                 }
             }
         }
         return types;
+    }
+
+    private void alwaysAddProcessedTypeToListAndOnlyAddOtherTypesOnce(FileType type, List<EnumWithHelpText> types) {
+        if(type.isProcessed() || 0 == countColumnsByType(type)){
+            types.add(type);
+        }
     }
 
     private List<String> getDataFileColumnNames() {
