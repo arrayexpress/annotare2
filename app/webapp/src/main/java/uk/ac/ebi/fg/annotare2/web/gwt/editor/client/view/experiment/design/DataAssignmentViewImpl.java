@@ -68,7 +68,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
                         }
                         return true;
                     }
-                }, getAllowedColumnTypes(), experimentType.isSequencing());
+                }, getAllowedColumnTypes(), experimentType);
             }
         });
         gridView.addTool(button);
