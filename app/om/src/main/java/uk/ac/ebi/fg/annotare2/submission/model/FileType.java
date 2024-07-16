@@ -66,7 +66,7 @@ public enum FileType implements EnumWithHelpText{
         return RAW_MATRIX_FILE == this || PROCESSED_MATRIX_FILE == this;
     }
 
-    public boolean isRawMatix() {return RAW_MATRIX_FILE == this; }
+    public boolean isRawMatrix() {return RAW_MATRIX_FILE == this; }
 
     public boolean isProcessedMatrix() {
         return PROCESSED_MATRIX_FILE == this;

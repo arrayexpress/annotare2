@@ -181,17 +181,17 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
                 if (experimentType.isSequencing()){
                     types.add(type);
                 }
-                else if (experimentType.isTwoColorMicroarray()){
-                    if(!type.isRawMatix()){
-                        alwaysAddProcessedTypeToListAndOnlyAddOtherTypesOnce(type, types);
-                    }
-                }
-                else if(experimentType.isMicroarray()){
+                else if (isMicroArrayOrTwoColourMicroArrayWithNonRawMatrixFileType(type)){
                     alwaysAddProcessedTypeToListAndOnlyAddOtherTypesOnce(type, types);
                 }
             }
         }
         return types;
+    }
+
+    private boolean isMicroArrayOrTwoColourMicroArrayWithNonRawMatrixFileType(FileType type) {
+        return experimentType.isMicroarray() ||
+                (experimentType.isTwoColorMicroarray() && !type.isRawMatrix());
     }
 
     private void alwaysAddProcessedTypeToListAndOnlyAddOtherTypesOnce(FileType type, List<EnumWithHelpText> types) {
