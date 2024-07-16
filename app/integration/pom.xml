@@ -30,7 +30,6 @@
     </parent>
 
     <modules>
-        <module>ae-db</module>
         <module>ae-subs-tracking</module>
         <module>otrs</module>
         <module>ae-integration</module>
