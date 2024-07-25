@@ -58,7 +58,7 @@ public enum FileType implements EnumWithHelpText{
 
     @SuppressWarnings("unused")
     public boolean isProcessed() {
-        return PROCESSED_FILE == this || PROCESSED_MATRIX_FILE == this;
+        return PROCESSED_FILE == this;
     }
 
     @SuppressWarnings("unused")
@@ -66,5 +66,9 @@ public enum FileType implements EnumWithHelpText{
         return RAW_MATRIX_FILE == this || PROCESSED_MATRIX_FILE == this;
     }
 
-    public boolean isRawMatix() {return RAW_MATRIX_FILE == this; }
+    public boolean isRawMatrix() {return RAW_MATRIX_FILE == this; }
+
+    public boolean isProcessedMatrix() {
+        return PROCESSED_MATRIX_FILE == this;
+    }
 }

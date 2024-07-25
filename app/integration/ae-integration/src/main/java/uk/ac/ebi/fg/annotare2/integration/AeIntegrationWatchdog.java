@@ -27,8 +27,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.ae.AEConnection;
-import uk.ac.ebi.fg.annotare2.ae.AEConnectionException;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTracking;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingException;
 import uk.ac.ebi.fg.annotare2.core.components.DataFileManager;
@@ -66,6 +64,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Queue;
@@ -87,7 +86,6 @@ public class AeIntegrationWatchdog {
 
     private final HibernateSessionFactory sessionFactory;
     private final SubsTracking subsTracking;
-    private final AEConnection aeConnection;
     private final SubmissionDao submissionDao;
     private final SubmissionFeedbackDao submissionFeedbackDao;
     private final SubmissionManager submissionManager;
@@ -114,7 +112,6 @@ public class AeIntegrationWatchdog {
     public AeIntegrationWatchdog(HibernateSessionFactory sessionFactory,
                                  ExtendedAnnotareProperties properties,
                                  SubsTracking subsTracking,
-                                 AEConnection aeConnection,
                                  SubmissionDao submissionDao,
                                  SubmissionFeedbackDao submissionFeedbackDao,
                                  SubmissionManager submissionManager,
@@ -127,7 +124,6 @@ public class AeIntegrationWatchdog {
                                  SubmissionStatusHistoryDao statusHistoryDao) {
         this.sessionFactory = sessionFactory;
         this.subsTracking = subsTracking;
-        this.aeConnection = aeConnection;
         this.submissionDao = submissionDao;
         this.submissionFeedbackDao = submissionFeedbackDao;
         this.submissionManager = submissionManager;
@@ -363,16 +359,33 @@ public class AeIntegrationWatchdog {
 
     private void moveExportDirectory(File exportDir) throws SubsTrackingException {
         LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
-        String lsfToDatamoverScript = properties.getLSFtoDataMoverScript() + " \"" + exportDir.getPath() + "\"";
+        String moveExportDirectoryScript = properties.getMoveExportDirectoryScript() + " \"" + exportDir.getPath() + "\"";
         try {
-            logger.info("Moving export directory {} to codon started.", exportDir.getPath());
-            executor.execute("ssh codon-login \"bash -s\" < " + lsfToDatamoverScript);
-            logger.info("Moving export directory {} to codon finished.", exportDir.getPath());
-            executor.execute("rm -rf " + exportDir.getPath());
-            logger.info("Export directory {} deleted.", exportDir.getPath());
+            String jobId = submitMoveExportDirectorySlurmJob(exportDir, executor, moveExportDirectoryScript);
+            if (isSlurmJobFinished(jobId, executor)){
+                deleteExportDirectory(exportDir, executor);
+            }
         } catch (IOException e) {
             throw new SubsTrackingException(e);
         }
+    }
+
+    private static void deleteExportDirectory(File exportDir, LinuxShellCommandExecutor executor) throws IOException {
+        executor.execute("rm -rf " + exportDir.getPath());
+        logger.info("Export directory {} deleted.", exportDir.getPath());
+    }
+
+    private String submitMoveExportDirectorySlurmJob(File exportDir, LinuxShellCommandExecutor executor, String moveExportDirectoryScript) throws IOException {
+        logger.info("Moving export directory {} to codon started.", exportDir.getPath());
+        executor.execute("ssh codon-slurm-login \"bash -s\" < " + moveExportDirectoryScript);
+        logger.info("Moving export directory {} to codon finished.", exportDir.getPath());
+        return !isNullOrEmpty(executor.getOutput()) ? executor.getOutput().replaceAll("\\D+", "") : null;
+    }
+
+    private boolean isSlurmJobFinished(String jobId, LinuxShellCommandExecutor executor) throws IOException {
+        executor.execute("ssh codon-slurm-login jobinfo " + jobId);
+        String[] lines = executor.getOutput().split("\n");
+        return Arrays.stream(lines).anyMatch(text -> text.startsWith("State") && text.contains("COMPLETED"));
     }
 
     @Transactional(rollbackOn = {SubsTrackingException.class})
@@ -577,7 +590,7 @@ public class AeIntegrationWatchdog {
         }
     }
 
-    @Transactional(rollbackOn = {AEConnectionException.class})
+    @Transactional(rollbackOn = {SubsTrackingException.class})
     public void processPrivateInAE(Submission submission) throws SubsTrackingException {
 
             String accession = submission.getAccession();
@@ -614,7 +627,7 @@ public class AeIntegrationWatchdog {
         );
     }
 
-    @Transactional(rollbackOn = {AEConnectionException.class})
+    @Transactional(rollbackOn = {SubsTrackingException.class})
     public void processPublicInAE(Submission submission) throws SubsTrackingException {
 
             String accession = submission.getAccession();
@@ -734,13 +747,15 @@ public class AeIntegrationWatchdog {
             boolean isSequencing = exp.getType().isSequencing();
             String ftpSubDirectory = submission.getFtpSubDirectory();
 
-            if (isSequencing && rawDataFiles.size() > 0) {
+            if(rawDataFiles.isEmpty()){
+                setDefaultExperimentFileValidationStatus(subsTrackingId, connection);
+            }else if (isSequencing) {
                 if (!ftpManager.doesExist(ftpSubDirectory)) {
                     ftpManager.createDirectory(ftpSubDirectory);
                 }
             }
 
-            if (dataFiles.size() > 0) {
+            if (!dataFiles.isEmpty()) {
                 logger.debug("Savings {} data files in the db", dataFiles.size());
                 for (DataFile dataFile : dataFiles) {
                     if (properties.isSubsTrackingEnabled()) {
@@ -750,6 +765,16 @@ public class AeIntegrationWatchdog {
             }
         } catch (Exception e) {
             throw new SubsTrackingException(e);
+        }
+    }
+
+    private void setDefaultExperimentFileValidationStatus(Integer subsTrackingId, Connection connection) {
+        if (properties.isSubsTrackingEnabled()) {
+            try {
+                subsTracking.markExperimentFilesValidated(connection, subsTrackingId);
+            } catch (SubsTrackingException e) {
+                logger.error("Error marking experiment file validation status", e);
+            }
         }
     }
 

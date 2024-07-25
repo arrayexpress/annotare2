@@ -471,7 +471,7 @@ public class MageTabGenerator {
 
                 Collection<Protocol> protocols = Collections.emptyList();
                 if (null != fileRef) {
-                    if ((isRawDataPresent && colType.isRaw()) || (!isRawDataPresent && colType.isProcessed())) {
+                    if ((isRawDataPresent && colType.isRaw()) || (!isRawDataPresent && (colType.isProcessed() || colType.isProcessedMatrix()))) {
                         protocols = exp.getProtocols(fileRef, fileColumn.getType().isRaw() ? ProtocolSubjectType.RAW_FILE : ProtocolSubjectType.PROCESSED_FILE, ProtocolSubjectType.FILE);
                     } else {
                         protocols = exp.getProtocols(fileRef, fileColumn.getType().isRaw() ? ProtocolSubjectType.RAW_FILE : ProtocolSubjectType.PROCESSED_FILE);

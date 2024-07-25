@@ -27,6 +27,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.submission.model.EnumWithHelpText;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
 
@@ -62,7 +63,7 @@ public class AssignFilesDialog<T extends EnumWithHelpText> extends DialogBox {
 
     private Map<String, FileType> map = new HashMap<>();
 
-    public AssignFilesDialog(DialogCallback<Map.Entry<FileType, Integer>> callback, final List<FileType> values, final boolean isSequencingExperiment) {
+    public AssignFilesDialog(DialogCallback<Map.Entry<FileType, Integer>> callback, final List<FileType> values, final ExperimentProfileType experimentProfileType) {
         this.callback = callback;
 
         setModal(true);
@@ -82,22 +83,21 @@ public class AssignFilesDialog<T extends EnumWithHelpText> extends DialogBox {
             columnListBox.setSelectedIndex(0);
             columnListHelp.setHTML(values.get(0).getHelpText());
         }
-
         columnListBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
                 columnListHelp.setHTML(values.get(columnListBox.getSelectedIndex()).getHelpText());
+                if(experimentProfileType.isMicroarray() && values.get(columnListBox.getSelectedIndex()).isProcessed()){
+                    noOfColumnsLabel.setVisible(true);
+                    noOfColumns.setVisible(true);
+                }
             }
         });
-
-        if(isSequencingExperiment) {
+        if(experimentProfileType.isSequencing() || values.get(columnListBox.getSelectedIndex()).isProcessed()) {
             noOfColumnsLabel.setVisible(true);
             noOfColumns.setVisible(true);
         }
-
         center();
-
-
     }
 
     @UiHandler("okButton")
