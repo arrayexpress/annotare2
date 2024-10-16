@@ -87,17 +87,22 @@ public class AssignFilesDialog<T extends EnumWithHelpText> extends DialogBox {
             @Override
             public void onChange(ChangeEvent event) {
                 columnListHelp.setHTML(values.get(columnListBox.getSelectedIndex()).getHelpText());
-                if(experimentProfileType.isMicroarray() && values.get(columnListBox.getSelectedIndex()).isProcessed()){
-                    noOfColumnsLabel.setVisible(true);
-                    noOfColumns.setVisible(true);
+                if(experimentProfileType.isSequencing() || (experimentProfileType.isMicroarray() && values.get(columnListBox.getSelectedIndex()).isProcessed())){
+                    makeNoOfColumnsFieldVisible(true);
+                } else {
+                    makeNoOfColumnsFieldVisible(false);
                 }
             }
         });
         if(experimentProfileType.isSequencing() || values.get(columnListBox.getSelectedIndex()).isProcessed()) {
-            noOfColumnsLabel.setVisible(true);
-            noOfColumns.setVisible(true);
+            makeNoOfColumnsFieldVisible(true);
         }
         center();
+    }
+
+    private void makeNoOfColumnsFieldVisible(boolean visible) {
+        noOfColumnsLabel.setVisible(visible);
+        noOfColumns.setVisible(visible);
     }
 
     @UiHandler("okButton")
