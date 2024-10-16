@@ -36,6 +36,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DynSelectionCell;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Olga Melnichuk
@@ -176,28 +177,36 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
 
     private List<EnumWithHelpText> getAllowedColumnTypes() {
         List<EnumWithHelpText> types = new ArrayList<>();
-        for (FileType type : FileType.values()) {
-            if(!type.isProcessedMatrix()){
-                if (experimentType.isSequencing()){
-                    types.add(type);
-                }
-                else if (isMicroArrayOrTwoColourMicroArrayWithNonRawMatrixFileType(type)){
-                    alwaysAddProcessedTypeToListAndOnlyAddOtherTypesOnce(type, types);
-                }
-            }
+        if(experimentType.isSequencing()){
+            addSequencingAllowedTypes(types);
+        } else if(experimentType.isTwoColorMicroarray()) {
+            addTwoColorMicroarrayAllowedTypes(types);
+        } else if(experimentType.isMicroarray()) {
+            addOneColorMicroarrayAllowedTypes(types);
         }
         return types;
     }
 
-    private boolean isMicroArrayOrTwoColourMicroArrayWithNonRawMatrixFileType(FileType type) {
-        return experimentType.isMicroarray() ||
-                (experimentType.isTwoColorMicroarray() && !type.isRawMatrix());
+    private static void addTypesToList(List<EnumWithHelpText> types, FileType... fileTypes) {
+        types.addAll(Arrays.asList(fileTypes));
     }
 
-    private void alwaysAddProcessedTypeToListAndOnlyAddOtherTypesOnce(FileType type, List<EnumWithHelpText> types) {
-        if(type.isProcessed() || 0 == countColumnsByType(type)){
-            types.add(type);
-        }
+    private void addTypesToListIfNotExists(List<EnumWithHelpText> types, FileType... fileTypes) {
+        types.addAll(Arrays.stream(fileTypes).filter(type -> countColumnsByType(type) == 0).collect(Collectors.toList()));
+    }
+
+    private void addTwoColorMicroarrayAllowedTypes(List<EnumWithHelpText> types) {
+        addTypesToListIfNotExists(types, FileType.RAW_FILE);
+        addTypesToList(types, FileType.PROCESSED_FILE);
+    }
+
+    private void addOneColorMicroarrayAllowedTypes(List<EnumWithHelpText> types) {
+        addTypesToListIfNotExists(types, FileType.RAW_FILE, FileType.RAW_MATRIX_FILE);
+        addTypesToList(types, FileType.PROCESSED_FILE);
+    }
+
+    private void addSequencingAllowedTypes(List<EnumWithHelpText> types) {
+        addTypesToList(types, FileType.RAW_FILE, FileType.PROCESSED_FILE);
     }
 
     private List<String> getDataFileColumnNames() {
