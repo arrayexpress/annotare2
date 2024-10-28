@@ -33,6 +33,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.strategy.FileTypeMappingStrategy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.strategy.FileTypeMappingStrategyFactory;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DynSelectionCell;
 
 import java.util.*;
@@ -176,37 +178,8 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     }
 
     private List<EnumWithHelpText> getAllowedColumnTypes() {
-        List<EnumWithHelpText> types = new ArrayList<>();
-        if(experimentType.isSequencing()){
-            addSequencingAllowedTypes(types);
-        } else if(experimentType.isTwoColorMicroarray()) {
-            addTwoColorMicroarrayAllowedTypes(types);
-        } else if(experimentType.isMicroarray()) {
-            addOneColorMicroarrayAllowedTypes(types);
-        }
-        return types;
-    }
-
-    private static void addTypesToList(List<EnumWithHelpText> types, FileType... fileTypes) {
-        types.addAll(Arrays.asList(fileTypes));
-    }
-
-    private void addTypesToListIfNotExists(List<EnumWithHelpText> types, FileType... fileTypes) {
-        types.addAll(Arrays.stream(fileTypes).filter(type -> countColumnsByType(type) == 0).collect(Collectors.toList()));
-    }
-
-    private void addTwoColorMicroarrayAllowedTypes(List<EnumWithHelpText> types) {
-        addTypesToListIfNotExists(types, FileType.RAW_FILE);
-        addTypesToList(types, FileType.PROCESSED_FILE);
-    }
-
-    private void addOneColorMicroarrayAllowedTypes(List<EnumWithHelpText> types) {
-        addTypesToListIfNotExists(types, FileType.RAW_FILE, FileType.RAW_MATRIX_FILE);
-        addTypesToList(types, FileType.PROCESSED_FILE);
-    }
-
-    private void addSequencingAllowedTypes(List<EnumWithHelpText> types) {
-        addTypesToList(types, FileType.RAW_FILE, FileType.PROCESSED_FILE);
+        FileTypeMappingStrategy strategy = FileTypeMappingStrategyFactory.getStrategy(experimentType);
+        return strategy.getAllowedFileTypes(columns);
     }
 
     private List<String> getDataFileColumnNames() {
