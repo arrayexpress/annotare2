@@ -87,17 +87,39 @@ public class AssignFilesDialog<T extends EnumWithHelpText> extends DialogBox {
             @Override
             public void onChange(ChangeEvent event) {
                 columnListHelp.setHTML(values.get(columnListBox.getSelectedIndex()).getHelpText());
-                if(experimentProfileType.isMicroarray() && values.get(columnListBox.getSelectedIndex()).isProcessed()){
-                    noOfColumnsLabel.setVisible(true);
-                    noOfColumns.setVisible(true);
+                if(isSequencingExperimentsOrMicroArrayExperimentsWithProcessedFileTypeSelected(values, experimentProfileType)){
+                    showNoOfColumnsField();
+                } else {
+                    hideNoOfColumnsField();
                 }
             }
         });
-        if(experimentProfileType.isSequencing() || values.get(columnListBox.getSelectedIndex()).isProcessed()) {
-            noOfColumnsLabel.setVisible(true);
-            noOfColumns.setVisible(true);
+        if(isSequencingExperimentOrProcessedFileTypeSelected(values, experimentProfileType)) {
+            showNoOfColumnsField();
         }
         center();
+    }
+
+    private void hideNoOfColumnsField() {
+        noOfColumnsLabel.setVisible(false);
+        noOfColumns.setVisible(false);
+    }
+
+    private void showNoOfColumnsField() {
+        noOfColumnsLabel.setVisible(true);
+        noOfColumns.setVisible(true);
+    }
+
+    private boolean isProcessedFileTypeSelected(List<FileType> values) {
+        return values.get(columnListBox.getSelectedIndex()).isProcessed();
+    }
+
+    private boolean isSequencingExperimentOrProcessedFileTypeSelected(List<FileType> values, ExperimentProfileType experimentProfileType) {
+        return experimentProfileType.isSequencing() || isProcessedFileTypeSelected(values);
+    }
+
+    private boolean isSequencingExperimentsOrMicroArrayExperimentsWithProcessedFileTypeSelected(List<FileType> values, ExperimentProfileType experimentProfileType) {
+        return experimentProfileType.isSequencing() || (experimentProfileType.isMicroarray() && isProcessedFileTypeSelected(values));
     }
 
     @UiHandler("okButton")

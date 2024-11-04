@@ -33,9 +33,12 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.strategy.FileTypeMappingStrategy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.strategy.FileTypeMappingStrategyFactory;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DynSelectionCell;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Olga Melnichuk
@@ -175,29 +178,8 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     }
 
     private List<EnumWithHelpText> getAllowedColumnTypes() {
-        List<EnumWithHelpText> types = new ArrayList<>();
-        for (FileType type : FileType.values()) {
-            if(!type.isProcessedMatrix()){
-                if (experimentType.isSequencing()){
-                    types.add(type);
-                }
-                else if (isMicroArrayOrTwoColourMicroArrayWithNonRawMatrixFileType(type)){
-                    alwaysAddProcessedTypeToListAndOnlyAddOtherTypesOnce(type, types);
-                }
-            }
-        }
-        return types;
-    }
-
-    private boolean isMicroArrayOrTwoColourMicroArrayWithNonRawMatrixFileType(FileType type) {
-        return experimentType.isMicroarray() ||
-                (experimentType.isTwoColorMicroarray() && !type.isRawMatrix());
-    }
-
-    private void alwaysAddProcessedTypeToListAndOnlyAddOtherTypesOnce(FileType type, List<EnumWithHelpText> types) {
-        if(type.isProcessed() || 0 == countColumnsByType(type)){
-            types.add(type);
-        }
+        FileTypeMappingStrategy strategy = FileTypeMappingStrategyFactory.getStrategy(experimentType);
+        return strategy.getAllowedFileTypes(columns);
     }
 
     private List<String> getDataFileColumnNames() {
