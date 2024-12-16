@@ -45,7 +45,7 @@
                     <ul>
                         <li><code>md5sum file1 file2 ... fileN</code> on Linux</li>
                         <li><code>md5 file1 file2 ... fileN</code> on Mac</li>
-                        <li><a href="http://support.microsoft.com/kb/841290" target="_blank">FCIV</a> on Windows</li>
+                        <li><code>certutil -hashfile &lt;file&gt; MD5</code> on Windows</li>
                     </ul>
                 </li>
                 <li>
