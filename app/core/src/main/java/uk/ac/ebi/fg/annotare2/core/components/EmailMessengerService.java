@@ -52,38 +52,12 @@ public class EmailMessengerService implements MessengerService {
 
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
-    private final Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            Session session = sessionFactory.openSession();
-            try {
-                processQueue();
-            } catch (Throwable x) {
-                logger.error(x.getMessage(), x);
-            } finally {
-                session.close();
-            }
-        }
-    };
-
-    private final HibernateSessionFactory sessionFactory;
     private final AnnotareProperties properties;
-    private final MessageDao messageDao;
 
     @Inject
-    public EmailMessengerService(HibernateSessionFactory sessionFactory,
-                                 AnnotareProperties properties,
-                                 MessageDao messageDao) {
-        this.sessionFactory = sessionFactory;
+    public EmailMessengerService(AnnotareProperties properties) {
         this.properties = properties;
-        this.messageDao = messageDao;
 
-    }
-
-    @PostConstruct
-    protected void startUp() throws Exception {
-        scheduler.scheduleWithFixedDelay(runnable, 0, 1, MINUTES);
-        logger.info("Messaging service periodic process has started");
     }
 
     @PreDestroy
@@ -145,23 +119,6 @@ public class EmailMessengerService implements MessengerService {
         msg.setSubject(subject);
         msg.setText(body, EMAIL_ENCODING_UTF_8);
         Transport.send(msg);
-    }
-
-    private void processQueue() throws Exception {
-        for (Message msg : messageDao.getMessagesByStatus(MessageStatus.QUEUED)) {
-            processMessage(msg);
-        }
-    }
-
-    @Transactional
-    protected void processMessage(Message message) {
-        try {
-            sendMessage(message);
-            messageDao.markSent(message);
-        } catch (Exception x) {
-            logger.error("Unable to process message " + message.getId(), x);
-            messageDao.markFailed(message);
-        }
     }
 
     protected void sendMessage(Message message) throws Exception {

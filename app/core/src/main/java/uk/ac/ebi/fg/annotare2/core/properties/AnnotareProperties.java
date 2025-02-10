@@ -190,6 +190,9 @@ public class AnnotareProperties implements DataFileStoreProperties {
         return getProperty("annotare.password.reset.token.expiry");
     }
 
+    public String getCreateDataStoreScript() {
+        return getProperty("annotare.datastore.create.script");
+    }
     protected File getDirProperty(String name) {
         String property = getProperty(name);
         File dir = isNullOrEmpty(property) ?
