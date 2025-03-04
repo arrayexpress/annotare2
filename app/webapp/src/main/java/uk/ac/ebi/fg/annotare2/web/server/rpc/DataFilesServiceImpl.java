@@ -259,13 +259,14 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                     experimentSubmission.getExperimentProfile() : null;
             DataFile dataFile = dataFileManager.get(fileId);
             if (submission.getFiles().contains(dataFile) && dataFile.getStatus().isFinal()) {
+                String currentFileName = dataFile.getName();
                 if (null != experiment) {
-                    experiment.renameFile(new FileRef(dataFile.getName(), dataFile.getDigest()), fileName);
+                    experiment.renameFile(new FileRef(currentFileName, dataFile.getDigest()), fileName);
                     experimentSubmission.setExperimentProfile(experiment);
                 }
                 dataFileManager.renameDataFile(dataFile, fileName);
-                renameFileInDataStore(submissionId, dataFile.getName(), fileName);
-                URI remoteURI = new URI(ftpManager.getDirectory(experimentSubmission.getFtpSubDirectory()) + URLEncoder.encode(dataFile.getName(), StandardCharsets.UTF_8.toString()));
+                renameFileInDataStore(submissionId, currentFileName, fileName);
+                URI remoteURI = new URI(ftpManager.getDirectory(experimentSubmission.getFtpSubDirectory()) + URLEncoder.encode(currentFileName, StandardCharsets.UTF_8.toString()));
                 DataFileHandle dataFileHandle = DataFileHandle.createFromUri(remoteURI);
                 if(dataFileHandle.exists() && !(dataFileHandle.getName().equals(fileName))){
                     dataFileHandle.rename(fileName);
