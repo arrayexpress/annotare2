@@ -193,6 +193,11 @@ public class AnnotareProperties implements DataFileStoreProperties {
     public String getCreateDataStoreScript() {
         return getProperty("annotare.datastore.create.script");
     }
+
+    public String getDataStoreFileRenameScript() {
+        return getProperty("annotare.datastore.file.rename.script");
+    }
+
     protected File getDirProperty(String name) {
         String property = getProperty(name);
         File dir = isNullOrEmpty(property) ?

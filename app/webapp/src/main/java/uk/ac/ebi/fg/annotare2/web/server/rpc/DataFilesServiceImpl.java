@@ -22,9 +22,12 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.core.AccessControlException;
+import uk.ac.ebi.fg.annotare2.core.UnexpectedException;
 import uk.ac.ebi.fg.annotare2.core.files.DataFileHandle;
 import uk.ac.ebi.fg.annotare2.core.files.LocalFileHandle;
+import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
+import uk.ac.ebi.fg.annotare2.core.utils.LinuxShellCommandExecutor;
 import uk.ac.ebi.fg.annotare2.core.utils.URIEncoderDecoder;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
@@ -75,6 +78,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
     private final FtpManagerImpl ftpManager;
     private final AnnotareUploadStorage uploadStorage;
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final AnnotareProperties annotareProperties;
 
     @Inject
     public DataFilesServiceImpl(AccountService accountService,
@@ -82,11 +86,12 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                                 DataFileManagerImpl dataFileManager,
                                 FtpManagerImpl ftpManager,
                                 AnnotareUploadStorage uploadStorage,
-                                MessengerImpl emailSender) {
+                                MessengerImpl emailSender, AnnotareProperties annotareProperties) {
         super(accountService, submissionManager, emailSender);
         this.dataFileManager = dataFileManager;
         this.ftpManager = ftpManager;
         this.uploadStorage = uploadStorage;
+        this.annotareProperties = annotareProperties;
     }
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
@@ -242,7 +247,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
         }
     }
 
-    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
+    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class, UnexpectedException.class})
     @Override
     public void renameFile(long submissionId, long fileId, String fileName)
             throws ResourceNotFoundException, NoPermissionException {
@@ -254,12 +259,14 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                     experimentSubmission.getExperimentProfile() : null;
             DataFile dataFile = dataFileManager.get(fileId);
             if (submission.getFiles().contains(dataFile) && dataFile.getStatus().isFinal()) {
+                String currentFileName = dataFile.getName();
                 if (null != experiment) {
-                    experiment.renameFile(new FileRef(dataFile.getName(), dataFile.getDigest()), fileName);
+                    experiment.renameFile(new FileRef(currentFileName, dataFile.getDigest()), fileName);
                     experimentSubmission.setExperimentProfile(experiment);
                 }
                 dataFileManager.renameDataFile(dataFile, fileName);
-                URI remoteURI = new URI(ftpManager.getDirectory(experimentSubmission.getFtpSubDirectory()) + URLEncoder.encode(dataFile.getName(), StandardCharsets.UTF_8.toString()));
+                renameFileInDataStore(submissionId, currentFileName, fileName);
+                URI remoteURI = new URI(ftpManager.getDirectory(experimentSubmission.getFtpSubDirectory()) + URLEncoder.encode(currentFileName, StandardCharsets.UTF_8.toString()));
                 DataFileHandle dataFileHandle = DataFileHandle.createFromUri(remoteURI);
                 if(dataFileHandle.exists() && !(dataFileHandle.getName().equals(fileName))){
                     dataFileHandle.rename(fileName);
@@ -270,8 +277,17 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
             throw noSuchRecord(e);
         } catch (AccessControlException e) {
             throw noPermission(e);
-        } catch (DataSerializationException | URISyntaxException | IOException e) {
+        } catch (DataSerializationException | URISyntaxException | UnexpectedException | IOException e) {
             throw unexpected(e);
+        }
+    }
+
+    private void renameFileInDataStore(long submissionId, String currentFileName, String newFileName) {
+        LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
+        try{
+            executor.execute(annotareProperties.getDataStoreFileRenameScript() + " " + submissionId + " " + currentFileName + " " + newFileName);
+        } catch (IOException e) {
+            throw new UnexpectedException("Failed to rename file " + currentFileName + " in Datastore for submission " + submissionId, e);
         }
     }
 
