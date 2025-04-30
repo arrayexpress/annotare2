@@ -91,14 +91,14 @@ pipeline {
         }
     }
     post {
-      always {
-        // Always update the commit status based on the build result
-        def buildStatus = currentBuild.result ?: 'SUCCESS' // Default to SUCCESS if result is null
-        def githubStatus = (buildStatus == 'SUCCESS') ? 'SUCCESS' : 'FAILURE'
-
-        githubNotify context: 'Jenkins',
-                     description: "Build ${buildStatus.toLowerCase()}",
-                     status: githubStatus
-      }
+        always {
+            script {
+                def buildStatus = currentBuild.result ?: 'SUCCESS'
+                def githubStatus = (buildStatus == 'SUCCESS') ? 'SUCCESS' : 'FAILURE'
+                githubNotify context: 'Jenkins',
+                             description: "Build ${buildStatus.toLowerCase()}",
+                             status: githubStatus
+            }
+        }
     }
 }
