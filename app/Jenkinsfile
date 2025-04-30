@@ -1,9 +1,12 @@
+def skipBuild = false
 if (currentBuild.getBuildCauses().toString().contains('BranchIndexingCause')) {
   print "INFO: Build skipped due to trigger being Branch Indexing"
+  githubNotify context: 'Jenkins', description: 'Build skipped due to branch indexing', status: 'SUCCESS'
   currentBuild.result = 'ABORTED' // optional, gives a better hint to the user that it's been skipped, rather than the default which shows it's successful
-  return
+  skipBuild = true
 }
-pipeline {
+if(!skipBuild) {
+  pipeline {
     options {
         copyArtifactPermission('Annotare-web-app-release-wwwdev, Annotare-web-app-release-prod');
     }
@@ -83,4 +86,16 @@ pipeline {
             }
         }
     }
+    post {
+      always {
+        // Always update the commit status based on the build result
+        def buildStatus = currentBuild.result ?: 'SUCCESS' // Default to SUCCESS if result is null
+        def githubStatus = (buildStatus == 'SUCCESS') ? 'SUCCESS' : 'FAILURE'
+
+        githubNotify context: 'Jenkins', 
+                     description: "Build ${buildStatus.toLowerCase()}",
+                     status: githubStatus
+      }
+    }
+  }
 }
