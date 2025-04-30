@@ -6,6 +6,12 @@ if (currentBuild.getBuildCauses().toString().contains('BranchIndexingCause')) {
 pipeline {
     options {
         copyArtifactPermission('Annotare-web-app-release-wwwdev, Annotare-web-app-release-prod');
+        buildDiscarder(logRotator(
+          artifactDaysToKeepStr: '90', 
+          artifactNumToKeepStr: '20', 
+          daysToKeepStr: '90', 
+          numToKeepStr: '20',
+        ));
     }
     agent {label 'annotare-job-runner'}
     tools {
