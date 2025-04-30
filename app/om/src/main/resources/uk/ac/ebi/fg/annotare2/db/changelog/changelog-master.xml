@@ -256,4 +256,22 @@
                 add pairing MEDIUMTEXT;
         </sql>
     </changeSet>
+    <changeSet id="addGlobusUsersTable" author="sandeepkurri">
+        <sql splitStatements="true" endDelimiter=";">
+            create table globus_users
+            (
+                id           BIGINT auto_increment primary key,
+                globus_id    VARCHAR(255) not null,
+                user_id      BIGINT null,
+                created_date TIMESTAMP default CURRENT_TIMESTAMP not null,
+                deleted      TINYINT(1) default 0 not null,
+                is_default   TINYINT(1) default 0 not null,
+                constraint globus_users_users_id_fk
+                    foreign key (user_id) references users (id)
+            );
+        </sql>
+        <rollback>
+            drop table globus_users;
+        </rollback>
+    </changeSet>
 </databaseChangeLog>
