@@ -274,4 +274,21 @@
             drop table globus_users;
         </rollback>
     </changeSet>
+    <changeSet id="addSubmissionGlobusIdsTable" author="sandeepkurri">
+        <sql splitStatements="true" endDelimiter=";">
+            create table submissions_globus_ids
+            (
+                GlobusUserId BIGINT not null,
+                submissionId  BIGINT not null,
+                constraint submissions_globus_ids_globus_users_id_fk
+                    foreign key (GlobusUserId) references globus_users (id),
+                constraint submissions_globus_ids_submissions_id_fk
+                    foreign key (submissionId) references submissions (id)
+            );
+        </sql>
+        <rollback>
+            drop table submissions_globus_ids;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
