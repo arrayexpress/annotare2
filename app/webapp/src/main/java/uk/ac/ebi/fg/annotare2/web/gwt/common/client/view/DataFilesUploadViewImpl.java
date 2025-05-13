@@ -111,6 +111,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     private List<String> blockedFileExtensions;
 
     private boolean isCurator;
+    private long submissionId;
 
     interface Binder extends UiBinder<Widget, DataFilesUploadViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
@@ -120,7 +121,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
         initWidget(Binder.BINDER.createAndBindUi(this));
         this.isCurator = false;
         ftpUploadDialog = new FTPUploadDialog();
-        injectScript("https://unpkg.com/@annotare/globus-transfer-dialog@1.1.0/dist/globus-transfer-dialog.js");
+        injectScript("https://unpkg.com/@annotare/globus-transfer-dialog@1.1.2/dist/globus-transfer-dialog.js");
         globusUploadBtn.addClickHandler(event -> openGlobusUploadDialog());
         fileListPanel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             @Override
@@ -184,7 +185,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     }
 
     private void openGlobusUploadDialog() {
-        GlobusUploadDialog dialog = new GlobusUploadDialog();
+        GlobusUploadDialog dialog = new GlobusUploadDialog(submissionId);
         dialog.showDialog();
     }
 
@@ -342,6 +343,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
     @Override
     public void setSubmissionId(long submissionId) {
+        this.submissionId = submissionId;
         fileListPanel.setSubmissionId(submissionId);
     }
 
