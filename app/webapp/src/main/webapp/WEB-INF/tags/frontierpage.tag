@@ -16,6 +16,7 @@
 <%@tag description="Frontier page template" pageEncoding="UTF-8" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@attribute name="title" required="true" %>
 <%@attribute name="localnav" fragment="true" required="false" %>
 <%@attribute name="extracss" fragment="true" %>
@@ -98,9 +99,11 @@
     <!-- you can replace this with theme-[projectname].css. See http://www.ebi.ac.uk/web/style/colour for details of how to do this -->
     <!-- also inform ES so we can host your colour palette file -->
     <!-- end CSS-->
+    <t:analytics></t:analytics>
 </head>
 
 <body class="level2"><!-- add any of your classes or IDs -->
+<t:analytics-body></t:analytics-body>
 <!-- add any of your classes or IDs -->
 <div id="skip-to">
     <a href="#content">Skip to main content</a>
@@ -205,12 +208,12 @@
 
 <!-- Google Analytics details... -->
 <!-- Change UA-XXXXX-X to be your site's ID -->
-<script
-        type="text/javascript">!function (e, a, n, t, i, o, c) {
-    e.GoogleAnalyticsObject = i, e[i] = e[i] || function () {
-        (e[i].q = e[i].q || []).push(arguments)
-    }, e[i].l = 1 * new Date, o = a.createElement(n), c = a.getElementsByTagName(n)[0], o.async = 1, o.src = "//www.google-analytics.com/analytics.js", c.parentNode.insertBefore(o, c)
-}(window, document, "script", 0, "ga"), ga("create", "UA-629242-1", {cookieDomain: "auto"}), ga("require", "linkid", "linkid.js"), ga("set", "anonymizeIp", !0), ga("send", "pageview");</script>
+<%--<script--%>
+<%--        type="text/javascript">!function (e, a, n, t, i, o, c) {--%>
+<%--    e.GoogleAnalyticsObject = i, e[i] = e[i] || function () {--%>
+<%--        (e[i].q = e[i].q || []).push(arguments)--%>
+<%--    }, e[i].l = 1 * new Date, o = a.createElement(n), c = a.getElementsByTagName(n)[0], o.async = 1, o.src = "//www.google-analytics.com/analytics.js", c.parentNode.insertBefore(o, c)--%>
+<%--}(window, document, "script", 0, "ga"), ga("create", "UA-629242-1", {cookieDomain: "auto"}), ga("require", "linkid", "linkid.js"), ga("set", "anonymizeIp", !0), ga("send", "pageview");</script>--%>
 <!--! end of #wrapper -->
 <!--
 <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/plugins.js"></script>

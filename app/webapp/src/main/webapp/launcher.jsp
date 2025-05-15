@@ -27,6 +27,7 @@
     </script>
 </head>
 <body>
+<t:analytics-body></t:analytics-body>
 Loading, please wait...
 </body>
 </html>

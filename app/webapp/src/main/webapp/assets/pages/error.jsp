@@ -16,7 +16,6 @@
 <%@page import="com.google.inject.Injector"%>
 <%@page import="uk.ac.ebi.fg.annotare2.core.components.Messenger"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
-<t:analytics></t:analytics>
 <h2 class="alert">Oops, there is a problem with Annotare</h2>
 <p>This problem means that the service you are trying to access is currently unavailable. We'll bring back the service as soon as possible. We’re very sorry.</p>
 <h3>Still confused?</h3>

@@ -31,7 +31,6 @@
     values = request.getParameterValues("email");
     pageContext.setAttribute("userEmail", values == null ? "" : values[0]);
 %>
-<t:analytics></t:analytics>
 <script>
     function acceptPolicy(){
         var acceptCheck = document.getElementById("acceptPolicy");
@@ -52,7 +51,7 @@
 </style>
 <section class="row columns form">
     <h2>Please register with Annotare</h2>
-    <form method="POST">
+    <form id = "form-sign-up" method="POST">
         <div class="error">${dummyErrors}</div>
         <div><label for="name">Full name</label></div>
         <div><input type="text" id="name" name="name" value="${pageScope.userName}"/></div>

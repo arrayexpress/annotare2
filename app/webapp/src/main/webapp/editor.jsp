@@ -25,6 +25,7 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/EditorApp/EditorApp.nocache.js"></script>
 </head>
 <body revision="${buildNumber}">
+<t:analytics-body></t:analytics-body>
 <!-- OPTIONAL: include this if you want history support -->
 <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
 

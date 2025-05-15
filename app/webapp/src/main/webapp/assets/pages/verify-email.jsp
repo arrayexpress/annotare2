@@ -31,7 +31,6 @@
     }
     pageContext.setAttribute("userEmail", email == null ? "" : email);
 %>
-<t:analytics></t:analytics>
 <section class="grid_12 push_6 form">
     <h2>Email verification</h2>
     <form method="POST">

@@ -33,7 +33,6 @@
     }
     pageContext.setAttribute("email", email == null ? "" : email);
 %>
-<t:analytics></t:analytics>
 <script>
     function fixEmail() {
         var email_elt = document.forms["login"]["email"];
@@ -89,7 +88,7 @@
 <section class="column medium-4 form">
         <div id="login-box">
             <h2>Please log in to Annotare</h2>
-            <form name="login" method="POST">
+            <form id = "form-login" name="login" method="POST">
                 <div>
                     <c:out value="${sessionScope.info}"/>
                     <c:remove var="info" scope="session"/>

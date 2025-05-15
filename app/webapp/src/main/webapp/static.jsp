@@ -104,7 +104,6 @@
         <jsp:attribute name="title">${pageTitle}Annotare &lt; EMBL-EBI</jsp:attribute>
 
         <jsp:body>
-            <t:analytics></t:analytics>
             <jsp:include page="/assets/pages/${param.pageName}"/>
         </jsp:body>
     </t:frontierpage>
