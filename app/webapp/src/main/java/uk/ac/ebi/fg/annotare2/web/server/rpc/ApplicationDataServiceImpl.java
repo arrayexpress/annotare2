@@ -173,6 +173,8 @@ public class ApplicationDataServiceImpl extends ErrorReportingRemoteServiceServl
                 .setAsperaEnabled(properties.isAsperaEnabled())
                 .setAsperaUrl(properties.getPublicAsperaUrl())
                 .setGlobusEnabled(properties.isGlobusEnabled())
+                .setGlobusTransferComponentURL(properties.getGlobusTransferComponentURL())
+                .setGlobusTransferAPIURL(properties.getGlobusTransferAPIURL())
                 .build();
     }
 

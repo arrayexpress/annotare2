@@ -1,6 +1,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.client.view;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
@@ -29,36 +30,50 @@ public class GlobusUploadDialog  extends DialogBox {
     
     Long submissionId;
 
-    public GlobusUploadDialog(long submissionId) {
+    String globusTransferAPIURL;
+
+    public GlobusUploadDialog(long submissionId, String globusTransferAPIURL) {
         setModal(true);
         setGlassEnabled(true);
         setText("Globus Upload");
         setWidget(uiBinder.createAndBindUi(this));
+        addStyleName("globusUploadDialog");
         this.submissionId = submissionId;
+        this.globusTransferAPIURL = globusTransferAPIURL;
         // Set the ID for React component container
         reactContainer.getElement().setId("globus-upload-container");
-
         // Close button action
         closeButton.addClickHandler(event -> this.hide());
     }
 
     public void showDialog() {
-        center();
+        // Initially hide the dialog element but position it
+        getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
+        getElement().getStyle().setOpacity(0);
+        // Show the dialog without making it visible yet
         show();
-
-        // Delay execution to ensure dialog is rendered before inserting React component
-//        new com.google.gwt.user.client.Timer() {
-//            @Override
-//            public void run() {
-//                showReactComponent("globus-upload-container");
-//            }
-//        }.schedule(10);
+        // Set initial center position
+        center();
+        // Add the React component to the DOM
         addReactWebComponent();
+        // After React component is loaded, make the dialog visible with a fade-in effect
+        new com.google.gwt.user.client.Timer() {
+            @Override
+            public void run() {
+                // Calculate center position again with the proper content
+                center();
+                // Show the dialog with a smooth transition
+                getElement().getStyle().setProperty("transition", "opacity 0.3s ease-in-out");
+                getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
+                getElement().getStyle().setOpacity(1);
+            }
+        }.schedule(10);
     }
 
     private void addReactWebComponent() {
         GlobusUploadWebComponent reactWebComponent = (GlobusUploadWebComponent) DomGlobal.document.createElement("globus-transfer-dialog");
         reactWebComponent.setsubmissionId(submissionId);
+        reactWebComponent.setapiBaseUrl(globusTransferAPIURL);
         DomGlobal.document.getElementById("globus-upload-container").appendChild(reactWebComponent);
     }
 
@@ -75,4 +90,8 @@ class GlobusUploadWebComponent extends HTMLElement {
     public native void setsubmissionId(Long submissionId);
     @JsProperty(name = "submission_id")
     public native String getsubmissionId();
+    @JsProperty(name = "api_base_url")
+    public native void setapiBaseUrl(String apiBaseUrl);
+    @JsProperty(name = "api_base_url")
+    public native String getapiBaseUrl();
 }
