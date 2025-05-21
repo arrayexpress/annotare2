@@ -31,6 +31,8 @@ public class ApplicationProperties implements IsSerializable {
     private boolean isAsperaEnabled;
     private String asperaUrl;
     private boolean isGlobusEnabled;
+    private String globusTransferComponentURL;
+    private String globusTransferAPIURL;
 
     ApplicationProperties() {
     }
@@ -44,6 +46,8 @@ public class ApplicationProperties implements IsSerializable {
         this.isAsperaEnabled = other.isAsperaEnabled;
         this.asperaUrl = other.asperaUrl;
         this.isGlobusEnabled = other.isGlobusEnabled;
+        this.globusTransferComponentURL = other.globusTransferComponentURL;
+        this.globusTransferAPIURL = other.globusTransferAPIURL;
     }
 
     public boolean isFtpEnabled() {
@@ -75,6 +79,10 @@ public class ApplicationProperties implements IsSerializable {
     }
 
     public boolean isGlobusEnabled() {return isGlobusEnabled;}
+
+    public String getGlobusTransferComponentURL() {return globusTransferComponentURL;}
+
+    public String getGlobusTransferAPIURL() {return globusTransferAPIURL;}
 
     public static class Builder {
         private final ApplicationProperties properties;
@@ -120,6 +128,16 @@ public class ApplicationProperties implements IsSerializable {
 
         public Builder setGlobusEnabled(boolean isEnabled) {
             properties.isGlobusEnabled = isEnabled;
+            return this;
+        }
+
+        public Builder setGlobusTransferComponentURL(String url) {
+            properties.globusTransferComponentURL = url;
+            return this;
+        }
+
+        public Builder setGlobusTransferAPIURL(String url) {
+            properties.globusTransferAPIURL = url;
             return this;
         }
 

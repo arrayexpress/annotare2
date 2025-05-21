@@ -21,6 +21,7 @@
     <title>Annotare 2.0 Editor</title>
     <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/general.css">
     <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/font-awesome.min.css">
+    <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/GlobusUploadDialog.css">
     <t:analytics></t:analytics>
     <script type="text/javascript" src="${pageContext.request.contextPath}/EditorApp/EditorApp.nocache.js"></script>
 </head>
