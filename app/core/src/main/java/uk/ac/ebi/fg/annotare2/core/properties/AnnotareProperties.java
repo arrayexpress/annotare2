@@ -198,6 +198,18 @@ public class AnnotareProperties implements DataFileStoreProperties {
         return getProperty("annotare.datastore.file.rename.script");
     }
 
+    public boolean isGlobusEnabled() {
+        return getBooleanProperty("globus.enabled");
+    }
+
+    public String getGlobusTransferComponentURL(){
+        return getProperty("globus.transfer.component.url");
+    }
+
+    public String getGlobusTransferAPIURL(){
+        return getProperty("globus.transfer.api.url");
+    }
+
     protected File getDirProperty(String name) {
         String property = getProperty(name);
         File dir = isNullOrEmpty(property) ?

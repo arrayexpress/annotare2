@@ -30,6 +30,9 @@ public class ApplicationProperties implements IsSerializable {
     private String ftpPassword;
     private boolean isAsperaEnabled;
     private String asperaUrl;
+    private boolean isGlobusEnabled;
+    private String globusTransferComponentURL;
+    private String globusTransferAPIURL;
 
     ApplicationProperties() {
     }
@@ -42,6 +45,9 @@ public class ApplicationProperties implements IsSerializable {
         this.ftpPassword = other.ftpPassword;
         this.isAsperaEnabled = other.isAsperaEnabled;
         this.asperaUrl = other.asperaUrl;
+        this.isGlobusEnabled = other.isGlobusEnabled;
+        this.globusTransferComponentURL = other.globusTransferComponentURL;
+        this.globusTransferAPIURL = other.globusTransferAPIURL;
     }
 
     public boolean isFtpEnabled() {
@@ -71,6 +77,12 @@ public class ApplicationProperties implements IsSerializable {
     public String getAsperaUrl() {
         return asperaUrl;
     }
+
+    public boolean isGlobusEnabled() {return isGlobusEnabled;}
+
+    public String getGlobusTransferComponentURL() {return globusTransferComponentURL;}
+
+    public String getGlobusTransferAPIURL() {return globusTransferAPIURL;}
 
     public static class Builder {
         private final ApplicationProperties properties;
@@ -111,6 +123,21 @@ public class ApplicationProperties implements IsSerializable {
 
         public Builder setAsperaUrl(String url) {
             properties.asperaUrl = url;
+            return this;
+        }
+
+        public Builder setGlobusEnabled(boolean isEnabled) {
+            properties.isGlobusEnabled = isEnabled;
+            return this;
+        }
+
+        public Builder setGlobusTransferComponentURL(String url) {
+            properties.globusTransferComponentURL = url;
+            return this;
+        }
+
+        public Builder setGlobusTransferAPIURL(String url) {
+            properties.globusTransferAPIURL = url;
             return this;
         }
 
