@@ -14,9 +14,9 @@
 
 <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function(event){
-        ebiInjectAnnouncements({ headline: '', message: '<b>We need your help! Has Annotare saved you time or effort? ' +
+        ebiInjectAnnouncements({ headline: 'We need your help!', message: 'Has Annotare saved you time or effort? ' +
                 'Please take 15 minutes to fill in a survey and help EMBL-EBI make the case for why open data resources are critical to life science research.  ' +
-                '<a href="https://www.surveymonkey.com/r/QGFMBH8?channel=[webpage]" >https://www.surveymonkey.com/r/QGFMBH8?channel=[webpage]</a></b>', priority: 'warning' });
+                '<b><a href="https://www.surveymonkey.com/r/QGFMBH8?channel=[webpage]" target="_blank">https://www.surveymonkey.com/r/QGFMBH8?channel=[webpage]</a></b>', priority: 'warning' });
         
         var notification_dive = document.getElementsByClassName("notifications-js")
         if (notification_dive.length > 0) {
