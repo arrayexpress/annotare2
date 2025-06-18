@@ -16,13 +16,15 @@
     document.addEventListener("DOMContentLoaded", function(event){
         ebiInjectAnnouncements({ headline: 'We need your help!', message: 'Has Annotare saved you time or effort? ' +
                 'Please take 15 minutes to fill in a survey and help EMBL-EBI make the case for why open data resources are critical to life science research.  ' +
-                '<b><a href="https://www.surveymonkey.com/r/QGFMBH8?channel=[webpage]" target="_blank">https://www.surveymonkey.com/r/QGFMBH8?channel=[webpage]</a></b>', priority: 'warning' });
+                '<b><a href="https://www.surveymonkey.com/r/QGFMBH8?channel=[webpage]" target="_blank">Survey Link</a></b>', priority: 'warning' });
         
         var notification_dive = document.getElementsByClassName("notifications-js")
         if (notification_dive.length > 0) {
             notification_dive[0].style.marginTop = "-1.5rem";
             notification_dive[0].style.marginBottom = "-1.5rem";
-            notification_dive[0].style.maxWidth = "100rem"
+            notification_dive[0].style.position = "relative";
+            notification_dive[0].style.width = "100vw";
+            notification_dive[0].style.left = "calc(-49vw + 50%)"
         }
     })
     // var container = document.getElementById('main-content-area') || document.getElementById('main-content') || document.getElementById('main') || document.getElementById('content') || document.getElementById('contentsarea');
