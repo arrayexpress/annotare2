@@ -172,6 +172,7 @@ public class AnnotareWebAppModule extends ServletModule {
         bind(SubmissionStatusHistoryDao.class).to(SubmissionStatusHistoryDaoImpl.class).in(SINGLETON);
         bind(AccountManager.class).in(SINGLETON);
         bind(SubmissionManager.class).to(SubmissionManagerImpl.class).in(SINGLETON);
+        bind(DataStoreManager.class).in(SINGLETON);
         bind(DataFileManager.class).to(DataFileManagerImpl.class).in(SINGLETON);
         bind(Messenger.class).to(MessengerImpl.class).in(SINGLETON);
         bind(FtpManager.class).to(FtpManagerImpl.class).in(SINGLETON);
