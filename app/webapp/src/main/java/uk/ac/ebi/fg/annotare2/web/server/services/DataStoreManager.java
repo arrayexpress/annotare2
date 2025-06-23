@@ -1,8 +1,8 @@
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
-import com.google.gwt.core.client.Scheduler;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.core.UnexpectedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.core.utils.LinuxShellCommandExecutor;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionExceptionDao;
@@ -11,50 +11,82 @@ import uk.ac.ebi.fg.annotare2.db.model.SubmissionException;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class DataStoreManager {
+    private static final Logger logger = LoggerFactory.getLogger(DataStoreManager.class);
     public final AnnotareProperties annotareProperties;
     private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(1);
     private final LinuxShellCommandExecutor shellCommandExecutor = new LinuxShellCommandExecutor();
     private final SubmissionExceptionDao submissionExceptionDao;
     private String jobStatus;
+    private final BlockingQueue<Submission> submissionQueue = new LinkedBlockingQueue<>();
+    private volatile boolean isProcessing = false;
+
 
     @Inject
     public DataStoreManager(AnnotareProperties annotareProperties, SubmissionExceptionDao submissionExceptionDao) {
         this.annotareProperties = annotareProperties;
         this.submissionExceptionDao = submissionExceptionDao;
+        startQueueProcessor();
     }
 
-    public <T extends Submission> void createDataStoreAsync(T submission) {
+    private void startQueueProcessor() {
         EXECUTOR.submit(new Runnable() {
             @Override
             public void run() {
                 try {
-                    final String command = buildDataStoreCommand(submission.getId(), submission.getFtpSubDirectory());
-                    boolean success = shellCommandExecutor.execute(command);
-                    if (success) {
-                        String output = shellCommandExecutor.getOutput();
-                        jobStatus = parseSlurmOutputAndGetStatus(output);
-                        if(!jobStatus.equalsIgnoreCase("COMPLETED")) {
-                            logErrorMessage(submission, "Failed to create data store or FTP sub directory", null);
+                    while (!Thread.currentThread().isInterrupted()) {
+                        try {
+                            Submission submission = submissionQueue.take();
+                            isProcessing = true;
+                            logger.info("Processing submission " + submission.getId() + " from queue");
+                            processSubmission(submission);
+                            isProcessing = false;
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                            logger.warn("Queue processor interrupted: " + e.getMessage());
+                            break;
+                        } catch (Exception e) {
+                            logger.error("Error in queue processor", e);
+                            isProcessing = false;
                         }
                     }
-                    else{
-                        logErrorMessage(submission, "Error while submitting data store create slurm job", null);
-                    }
-                } catch (final IOException e) {
-                    logErrorMessage(submission, "Error while submitting data store create slurm job", e);
+                } finally {
+                    logger.info("Queue processor shutting down");
                 }
             }
         });
+        logger.info("Data store queue processor started");
+    }
 
+    private <T extends Submission> void processSubmission(T submission) {
         try {
-            shellCommandExecutor.execute(annotareProperties.getCreateDataStoreScript() + " " + submission.getId() + " " + submission.getFtpSubDirectory());
-        } catch (IOException e) {
-            throw new UnexpectedException("Failed to create data store for submission " + submission.getId(), e);
+            final String command = buildDataStoreCommand(submission.getId(), submission.getFtpSubDirectory());
+            boolean success = shellCommandExecutor.execute(command);
+            if (success) {
+                String output = shellCommandExecutor.getOutput();
+                jobStatus = parseSlurmOutputAndGetStatus(output);
+                if (jobStatus == null || !jobStatus.equalsIgnoreCase("COMPLETED")) {
+                    logErrorMessage(submission, "Failed to create data store or FTP sub directory", null);
+                } else {
+                    logger.info("Successfully created data store for submission " + submission.getId());
+                }
+            } else {
+                logErrorMessage(submission, "Error while submitting data store create slurm job", null);
+            }
+        } catch (final IOException e) {
+            logErrorMessage(submission, "Error while submitting data store create slurm job", e);
         }
+    }
+
+
+    public <T extends Submission> void createDataStoreAsync(T submission) {
+        submissionQueue.add(submission);
+        logger.info("Added submission " + submission.getId() + " to processing queue. Queue size: " + submissionQueue.size());
     }
 
     private <T extends Submission> void logErrorMessage(T submission, String exceptionMessage, Exception error) {
@@ -82,4 +114,17 @@ public class DataStoreManager {
         }
         return null;
     }
+
+    public int getQueueSize() {
+        return submissionQueue.size();
+    }
+
+    public boolean isProcessing() {
+        return isProcessing;
+    }
+
+    public void shutdown() {
+        EXECUTOR.shutdownNow();
+    }
+
 }
