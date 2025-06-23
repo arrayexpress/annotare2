@@ -1,6 +1,7 @@
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.gwt.core.client.Scheduler;
+import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.core.UnexpectedException;
 import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.core.utils.LinuxShellCommandExecutor;
@@ -20,6 +21,7 @@ public class DataStoreManager {
     private final SubmissionExceptionDao submissionExceptionDao;
     private String jobStatus;
 
+    @Inject
     public DataStoreManager(AnnotareProperties annotareProperties, SubmissionExceptionDao submissionExceptionDao) {
         this.annotareProperties = annotareProperties;
         this.submissionExceptionDao = submissionExceptionDao;
