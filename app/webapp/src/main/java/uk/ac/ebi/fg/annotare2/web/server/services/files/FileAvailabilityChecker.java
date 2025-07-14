@@ -18,8 +18,11 @@
 package uk.ac.ebi.fg.annotare2.web.server.services.files;
 
 import uk.ac.ebi.fg.annotare2.core.files.DataFileHandle;
+import uk.ac.ebi.fg.annotare2.core.files.RemoteFileAccess;
 import uk.ac.ebi.fg.annotare2.core.files.RemoteFileHandle;
 import uk.ac.ebi.fg.annotare2.core.files.SshFileAccess;
+import uk.ac.ebi.fg.annotare2.core.files.TransferStorageFileAccess;
+import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 
 import java.io.IOException;
 import java.net.URI;
@@ -32,11 +35,16 @@ public class FileAvailabilityChecker {
 
     private final Map<String, List<String>> filesCache;
 
-    private final SshFileAccess access;
+    private final RemoteFileAccess access;
 
     public FileAvailabilityChecker() {
         this.filesCache = Collections.synchronizedMap(new HashMap<String, List<String>>());
         this.access = new SshFileAccess();
+    }
+
+    public FileAvailabilityChecker(AnnotareProperties annotareProperties) {
+        this.filesCache = Collections.synchronizedMap(new HashMap<String, List<String>>());
+        this.access = new TransferStorageFileAccess(annotareProperties);
     }
 
     public boolean isAvailable(DataFileHandle source) throws IOException {

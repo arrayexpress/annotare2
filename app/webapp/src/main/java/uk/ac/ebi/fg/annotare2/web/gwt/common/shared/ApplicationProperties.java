@@ -33,6 +33,7 @@ public class ApplicationProperties implements IsSerializable {
     private boolean isGlobusEnabled;
     private String globusTransferComponentURL;
     private String globusTransferAPIURL;
+    private String contextPath;
 
     ApplicationProperties() {
     }
@@ -48,6 +49,7 @@ public class ApplicationProperties implements IsSerializable {
         this.isGlobusEnabled = other.isGlobusEnabled;
         this.globusTransferComponentURL = other.globusTransferComponentURL;
         this.globusTransferAPIURL = other.globusTransferAPIURL;
+        this.contextPath = other.contextPath;
     }
 
     public boolean isFtpEnabled() {
@@ -83,6 +85,8 @@ public class ApplicationProperties implements IsSerializable {
     public String getGlobusTransferComponentURL() {return globusTransferComponentURL;}
 
     public String getGlobusTransferAPIURL() {return globusTransferAPIURL;}
+
+    public String getContextPath() {return contextPath;}
 
     public static class Builder {
         private final ApplicationProperties properties;
@@ -138,6 +142,11 @@ public class ApplicationProperties implements IsSerializable {
 
         public Builder setGlobusTransferAPIURL(String url) {
             properties.globusTransferAPIURL = url;
+            return this;
+        }
+
+        public Builder setContextPath(String contextPath) {
+            properties.contextPath = contextPath;
             return this;
         }
 

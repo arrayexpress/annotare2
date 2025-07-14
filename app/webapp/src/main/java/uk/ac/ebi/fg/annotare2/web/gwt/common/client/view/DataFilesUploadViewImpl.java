@@ -113,6 +113,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     private boolean isCurator;
     private long submissionId;
     private String globusTransferAPIURL;
+    private String contextPath;
 
     interface Binder extends UiBinder<Widget, DataFilesUploadViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
@@ -185,7 +186,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     }
 
     private void openGlobusUploadDialog() {
-        GlobusUploadDialog dialog = new GlobusUploadDialog(submissionId, globusTransferAPIURL);
+        GlobusUploadDialog dialog = new GlobusUploadDialog(submissionId, globusTransferAPIURL, contextPath, presenter);
         dialog.showDialog();
     }
 
@@ -384,6 +385,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
         }
         if (properties.isGlobusEnabled()) {
             globusTransferAPIURL = properties.getGlobusTransferAPIURL();
+            contextPath = properties.getContextPath();
             globusUploadBtn.setEnabled(true);
             globusUploadBtn.setVisible(true);
             injectScript(properties.getGlobusTransferComponentURL());

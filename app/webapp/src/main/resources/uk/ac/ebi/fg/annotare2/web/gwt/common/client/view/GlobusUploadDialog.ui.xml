@@ -2,12 +2,6 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
     <ui:style>
-        .text {
-            width: 40em;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: small;
-            line-height: 150%;
-        }
         .text ul > li {
             list-style-type: square;
         }

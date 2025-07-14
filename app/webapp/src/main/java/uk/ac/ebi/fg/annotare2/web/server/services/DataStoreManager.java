@@ -10,6 +10,8 @@ import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.SubmissionException;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -74,6 +76,7 @@ public class DataStoreManager {
                     logErrorMessage(submission, "Failed to create data store or FTP sub directory", null);
                 } else {
                     logger.info("Successfully created data store for submission " + submission.getId());
+                    notifyGlobusTransferApi(submission);
                 }
             } else {
                 logErrorMessage(submission, "Error while submitting data store create slurm job", null);
@@ -125,6 +128,34 @@ public class DataStoreManager {
 
     public void shutdown() {
         EXECUTOR.shutdownNow();
+    }
+
+    private <T extends Submission> void notifyGlobusTransferApi(T submission) {
+        try {
+            String globusApiUrl = annotareProperties.getGlobusTransferAPIURL();
+            String endpoint = globusApiUrl + "/globus-collection/" + submission.getId();
+
+            URL url = new URL(endpoint);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setDoOutput(true);
+
+            // Send empty POST request
+            connection.getOutputStream().close();
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == 202) {
+                logger.info("Globus collection creation initiated for submission " + submission.getId());
+            } else {
+                logger.error("Failed to initiate Globus collection creation for submission " + 
+                             submission.getId() + ", response code: " + responseCode);
+            }
+
+            connection.disconnect();
+        } catch (Exception e) {
+            logger.error("Error calling Globus Transfer API for submission " + submission.getId(), e);
+        }
     }
 
 }

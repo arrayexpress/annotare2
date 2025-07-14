@@ -194,7 +194,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
 
             StringBuilder errors = new StringBuilder();
             Map<String,DataFileHandle> files = new HashMap<>();
-            FileAvailabilityChecker fileChecker = new FileAvailabilityChecker();
+            FileAvailabilityChecker fileChecker = new FileAvailabilityChecker(annotareProperties);
             for (String infoStr : filesInfo) {
                 FtpFileInfo info = getFtpFileInfo(infoStr);
 

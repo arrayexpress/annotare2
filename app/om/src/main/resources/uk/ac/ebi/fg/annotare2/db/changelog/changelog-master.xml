@@ -290,5 +290,23 @@
             drop table submissions_globus_ids;
         </rollback>
     </changeSet>
+    <changeSet id="addGlobusCollectionsTable" author="sandeepkurri">
+        <sql splitStatements="true" endDelimiter=";">
+            create table globus_collections
+            (
+                id              BIGINT auto_increment
+        primary key,
+                collection_uuid varchar(255)                         not null,
+                created_date    TIMESTAMP  default CURRENT_TIMESTAMP not null,
+                submission_id   BIGINT                               not null,
+                deleted         TINYINT(1) default 0                 not null,
+                constraint globus_collections_submissions_id_fk
+                    foreign key (submission_id) references submissions (id)
+            );
+        </sql>
+        <rollback>
+            drop table globus_collections;
+        </rollback>
+    </changeSet>
 
 </databaseChangeLog>

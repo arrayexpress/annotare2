@@ -175,6 +175,7 @@ public class ApplicationDataServiceImpl extends ErrorReportingRemoteServiceServl
                 .setGlobusEnabled(properties.isGlobusEnabled())
                 .setGlobusTransferComponentURL(properties.getGlobusTransferComponentURL())
                 .setGlobusTransferAPIURL(properties.getGlobusTransferAPIURL())
+                .setContextPath(properties.getContextPath())
                 .build();
     }
 
