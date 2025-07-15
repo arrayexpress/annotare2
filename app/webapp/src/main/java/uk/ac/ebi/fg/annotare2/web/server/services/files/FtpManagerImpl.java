@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.core.components.FtpManager;
 import uk.ac.ebi.fg.annotare2.core.files.SshFileAccess;
+import uk.ac.ebi.fg.annotare2.core.files.TransferStorageFileAccess;
 import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class FtpManagerImpl implements FtpManager {
     private static final Logger log = LoggerFactory.getLogger(FtpManagerImpl.class);
 
     private final String root;
-    private final SshFileAccess access;
+    private final TransferStorageFileAccess access;
 
     @Inject
     public FtpManagerImpl(AnnotareProperties properties) {
@@ -48,7 +49,7 @@ public class FtpManagerImpl implements FtpManager {
                 root = root + "/";
             }
             this.root = root;
-            this.access = new SshFileAccess();
+            this.access = new TransferStorageFileAccess(properties);
         } else {
             this.root = null;
             this.access = null;

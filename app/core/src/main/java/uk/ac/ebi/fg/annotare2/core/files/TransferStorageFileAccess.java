@@ -100,6 +100,13 @@ public class TransferStorageFileAccess implements RemoteFileAccess, Serializable
         jobResult.cleanup();
     }
 
+    public void createDirectory(URI directory) throws IOException {
+        String commands = "mkdir -p -m 775 " + directory.getPath();
+        SlurmJobResult jobResult = executeSlurmJob(commands, directory.getPath(), "delete");
+        jobResult.checkForErrors();
+        jobResult.cleanup();
+    }
+
     public List<String> listFiles(URI file) throws IOException {
         if (!isSupported(file)) {
             throw new IOException("Unsupported URI scheme: " + file.getScheme());
