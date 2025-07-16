@@ -36,7 +36,7 @@ pipeline {
                 stage ('Compile') {
                     steps{
                        configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {
-                            sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/pom.xml clean compile'
+                            sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/pom.xml compile'
                         }
                     }
                 }
