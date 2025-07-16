@@ -1,6 +1,4 @@
 #!/bin/bash
-cat <<EoF
-        #!/bin/bash
 #Submit this script with: sbatch thefilename
 #For more details about each parameter, please check SLURM sbatch documentation https://slurm.schedmd.com/sbatch.html
 
@@ -18,5 +16,3 @@ cat <<EoF
 #SBATCH -W
 
 ${commands}
-
-EoF

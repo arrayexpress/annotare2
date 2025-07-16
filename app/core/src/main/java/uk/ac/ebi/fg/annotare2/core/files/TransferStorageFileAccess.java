@@ -102,7 +102,7 @@ public class TransferStorageFileAccess implements RemoteFileAccess, Serializable
 
     public void createDirectory(URI directory) throws IOException {
         String commands = "mkdir -p -m 775 " + directory.getPath();
-        SlurmJobResult jobResult = executeSlurmJob(commands, directory.getPath(), "delete");
+        SlurmJobResult jobResult = executeSlurmJob(commands, directory.getPath(), "createDirectory");
         jobResult.checkForErrors();
         jobResult.cleanup();
     }
@@ -115,7 +115,7 @@ public class TransferStorageFileAccess implements RemoteFileAccess, Serializable
         if (parentPath == null) {
             throw new IOException("Cannot get parent directory for URI: " + file);
         }
-        String commands = "ls -l " + parentPath;
+        String commands = "ls -1 " + parentPath;
         SlurmJobResult jobResult = executeSlurmJob(commands, file.getPath(), "listFiles");
         jobResult.checkForErrors();
         try {
@@ -187,7 +187,7 @@ public class TransferStorageFileAccess implements RemoteFileAccess, Serializable
             throw new IOException("Failed to execute Slurm job for operation '" + operation + "' on file " + filePath + ": " + e.getMessage(), e);
         } finally {
             if (tempScriptFile != null) {
-                Files.deleteIfExists(tempScriptFile);
+//                Files.deleteIfExists(tempScriptFile);
             }
         }
     }

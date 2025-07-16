@@ -122,9 +122,10 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
         try {
             Submission submission = getSubmission(submissionId, Permission.VIEW);
             String submissionDirectory = nullToEmpty(submission.getFtpSubDirectory());
-            if (!submissionDirectory.isEmpty() && !ftpManager.doesExist(submissionDirectory)) {
-                ftpManager.createDirectory(submissionDirectory);
-            }
+//            Disable this directory existance check as it already done at the time submission creation.
+//            if (!submissionDirectory.isEmpty() && !ftpManager.doesExist(submissionDirectory)) {
+//                ftpManager.createDirectory(submissionDirectory);
+//            }
             return submissionDirectory;
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
