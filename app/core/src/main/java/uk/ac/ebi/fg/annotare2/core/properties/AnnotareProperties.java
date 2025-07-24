@@ -98,6 +98,10 @@ public class AnnotareProperties implements DataFileStoreProperties {
         return getProperty("ftp.pickup.dir");
     }
 
+    public String getGlobusPickUpDir() {
+        return getProperty("globus.pickup.dir");
+    }
+
     public String getPublicFtpHostname() {
         return getProperty("ftp.public.hostname");
     }

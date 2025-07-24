@@ -38,4 +38,6 @@ public interface DataFilesServiceAsync {
     void renameFile(long submissionId, long fileId, String fileName, AsyncCallback<Void> async);
 
     void deleteFiles(long submissionId, List<Long> files, AsyncCallback<Void> async);
+
+    void registerGlobusFiles(long submissionId, List<String> filesInfo, AsyncCallback<String> asyncCallback);
 }

@@ -42,7 +42,7 @@ public interface DataFilesUploadView extends IsWidget {
 
     void setCurator(boolean isCurator);
 
-    interface Presenter extends FTPUploadDialog.Presenter, DataFileListPanel.Presenter {
+    interface Presenter extends FTPUploadDialog.Presenter, DataFileListPanel.Presenter, GlobusUploadDialog.Presenter {
 
         void initSubmissionFtpDirectory(AsyncCallback<String> callback);
         void uploadFile(UploadedFileInfo fileInfo, AsyncCallback<Void> callback);

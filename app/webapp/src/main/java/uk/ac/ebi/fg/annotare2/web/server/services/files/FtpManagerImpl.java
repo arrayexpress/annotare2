@@ -36,6 +36,7 @@ public class FtpManagerImpl implements FtpManager {
     private static final Logger log = LoggerFactory.getLogger(FtpManagerImpl.class);
 
     private final String root;
+    private final String globusroot;
     private final TransferStorageFileAccess access;
 
     @Inject
@@ -54,6 +55,19 @@ public class FtpManagerImpl implements FtpManager {
             this.root = null;
             this.access = null;
         }
+        if (properties.isGlobusEnabled()) {
+            String root = properties.getGlobusPickUpDir();
+            if (root.startsWith("/")) {
+                root = "file://" + root;
+            }
+            if (!root.endsWith("/")) {
+                root = root + "/";
+            }
+            this.globusroot = root;
+        }
+        else {
+            this.globusroot = null;
+        }
     }
 
     @Override
@@ -64,6 +78,15 @@ public class FtpManagerImpl implements FtpManager {
     @Override
     public String getRoot() {
         return root;
+    }
+
+    public String getGlobusRoot() {
+        return globusroot;
+    }
+
+    public String getGlobusDirectory(String subDirectory) {
+        subDirectory = nullToEmpty(subDirectory);
+        return globusroot + subDirectory + (subDirectory.isEmpty() ? "" : "/");
     }
 
     @Override

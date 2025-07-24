@@ -37,7 +37,7 @@ public class TransferStorageFileAccess implements RemoteFileAccess, Serializable
 
     @Override
     public boolean isSupported(URI file) {
-        return "scp".equalsIgnoreCase(file.getScheme());
+        return "scp".equalsIgnoreCase(file.getScheme()) || "gridFTP".equalsIgnoreCase(file.getScheme());
     }
 
     @Override
@@ -115,6 +115,7 @@ public class TransferStorageFileAccess implements RemoteFileAccess, Serializable
         if (parentPath == null) {
             throw new IOException("Cannot get parent directory for URI: " + file);
         }
+
         String commands = "ls -1 " + parentPath;
         SlurmJobResult jobResult = executeSlurmJob(commands, file.getPath(), "listFiles");
         jobResult.checkForErrors();

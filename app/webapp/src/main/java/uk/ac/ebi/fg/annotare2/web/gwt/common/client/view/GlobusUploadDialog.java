@@ -4,6 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -25,7 +26,7 @@ public class GlobusUploadDialog  extends DialogBox {
 
     private static GlobusUploadDialogUiBinder uiBinder = GWT.create(GlobusUploadDialogUiBinder.class);
 
-    private FTPUploadDialog.Presenter presenter;
+    private Presenter presenter;
 
     @UiField
     VerticalPanel mainPanel;
@@ -121,7 +122,7 @@ public class GlobusUploadDialog  extends DialogBox {
         if (!fileNamesList.isEmpty() && null != presenter && checkPastedData(fileNamesList)) {
             final PopupPanel w = new WaitingPopup();
             w.center();
-            presenter.uploadFtpFiles(fileNamesList,
+            presenter.uploadGlobusFiles(fileNamesList,
                     new ReportingAsyncCallback<String>(ReportingAsyncCallback.FailureMessage.UNABLE_TO_UPLOAD_FILES) {
                         @Override
                         public void onFailure(Throwable caught) {
@@ -160,6 +161,10 @@ public class GlobusUploadDialog  extends DialogBox {
             }
         }
         return true;
+    }
+
+    public interface Presenter {
+        void uploadGlobusFiles(List<String> data, AsyncCallback<String> callback);
     }
 }
 
