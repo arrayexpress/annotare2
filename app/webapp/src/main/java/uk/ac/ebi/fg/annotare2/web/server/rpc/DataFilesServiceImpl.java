@@ -186,6 +186,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
         }
     }
 
+    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
     public String registerGlobusFiles(long submissionId, List<String> filesInfo) throws ResourceNotFoundException, NoPermissionException {
         try {
