@@ -1,0 +1,29 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+    <ui:style>
+        .text ul > li {
+            list-style-type: square;
+        }
+        .text ol > li {
+            margin-bottom: 0.5em;
+        }
+        .marker {
+            color: #E5A066;
+            font-weight: bolder;
+        }
+    </ui:style>
+    <g:VerticalPanel ui:field="mainPanel" spacing="10">
+        <!-- Container for React Web Component -->
+        <g:HTMLPanel addStyleNames="{style.text}" ui:field="reactContainer"/>
+
+        <!-- Close Button -->
+
+        <g:cell height="50px" horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_BOTTOM">
+            <g:HTMLPanel>
+                <g:Button ui:field="closeButton" text="Close"/>
+            </g:HTMLPanel>
+        </g:cell>
+    </g:VerticalPanel>
+
+</ui:UiBinder>

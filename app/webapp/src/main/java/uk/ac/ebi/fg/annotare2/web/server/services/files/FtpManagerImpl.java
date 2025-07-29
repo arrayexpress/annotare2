@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.core.components.FtpManager;
 import uk.ac.ebi.fg.annotare2.core.files.SshFileAccess;
+import uk.ac.ebi.fg.annotare2.core.files.TransferStorageFileAccess;
 import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 
 import java.io.IOException;
@@ -35,7 +36,8 @@ public class FtpManagerImpl implements FtpManager {
     private static final Logger log = LoggerFactory.getLogger(FtpManagerImpl.class);
 
     private final String root;
-    private final SshFileAccess access;
+    private final String globusroot;
+    private final TransferStorageFileAccess access;
 
     @Inject
     public FtpManagerImpl(AnnotareProperties properties) {
@@ -48,10 +50,23 @@ public class FtpManagerImpl implements FtpManager {
                 root = root + "/";
             }
             this.root = root;
-            this.access = new SshFileAccess();
+            this.access = new TransferStorageFileAccess(properties);
         } else {
             this.root = null;
             this.access = null;
+        }
+        if (properties.isGlobusEnabled()) {
+            String root = properties.getGlobusPickUpDir();
+            if (root.startsWith("/")) {
+                root = "file://" + root;
+            }
+            if (!root.endsWith("/")) {
+                root = root + "/";
+            }
+            this.globusroot = root;
+        }
+        else {
+            this.globusroot = null;
         }
     }
 
@@ -63,6 +78,15 @@ public class FtpManagerImpl implements FtpManager {
     @Override
     public String getRoot() {
         return root;
+    }
+
+    public String getGlobusRoot() {
+        return globusroot;
+    }
+
+    public String getGlobusDirectory(String subDirectory) {
+        subDirectory = nullToEmpty(subDirectory);
+        return globusroot + subDirectory + (subDirectory.isEmpty() ? "" : "/");
     }
 
     @Override

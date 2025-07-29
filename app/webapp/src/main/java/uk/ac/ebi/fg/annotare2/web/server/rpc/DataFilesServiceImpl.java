@@ -122,9 +122,10 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
         try {
             Submission submission = getSubmission(submissionId, Permission.VIEW);
             String submissionDirectory = nullToEmpty(submission.getFtpSubDirectory());
-            if (!submissionDirectory.isEmpty() && !ftpManager.doesExist(submissionDirectory)) {
-                ftpManager.createDirectory(submissionDirectory);
-            }
+//            Disable this directory existance check as it already done at the time submission creation.
+//            if (!submissionDirectory.isEmpty() && !ftpManager.doesExist(submissionDirectory)) {
+//                ftpManager.createDirectory(submissionDirectory);
+//            }
             return submissionDirectory;
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
@@ -187,51 +188,60 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
+    public String registerGlobusFiles(long submissionId, List<String> filesInfo) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            Submission submission = getSubmission(submissionId, Permission.UPDATE);
+            return processFileRegistrationCommon(submission, filesInfo, true);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        }
+    }
+
+    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
+    @Override
     public String registerFtpFiles(long submissionId, List<String> filesInfo)
             throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission submission = getSubmission(submissionId, Permission.UPDATE);
+            return processFileRegistrationCommon(submission, filesInfo, false);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        }
+    }
 
+    private String processFileRegistrationCommon(Submission submission, List<String> filesInfo, boolean isGlobus) {
+        try {
             StringBuilder errors = new StringBuilder();
             Map<String,DataFileHandle> files = new HashMap<>();
-            FileAvailabilityChecker fileChecker = new FileAvailabilityChecker();
+            FileAvailabilityChecker fileChecker = new FileAvailabilityChecker(annotareProperties);
+
             for (String infoStr : filesInfo) {
                 FtpFileInfo info = getFtpFileInfo(infoStr);
 
                 if (null != info) {
-                    URI fileUri = new URI(ftpManager.getDirectory(submission.getFtpSubDirectory())
-                            + URIEncoderDecoder.encode(info.getFileName())
-                    );
-                    URI legacyFileUri = new URI(ftpManager.getRoot() + URIEncoderDecoder.encode(info.getFileName()));
+                    URI fileUri;
+                    URI legacyFileUri;
 
-                    DataFileHandle fileSource = DataFileHandle.createFromUri(fileUri);
-                    DataFileHandle legacyFileSource = DataFileHandle.createFromUri(legacyFileUri);
-
-                    if (fileChecker.isAvailable(fileSource)) {
-                        String digest = info.getMd5().toLowerCase();
-                        if (checkFileExists(submission, info.getFileName())) {
-                            errors.append(" - file \"").append(info.getFileName()).append("\" already exists").append("\n");
-                        } else if (EMPTY_FILE_MD5.equals(digest)) {
-                            errors.append("empty file \"").append(info.getFileName()).append("\"").append("\n");
-                        } else {
-                            files.put(digest, fileSource);
-                        }
-                    } else if (fileChecker.isAvailable(legacyFileSource)) {
-                        String digest = info.getMd5().toLowerCase();
-                        if (checkFileExists(submission, info.getFileName())) {
-                            errors.append(" - file \"").append(info.getFileName()).append("\" already exists").append("\n");
-                        } else if (EMPTY_FILE_MD5.equals(digest)) {
-                            errors.append("empty file \"").append(info.getFileName()).append("\"").append("\n");
-                        } else {
-                            files.put(digest, legacyFileSource);
-                        }
+                    if (isGlobus) {
+                        fileUri = new URI(ftpManager.getGlobusDirectory(submission.getFtpSubDirectory())
+                                + URIEncoderDecoder.encode(info.getFileName()));
+                        legacyFileUri = new URI(ftpManager.getGlobusRoot() + URIEncoderDecoder.encode(info.getFileName()));
                     } else {
-                        errors.append(" - file \"").append(info.getFileName()).append("\" not found").append("\n");
+                        fileUri = new URI(ftpManager.getDirectory(submission.getFtpSubDirectory())
+                                + URIEncoderDecoder.encode(info.getFileName()));
+                        legacyFileUri = new URI(ftpManager.getRoot() + URIEncoderDecoder.encode(info.getFileName()));
                     }
+
+                    processFileRegistration(submission, errors, files, fileChecker, info, fileUri, legacyFileUri);
                 } else {
                     errors.append(" - unrecognized format \"").append(infoStr).append("\"").append("\n");
                 }
             }
+
             if (0 == errors.length()) {
                 for (Map.Entry<String, DataFileHandle> fileToSave : files.entrySet()) {
                     saveFile(fileToSave.getValue(), fileToSave.getKey(), submission);
@@ -240,10 +250,30 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
             return errors.toString();
         } catch (URISyntaxException | IOException | DataSerializationException e) {
             throw unexpected(e);
-        } catch (AccessControlException e) {
-            throw noPermission(e);
-        } catch (RecordNotFoundException e) {
-            throw noSuchRecord(e);
+        }
+    }
+
+    private void processFileRegistration(Submission submission, StringBuilder errors, Map<String, DataFileHandle> files, FileAvailabilityChecker fileChecker, FtpFileInfo info, URI fileUri, URI legacyFileUri) throws IOException {
+        DataFileHandle fileSource = DataFileHandle.createFromUri(fileUri);
+        DataFileHandle legacyFileSource = DataFileHandle.createFromUri(legacyFileUri);
+
+        if (fileChecker.isAvailable(fileSource)) {
+            validateFilesInfo(submission, errors, files, info, fileSource);
+        } else if (fileChecker.isAvailable(legacyFileSource)) {
+            validateFilesInfo(submission, errors, files, info, legacyFileSource);
+        } else {
+            errors.append(" - file \"").append(info.getFileName()).append("\" not found").append("\n");
+        }
+    }
+
+    private void validateFilesInfo(Submission submission, StringBuilder errors, Map<String, DataFileHandle> files, FtpFileInfo info, DataFileHandle fileSource) {
+        String digest = info.getMd5().toLowerCase();
+        if (checkFileExists(submission, info.getFileName())) {
+            errors.append(" - file \"").append(info.getFileName()).append("\" already exists").append("\n");
+        } else if (EMPTY_FILE_MD5.equals(digest)) {
+            errors.append("empty file \"").append(info.getFileName()).append("\"").append("\n");
+        } else {
+            files.put(digest, fileSource);
         }
     }
 

@@ -197,4 +197,9 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
             }
         })), callback);
     }
+
+    @Override
+    public void uploadGlobusFiles(List<String> data, AsyncCallback<String> callback) {
+        dataFilesService.registerGlobusFiles(submissionId, data, callback);
+    }
 }

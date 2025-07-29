@@ -200,6 +200,11 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
     }
 
     @Override
+    public void uploadGlobusFiles(List<String> filesInfo, AsyncCallback<String> callback) {
+        filesService.registerGlobusFiles(getSubmissionId(), filesInfo, callback);
+    }
+
+    @Override
     public void renameFile(DataFileRow dataFile, String newFileName, final AsyncCallback<Void> callback) {
         filesService.renameFile(getSubmissionId(), dataFile, newFileName, new AsyncCallback<Void>() {
             @Override

@@ -256,4 +256,57 @@
                 add pairing MEDIUMTEXT;
         </sql>
     </changeSet>
+    <changeSet id="addGlobusUsersTable" author="sandeepkurri">
+        <sql splitStatements="true" endDelimiter=";">
+            create table globus_users
+            (
+                id           BIGINT auto_increment primary key,
+                globus_id    VARCHAR(255) not null,
+                user_id      BIGINT null,
+                created_date TIMESTAMP default CURRENT_TIMESTAMP not null,
+                deleted      TINYINT(1) default 0 not null,
+                is_default   TINYINT(1) default 0 not null,
+                constraint globus_users_users_id_fk
+                    foreign key (user_id) references users (id)
+            );
+        </sql>
+        <rollback>
+            drop table globus_users;
+        </rollback>
+    </changeSet>
+    <changeSet id="addSubmissionGlobusIdsTable" author="sandeepkurri">
+        <sql splitStatements="true" endDelimiter=";">
+            create table submissions_globus_ids
+            (
+                GlobusUserId BIGINT not null,
+                submissionId  BIGINT not null,
+                constraint submissions_globus_ids_globus_users_id_fk
+                    foreign key (GlobusUserId) references globus_users (id),
+                constraint submissions_globus_ids_submissions_id_fk
+                    foreign key (submissionId) references submissions (id)
+            );
+        </sql>
+        <rollback>
+            drop table submissions_globus_ids;
+        </rollback>
+    </changeSet>
+    <changeSet id="addGlobusCollectionsTable" author="sandeepkurri">
+        <sql splitStatements="true" endDelimiter=";">
+            create table globus_collections
+            (
+                id              BIGINT auto_increment
+        primary key,
+                collection_uuid varchar(255)                         not null,
+                created_date    TIMESTAMP  default CURRENT_TIMESTAMP not null,
+                submission_id   BIGINT                               not null,
+                deleted         TINYINT(1) default 0                 not null,
+                constraint globus_collections_submissions_id_fk
+                    foreign key (submission_id) references submissions (id)
+            );
+        </sql>
+        <rollback>
+            drop table globus_collections;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

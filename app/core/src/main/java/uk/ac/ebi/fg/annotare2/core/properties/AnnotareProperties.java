@@ -98,6 +98,10 @@ public class AnnotareProperties implements DataFileStoreProperties {
         return getProperty("ftp.pickup.dir");
     }
 
+    public String getGlobusPickUpDir() {
+        return getProperty("globus.pickup.dir");
+    }
+
     public String getPublicFtpHostname() {
         return getProperty("ftp.public.hostname");
     }
@@ -196,6 +200,30 @@ public class AnnotareProperties implements DataFileStoreProperties {
 
     public String getDataStoreFileRenameScript() {
         return getProperty("annotare.datastore.file.rename.script");
+    }
+
+    public boolean isGlobusEnabled() {
+        return getBooleanProperty("globus.enabled");
+    }
+
+    public String getGlobusTransferComponentURL(){
+        return getProperty("globus.transfer.component.url");
+    }
+
+    public String getGlobusTransferAPIURL(){
+        return getProperty("globus.transfer.api.url");
+    }
+
+    public String getContextPath() {
+        return getProperty("annotare.context");
+    }
+
+    public String getSlurmOutputDirectory() {
+        return getProperty("annotare.slurm.output.directory");
+    }
+
+    public String getJobSubmitterScriptPath() {
+        return getProperty("annotare.slurm.job.submitter.script");
     }
 
     protected File getDirProperty(String name) {

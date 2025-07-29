@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.core.files;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 
 public interface RemoteFileAccess {
 
@@ -33,4 +34,6 @@ public interface RemoteFileAccess {
     URI rename(URI file, String newName) throws IOException;
 
     void delete(URI file) throws IOException;
+
+    List<String> listFiles(URI uri)  throws IOException;
 }

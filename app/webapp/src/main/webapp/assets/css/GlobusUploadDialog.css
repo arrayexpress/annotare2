@@ -1,0 +1,16 @@
+.globusUploadDialog {
+    /* Add initial state for fade-in effect */
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Additional styling for the dialog */
+.globusUploadDialog .dialogContent {
+    padding: 15px;
+}
+
+.globusUploadDialog .Caption {
+    font-weight: bold;
+    padding: 5px 10px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #e3e3e3;
+}

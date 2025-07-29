@@ -13,6 +13,7 @@ pipeline {
           daysToKeepStr: '180',
           numToKeepStr: '20',
         ));
+        parallelsAlwaysFailFast();
     }
     agent {label 'annotare-job-runner'}
     tools {
@@ -30,20 +31,22 @@ pipeline {
             }
         }
 
-        //External maven-settings.xml file provided from jenkins through configFileProvider plugin
-        stage ('Compile') {
-            steps{
-               configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {
-                    sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/pom.xml clean compile'
+        stage('Build and Test') {
+            parallel {
+                stage ('Compile') {
+                    steps{
+                       configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {
+                            sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/pom.xml compile'
+                        }
+                    }
                 }
-            }
-        }
 
-        //External maven-settings.xml file provided from jenkins through configFileProvider plugin
-        stage ('Test') {
-            steps{
-               configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {
-                    sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/pom.xml test'
+                stage ('Test') {
+                    steps{
+                       configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {
+                            sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/pom.xml test'
+                        }
+                    }
                 }
             }
         }
@@ -56,7 +59,7 @@ pipeline {
                     when { not { branch 'master'}}
                     steps{
                         configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_DEV_SETTINGS_XML')]){
-                            sh 'mvn -U --batch-mode -s $MAVEN_DEV_SETTINGS_XML -f app/pom.xml package -DskipTests'
+                            sh 'mvn -U --batch-mode -T 1C -s $MAVEN_DEV_SETTINGS_XML -f app/pom.xml package -DskipTests'
                         }
                     }
                 }
@@ -64,7 +67,7 @@ pipeline {
                     when { branch 'master'}
                     steps{
                         configFileProvider([configFile(fileId: 'annotare_prod_maven_settings', variable: 'MAVEN_PROD_SETTINGS_XML')]) {
-                            sh 'mvn -U --batch-mode -s $MAVEN_PROD_SETTINGS_XML -f app/pom.xml package -DskipTests'
+                            sh 'mvn -U --batch-mode -T 1C -s $MAVEN_PROD_SETTINGS_XML -f app/pom.xml package -DskipTests'
                         }
                     }
                 }

@@ -17,7 +17,9 @@
 
 package uk.ac.ebi.fg.annotare2.core.files;
 
+import com.google.inject.Inject;
 import org.apache.commons.io.FilenameUtils;
+import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 
 import java.io.*;
 import java.net.URI;
@@ -29,13 +31,18 @@ public class RemoteFileHandle extends DataFileHandle implements Serializable {
     private final URI uri;
     private final RemoteFileAccess access;
     private String digest;
+    @Inject
+    private AnnotareProperties annotareProperties;
 
     public RemoteFileHandle(URI uri) throws IOException {
         this.digest = null;
         this.uri = uri;
         if (null != uri && "scp".equals(uri.getScheme())) {
             this.access = new SshFileAccess();
-        } else {
+        } else if(null != uri && "gridFTP".equals(uri.getScheme())){
+            this.access = new TransferStorageFileAccess(annotareProperties);
+        }
+        else {
             throw new IOException("Remote access is unavailable for " + uri);
         }
     }

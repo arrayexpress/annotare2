@@ -16,10 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.client.view;
 
+import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -33,6 +35,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -68,6 +71,8 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     @UiField
     Button ftpUploadBtn;
 
+    @UiField
+    Button globusUploadBtn;
 
     @UiField
     Button asperaUploadBtn;
@@ -106,6 +111,9 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     private List<String> blockedFileExtensions;
 
     private boolean isCurator;
+    private long submissionId;
+    private String globusTransferAPIURL;
+    private String contextPath;
 
     interface Binder extends UiBinder<Widget, DataFilesUploadViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
@@ -115,7 +123,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
         initWidget(Binder.BINDER.createAndBindUi(this));
         this.isCurator = false;
         ftpUploadDialog = new FTPUploadDialog();
-
+        globusUploadBtn.addClickHandler(event -> openGlobusUploadDialog());
         fileListPanel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             @Override
             public void onSelectionChange(SelectionChangeEvent event) {
@@ -157,6 +165,29 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
         blockedFileExtensions = new ArrayList<>(Arrays.asList("doc","docx","rtf","xls","xlsx","ppt","ppdt","pptx","pdf","gif","rar","zip","tar","tar.gz","fastq","fq","fq_gz","fastq_gz","fq_bz2","fastq_bz2","7z"));
 
+    }
+
+    private void injectScript(String scriptUrl) {
+        ScriptInjector.fromUrl(scriptUrl)
+                .setCallback(new Callback<Void, Exception>() {
+                    @Override
+                    public void onFailure(Exception reason) {
+                        Window.alert("Failed to load the Globus upload dialog react component script from npm.");
+                    }
+
+                    @Override
+                    public void onSuccess(Void result) {
+                        GWT.log("Globus upload dialog react component script from npm loaded successfully.");
+                    }
+                })
+                .setRemoveTag(false)
+                .setWindow(ScriptInjector.TOP_WINDOW)
+                .inject();
+    }
+
+    private void openGlobusUploadDialog() {
+        GlobusUploadDialog dialog = new GlobusUploadDialog(submissionId, globusTransferAPIURL, contextPath, presenter);
+        dialog.showDialog();
     }
 
     @Override
@@ -313,6 +344,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
     @Override
     public void setSubmissionId(long submissionId) {
+        this.submissionId = submissionId;
         fileListPanel.setSubmissionId(submissionId);
     }
 
@@ -350,6 +382,13 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
             ftpUploadBtn.setEnabled(true);
             ftpUploadBtn.setVisible(true);
             ftpUploadDialog.setApplicationProperties(properties);
+        }
+        if (properties.isGlobusEnabled()) {
+            globusTransferAPIURL = properties.getGlobusTransferAPIURL();
+            contextPath = properties.getContextPath();
+            globusUploadBtn.setEnabled(true);
+            globusUploadBtn.setVisible(true);
+            injectScript(properties.getGlobusTransferComponentURL());
         }
         if (properties.isAsperaEnabled()) {
             asperaUploadBtn.setEnabled(true);
