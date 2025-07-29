@@ -104,7 +104,7 @@
 
 <body class="level2"><!-- add any of your classes or IDs -->
 <t:analytics-body></t:analytics-body>
-<t:ebi-survey></t:ebi-survey>
+<%--<t:ebi-survey></t:ebi-survey>--%>
 <!-- add any of your classes or IDs -->
 <div id="skip-to">
     <a href="#content">Skip to main content</a>
