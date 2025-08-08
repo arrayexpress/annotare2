@@ -42,4 +42,6 @@ public interface DataFilesService extends RemoteService {
     void renameFile(long submissionId, long fileId, String fileName) throws ResourceNotFoundException, NoPermissionException;
 
     void deleteFiles(long submissionId, List<Long> fileIds) throws ResourceNotFoundException, NoPermissionException;
+
+    String registerGlobusFiles(long submissionId, List<String> filesInfo) throws ResourceNotFoundException, NoPermissionException;;
 }

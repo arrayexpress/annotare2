@@ -18,10 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.core.AccessControlException;
-import uk.ac.ebi.fg.annotare2.core.UnexpectedException;
 import uk.ac.ebi.fg.annotare2.core.components.SubmissionManager;
-import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
-import uk.ac.ebi.fg.annotare2.core.utils.LinuxShellCommandExecutor;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionStatusHistoryDao;
@@ -30,7 +27,6 @@ import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Collection;
@@ -43,14 +39,14 @@ public class SubmissionManagerImpl implements SubmissionManager {
     private final SecureRandom random;
     private final SubmissionStatusHistoryDao statusHistoryDao;
 
-    private final AnnotareProperties annotareProperties;
+    private final DataStoreManager dataStoreManager;
 
     @Inject
     public SubmissionManagerImpl(SubmissionDao submissionDao,
-                                 SubmissionStatusHistoryDao statusHistoryDao, AnnotareProperties annotareProperties) {
+                                 SubmissionStatusHistoryDao statusHistoryDao, DataStoreManager dataStoreManager) {
         this.submissionDao = submissionDao;
         this.statusHistoryDao = statusHistoryDao;
-        this.annotareProperties = annotareProperties;
+        this.dataStoreManager = dataStoreManager;
         random = new SecureRandom();
     }
 
@@ -90,17 +86,12 @@ public class SubmissionManagerImpl implements SubmissionManager {
         submission.setFtpSubDirectory(generateUniqueFtpSubDirectory(submission));
         submissionDao.save(submission);
         statusHistoryDao.saveStatusHistory(submission);
-        createDataStore(submission);
+        dataStoreManager.createDataStoreAsync(submission);
         return submission;
     }
 
     private <T extends Submission> void createDataStore(T submission) {
-        LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
-        try {
-            executor.execute(annotareProperties.getCreateDataStoreScript() + " " + submission.getId());
-        } catch (IOException e) {
-            throw new UnexpectedException("Failed to create data store for submission " + submission.getId(), e);
-        }
+        dataStoreManager.createDataStoreAsync(submission);
     }
 
     private <T extends Submission> T withPermission(User user, Permission permission, T sb) throws AccessControlException {

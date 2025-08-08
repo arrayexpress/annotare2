@@ -118,6 +118,21 @@ public class DataFilesProxy {
         }.wrap());
     }
 
+    public void registerGlobusFiles(long submissionId, List<String> details, AsyncCallback<String> callback) {
+        filesService.registerGlobusFiles(submissionId, details, new AsyncCallbackWrapper<String>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(String result) {
+                updater.update();
+                callback.onSuccess(result);
+            }
+        }.wrap());
+    }
+
     public void renameFile(long submissionId, final DataFileRow dataFile, final String newFileName, final AsyncCallback<Void> callback) {
         filesService.renameFile(submissionId, dataFile.getId(), newFileName, new AsyncCallbackWrapper<Void>() {
             @Override

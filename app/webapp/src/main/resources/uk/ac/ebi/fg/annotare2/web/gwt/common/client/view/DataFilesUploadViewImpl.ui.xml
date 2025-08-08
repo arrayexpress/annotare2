@@ -42,6 +42,7 @@
             <g:HorizontalPanel spacing="3">
                 <g:Button text="Upload Files" ui:field="uploadBtn" />
                 <g:Button text="FTP/Aspera Upload" visible="false" enabled="false" ui:field="ftpUploadBtn"/>
+                <g:Button text="Globus Upload" visible="false" enabled="false" ui:field="globusUploadBtn"/>
                 <g:Button text="Aspera Upload" visible="false" enabled="false" ui:field="asperaUploadBtn"/>
                 <g:Button text="Delete Files" enabled="false" ui:field="deleteFilesBtn"/>
             </g:HorizontalPanel>

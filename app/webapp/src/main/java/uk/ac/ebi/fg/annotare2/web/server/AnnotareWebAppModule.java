@@ -86,7 +86,7 @@ public class AnnotareWebAppModule extends ServletModule {
                "/export",
                 "/download",
                 "/edit/*",
-                "/privacy-notice/").through(HibernateSessionFilter.class) ;
+                "/privacy-notice/","/api/*").through(HibernateSessionFilter.class) ;
 
         filter("/",
                "/UserApp/*",
@@ -94,7 +94,7 @@ public class AnnotareWebAppModule extends ServletModule {
                "/edit/*",
                "/upload",
                "/export",
-               "/download").through(SecurityFilter.class);
+               "/download","/api/*").through(SecurityFilter.class);
 
         filter("/*").through(SetCharacterEncodingFilter.class,
                 new ImmutableMap.Builder<String, String>()
@@ -119,6 +119,7 @@ public class AnnotareWebAppModule extends ServletModule {
         serve("/upload").with(UploadServlet.class);
         serve("/export").with(ExportServlet.class);
         serve("/download").with(DownloadServlet.class);
+        serve("/api/*").with(GlobusProxyServlet.class);
 
         bind(ExpiresNowFilter.class).in(SINGLETON);
         bind(AccessLoggingSuppressFilter.class).in(SINGLETON);
@@ -139,6 +140,7 @@ public class AnnotareWebAppModule extends ServletModule {
         bind(VerifyEmailServlet.class).in(SINGLETON);
         bind(ChangePasswordServlet.class).in(SINGLETON);
         bind(PrivacyNoticeServlet.class).in(SINGLETON);
+        bind(GlobusProxyServlet.class).in(SINGLETON);
 
         // shared services
         serveAndBindRpcService(ApplicationDataService.NAME, ApplicationDataServiceImpl.class, "UserApp", "EditorApp");
@@ -172,6 +174,7 @@ public class AnnotareWebAppModule extends ServletModule {
         bind(SubmissionStatusHistoryDao.class).to(SubmissionStatusHistoryDaoImpl.class).in(SINGLETON);
         bind(AccountManager.class).in(SINGLETON);
         bind(SubmissionManager.class).to(SubmissionManagerImpl.class).in(SINGLETON);
+        bind(DataStoreManager.class).in(SINGLETON);
         bind(DataFileManager.class).to(DataFileManagerImpl.class).in(SINGLETON);
         bind(Messenger.class).to(MessengerImpl.class).in(SINGLETON);
         bind(FtpManager.class).to(FtpManagerImpl.class).in(SINGLETON);
