@@ -65,6 +65,8 @@ public class GlobusProxyServlet extends HttpServlet {
             connection.setRequestMethod(request.getMethod());
             connection.setUseCaches(false);
             connection.setDoInput(true); // Always read response
+            connection.setConnectTimeout(15000);
+            connection.setReadTimeout(60000);
             Enumeration<String> headerNames = request.getHeaderNames();
             while (headerNames.hasMoreElements()) {
                 String headerName = headerNames.nextElement();
@@ -94,11 +96,10 @@ public class GlobusProxyServlet extends HttpServlet {
             response.setStatus(responseCode);
 
             // Copy response headers from internal service to client
+            // Preserve Content-Encoding and Content-Length so the client can decode compressed content correctly.
             for (String headerKey : connection.getHeaderFields().keySet()) {
                 if (headerKey != null &&
-                        !"Transfer-Encoding".equalsIgnoreCase(headerKey) &&
-                        !"Content-Encoding".equalsIgnoreCase(headerKey) && // If content is compressed, let the browser handle it
-                        !"Content-Length".equalsIgnoreCase(headerKey)) { // Let servlet container set this based on output stream
+                        !"Transfer-Encoding".equalsIgnoreCase(headerKey)) { // Hop-by-hop; let the container decide framing
                     for (String headerValue : connection.getHeaderFields().get(headerKey)) {
                         response.addHeader(headerKey, headerValue);
                     }
@@ -114,6 +115,7 @@ public class GlobusProxyServlet extends HttpServlet {
                     while ((bytesRead = proxyInputStream.read(buffer)) != -1) {
                         clientOutputStream.write(buffer, 0, bytesRead);
                     }
+                    clientOutputStream.flush();
                 }
             }
         } catch (Exception e) {

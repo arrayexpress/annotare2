@@ -309,4 +309,25 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="addStatusToGlobusCollectionsTable" author="sandeepkurri">
+        <sql splitStatements="true" endDelimiter=";">
+            alter table globus_collections
+                add status ENUM('INITIATED','READY','DELETED') default 'INITIATED' not null;
+        </sql>
+        <rollback>
+            alter table globus_collections drop column status;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="addErrorStatusToGlobusCollectionsTable" author="sandeepkurri">
+        <sql splitStatements="true" endDelimiter=";">
+            alter table globus_collections
+                modify status ENUM('INITIATED','READY','DELETED','ERROR') default 'INITIATED' not null;
+        </sql>
+        <rollback>
+            alter table globus_collections
+                modify status ENUM('INITIATED','READY','DELETED') default 'INITIATED' not null;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
