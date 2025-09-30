@@ -330,4 +330,14 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="addDeletedColumnToSubmissionsGlobusIdsTable" author="sandeepkurri">
+        <sql>
+            ALTER TABLE submissions_globus_ids ADD deleted TINYINT(1) DEFAULT 0 NOT NULL;
+        </sql>
+        <rollback>
+            ALTER TABLE submissions_globus_ids DROP COLUMN deleted;
+        </rollback>
+    </changeSet>
+
+
 </databaseChangeLog>
