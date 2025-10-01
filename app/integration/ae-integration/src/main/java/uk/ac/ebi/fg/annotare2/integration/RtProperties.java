@@ -10,6 +10,8 @@ public interface RtProperties {
 
     String getRtIntegrationPassword();
 
+    String getRtIntegrationToken();
+
     String getRtIntegrationSubjectTemplate();
 
     String getRtIntegrationBodyTemplate();

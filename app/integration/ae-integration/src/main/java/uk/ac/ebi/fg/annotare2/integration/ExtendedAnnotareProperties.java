@@ -133,6 +133,9 @@ public class ExtendedAnnotareProperties extends AnnotareProperties implements Da
     public String getRtIntegrationPassword() { return getProperty("rt-integration.password"); }
 
     @Override
+    public String getRtIntegrationToken() { return getProperty("rt-integration.token"); }
+
+    @Override
     public String getRtIntegrationSubjectTemplate() { return getProperty("rt-integration.subject-template"); }
 
     @Override

@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
@@ -122,56 +123,42 @@ public class RtMessengerService extends EmailMessengerService {
     @Override
     public boolean checkRtServerStatus() throws Exception
     {
-        return true;
-        //TO:DO commenting this as temp workaround for Test RT auth issue fixing.
-//        boolean serverStatus = false;
-//        try {
-//
-//            List<BasicNameValuePair> params = new ArrayList<>();
-//
-//            params.add(new BasicNameValuePair("user",properties.getRtIntegrationUser()));
-//            params.add(new BasicNameValuePair("pass",properties.getRtIntegrationPassword()));
-//            params.add(new BasicNameValuePair("content",""));
-//
-//            SSLContextBuilder builder = new SSLContextBuilder();
-//
-//            builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
-//            SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(
-//                    builder.build());
-//            CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(
-//                    sslConnectionSocketFactory).setRedirectStrategy(new LaxRedirectStrategy()).build();
-//
-//            /*MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
-//                    .addTextBody("user", properties.getRtIntegrationUser())
-//                    .addTextBody("pass", properties.getRtIntegrationPassword())
-//                    .addTextBody("content", "");*/
-//
-//            HttpPost httppost = new HttpPost(properties.getRtIntegrationUrl());
-//            httppost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
-//            HttpResponse response = httpclient.execute(httppost);
-//            HttpEntity r = response.getEntity();
-//            BufferedReader inp = new BufferedReader(new InputStreamReader(r.getContent()));
-//            String line;
-//            try {
-//                while ((line = inp.readLine()) != null) {
-//                    logger.debug(line);
-//                    if (line.contains("200 Ok")) {
-//                        serverStatus = true;
-//                        break;
-//                    }
-//                }
-//            } catch (Exception e) {
-//                logger.error("Error parsing RT response",e);
-//            }
-//    //        httpclient.close();
-//        }catch(Exception e)
-//        {
-//            logger.error("Error checking Rt Server Status",e);
-//            serverStatus = false;
-//
-//        }
-//
-//        return serverStatus;
+        boolean serverStatus = false;
+        try {
+            SSLContextBuilder builder = new SSLContextBuilder();
+            builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
+            SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(
+                    builder.build());
+            CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(
+                    sslConnectionSocketFactory).setRedirectStrategy(new LaxRedirectStrategy()).build();
+            String url = properties.getRtIntegrationUrl()+ "rt?token=" + properties.getRtIntegrationToken();
+            HttpGet httpget = new HttpGet(url);
+            HttpResponse response = httpclient.execute(httpget);
+            if (response.getStatusLine().getStatusCode() == 200) {
+                HttpEntity entity = response.getEntity();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()));
+                StringBuilder jsonResponse = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    jsonResponse.append(line);
+                }
+                // Simple JSON parsing to check for Version field
+                String responseBody = jsonResponse.toString();
+                if (responseBody.contains("\"Version\"") && responseBody.contains("{") && responseBody.contains("}")) {
+                    logger.debug("RT Server status check successful: " + responseBody);
+                    serverStatus = true;
+                } else {
+                    logger.warn("RT Server responded with 200 but unexpected JSON format: " + responseBody);
+                }
+            } else {
+                logger.warn("RT Server status check failed with status code: " + response.getStatusLine().getStatusCode());
+            }
+            httpclient.close();
+        } catch (Exception e) {
+            logger.error("Error checking RT Server Status", e);
+            serverStatus = false;
+        }
+        return serverStatus;
     }
 
     @Override
