@@ -38,6 +38,9 @@
     </ui:style>
 
     <g:DockLayoutPanel>
+        <g:north size="28">
+            <c:DemoLinksBar ui:field="demoLinksBar"/>
+        </g:north>
         <g:north size="40">
             <g:HorizontalPanel spacing="3">
                 <g:Button text="Upload Files" ui:field="uploadBtn" />

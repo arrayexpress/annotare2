@@ -31,7 +31,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -109,6 +111,38 @@ public class AnnotareProperties implements DataFileStoreProperties {
     public String getPublicFtpPath() {
         return getProperty("ftp.public.path");
     }
+
+    // New multi-link support: collect links for a given view (upload/samples/assignment)
+    public Map<String, String> getTutorialLinks(String view) {
+        Map<String, String> map = new HashMap<String, String>();
+        if (isNullOrEmpty(view)) {
+            return map;
+        }
+        String prefix = "tutorial." + view + ".";
+        for (String name : properties.stringPropertyNames()) {
+            if (name.startsWith(prefix) && name.endsWith(".url")) {
+                String label = name.substring(prefix.length(), name.length() - 4);
+                String url = getProperty(name);
+                if (!isNullOrEmpty(url)) {
+                    map.put(label, url);
+                }
+            }
+        }
+        return map;
+    }
+
+    public Map<String, String> getUploadTutorialLinks() {
+        return getTutorialLinks("upload");
+    }
+
+    public Map<String, String> getSamplesTutorialLinks() {
+        return getTutorialLinks("samples");
+    }
+
+    public Map<String, String> getAssignmentTutorialLinks() {
+        return getTutorialLinks("assignment");
+    }
+
 
     public String getPublicFtpUsername() {
         return getProperty("ftp.public.username");

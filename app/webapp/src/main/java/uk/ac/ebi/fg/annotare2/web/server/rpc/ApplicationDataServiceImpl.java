@@ -176,6 +176,9 @@ public class ApplicationDataServiceImpl extends ErrorReportingRemoteServiceServl
                 .setGlobusTransferComponentURL(properties.getGlobusTransferComponentURL())
                 .setGlobusTransferAPIURL(properties.getGlobusTransferAPIURL())
                 .setContextPath(properties.getContextPath())
+                .setUploadTutorialUrls(properties.getUploadTutorialLinks())
+                .setSamplesTutorialUrls(properties.getSamplesTutorialLinks())
+                .setAssignmentTutorialUrls(properties.getAssignmentTutorialLinks())
                 .build();
     }
 
