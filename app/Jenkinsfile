@@ -59,7 +59,7 @@ pipeline {
                     when { not { branch 'master'}}
                     steps{
                         configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_DEV_SETTINGS_XML')]){
-                            sh 'mvn -U --batch-mode -T 1C -s $MAVEN_DEV_SETTINGS_XML -f app/pom.xml package -DskipTests'
+                            sh 'mvn -U --batch-mode -T 1C -s $MAVEN_DEV_SETTINGS_XML -f app/pom.xml clean package -DskipTests'
                         }
                     }
                 }
