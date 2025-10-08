@@ -601,6 +601,19 @@ a.wgt-button :hover {
     z-index: 6; /* just above grid internals (e.g., z-index:5 controls) */
 }
 
+.demo-links-icon {
+    color: #4a2c00;
+    font-weight: bold;
+}
+.demo-links-label {
+    color: black;
+    font-weight: bold;
+    margin-right: 5px;
+}
+.demo-links-anchor:hover {
+    text-decoration: underline;
+}
+
 .protocolLabel
 {
     font-size: 13px;

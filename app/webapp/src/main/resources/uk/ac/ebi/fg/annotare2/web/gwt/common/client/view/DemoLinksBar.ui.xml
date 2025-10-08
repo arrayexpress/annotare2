@@ -15,22 +15,14 @@
             /* z-index intentionally omitted: scoped per view where necessary */
             white-space: nowrap; /* keep icon, label, and link on one line */
         }
-        .demo-links-sep {
-            color: #888;
-            padding: 0 6px;
-        }
         .demo-links-icon {
-            color: #4a2c00; /* match label color */
+            color: #4a2c00;
             font-weight: bold;
             margin-right: 4px;
         }
         .demo-links-label {
-            color: #4a2c00; /* darker for contrast on orange */
+            color: black;
             font-weight: bold;
-        }
-        .demo-links-anchor {
-            color: #ffffff;
-            text-decoration: none;
         }
         .demo-links-anchor:hover {
             text-decoration: underline;

@@ -89,8 +89,6 @@ public class DemoLinksBar extends Composite {
             InlineHTML icon = new InlineHTML("<i class=\"fa fa-youtube-play\" aria-hidden=\"true\"></i>");
             icon.addStyleName("demo-links-icon");
             container.add(icon);
-            InlineLabel sp = new InlineLabel(" ");
-            container.add(sp);
 
             final ListBox list = new ListBox();
             list.addStyleName("demo-links-dropdown");
@@ -126,8 +124,6 @@ public class DemoLinksBar extends Composite {
                 InlineHTML icon = new InlineHTML("<i class=\"fa fa-youtube-play\" aria-hidden=\"true\"></i>");
                 icon.addStyleName("demo-links-icon");
                 container.add(icon);
-                InlineLabel sp = new InlineLabel(" ");
-                container.add(sp);
             }
             Anchor a = new Anchor(item.getAnchorText() == null ? item.getUrl() : item.getAnchorText(), item.getUrl(), "_blank");
             a.addStyleName("demo-links-anchor");
