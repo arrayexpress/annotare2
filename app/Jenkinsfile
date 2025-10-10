@@ -33,6 +33,14 @@ pipeline {
 
         stage('Build and Test') {
             parallel {
+                stage ('Clean') {
+                    steps{
+                       configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {
+                            sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/pom.xml clean'
+                        }
+                    }
+                }
+
                 stage ('Compile') {
                     steps{
                        configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {

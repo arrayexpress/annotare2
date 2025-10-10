@@ -89,6 +89,9 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     @UiField
     SpanElement messageSpan;
 
+    @UiField
+    DemoLinksBar demoLinksBar;
+
     private final Long MAX_FILE_SIZE_IN_BYTES = 1073741824L;
 
     private final FTPUploadDialog ftpUploadDialog;
@@ -395,6 +398,43 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
             asperaUploadBtn.setVisible(true);
             asperaUrl = properties.getAsperaUrl();
         }
+
+        // Configure tutorial links for Upload panel (supports multiple)
+        List<DemoLinksBar.LinkItem> demoLinks = new ArrayList<DemoLinksBar.LinkItem>();
+        if (properties.getUploadTutorialUrls() != null) {
+            for (java.util.Map.Entry<String, String> e : properties.getUploadTutorialUrls().entrySet()) {
+                String key = e.getKey();
+                String url = e.getValue();
+                String anchor = prettyAnchorForUpload(key);
+                demoLinks.add(new DemoLinksBar.LinkItem("Video Guide:", url, anchor));
+            }
+        }
+        demoLinksBar.setLinks(demoLinks);
+    }
+
+    private String prettyAnchorForUpload(String key) {
+        if (null == key) return "Video";
+        if ("md5".equalsIgnoreCase(key)) {
+            return "How to calculate MD5 checksums";
+        }
+        return prettifyKey(key);
+    }
+
+    private String prettifyKey(String key) {
+        StringBuilder sb = new StringBuilder();
+        char[] arr = key.toCharArray();
+        for (int i = 0; i < arr.length; i++) {
+            char c = arr[i];
+            if (i > 0 && Character.isUpperCase(c) && Character.isLowerCase(arr[i - 1])) {
+                sb.append(' ');
+            }
+            if (i == 0 || arr[i - 1] == ' ') {
+                sb.append(Character.toUpperCase(c));
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 
     @Override

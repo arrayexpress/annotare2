@@ -26,6 +26,12 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
 import uk.ac.ebi.fg.annotare2.submission.model.EnumWithHelpText;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DemoLinksBar;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ApplicationDataService;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ApplicationDataServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.FileRef;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
@@ -38,7 +44,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.strat
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DynSelectionCell;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author Olga Melnichuk
@@ -58,6 +63,29 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     public DataAssignmentViewImpl() {
         gridView = new GridView<>();
         gridView.setRowSelectionEnabled(false);
+        final ApplicationDataServiceAsync appDataService = GWT.create(ApplicationDataService.class);
+        appDataService.getApplicationProperties(new AsyncCallback<ApplicationProperties>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                // ignore silently; bar will remain empty
+            }
+
+            @Override
+            public void onSuccess(ApplicationProperties properties) {
+                List<DemoLinksBar.LinkItem> links = new ArrayList<DemoLinksBar.LinkItem>();
+                if (properties != null && properties.getAssignmentTutorialUrls() != null) {
+                    for (java.util.Map.Entry<String, String> e : properties.getAssignmentTutorialUrls().entrySet()) {
+                        String key = e.getKey();
+                        String url = e.getValue();
+                        String anchor = prettyAnchorForAssignment(key);
+                        links.add(new DemoLinksBar.LinkItem("Video Guide:", url, anchor));
+                    }
+                }
+                gridView.setDemoLinks(links);
+            }
+        });
+
+        initWidget(gridView);
 
         Button button = new Button("Add File Assignment Column *");
         button.addClickHandler(new ClickHandler() {
@@ -111,7 +139,31 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
         button.setTitle("Use this feature to insert/paste a column of values from your spreadsheet into Annotare (from the selected cell downward)");
         gridView.addTool(button);
 
-        initWidget(gridView);
+    }
+
+    private String prettyAnchorForAssignment(String key) {
+        if (null == key) return "Video";
+        if ("bulkAssignment".equalsIgnoreCase(key)) {
+            return "Bulk file assignment";
+        }
+        return prettifyKey(key);
+    }
+
+    private String prettifyKey(String key) {
+        StringBuilder sb = new StringBuilder();
+        char[] arr = key.toCharArray();
+        for (int i = 0; i < arr.length; i++) {
+            char c = arr[i];
+            if (i > 0 && Character.isUpperCase(c) && Character.isLowerCase(arr[i - 1])) {
+                sb.append(' ');
+            }
+            if (i == 0 || arr[i - 1] == ' ') {
+                sb.append(Character.toUpperCase(c));
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 
     @Override

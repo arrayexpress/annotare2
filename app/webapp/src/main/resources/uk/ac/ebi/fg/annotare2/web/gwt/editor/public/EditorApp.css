@@ -328,6 +328,11 @@
     background-color: #444;
     opacity: 0.5;
     filter: alpha(opacity=50);
+    z-index: 9999;
+}
+
+.gwt-DialogBox {
+    z-index: 10000;
 }
 
 .gwt-SuggestionPopup {
@@ -588,6 +593,25 @@ a.wgt-button :hover {
     padding-bottom: 3px;
     margin-top: 15px;
     margin-bottom: 10px;
+}
+
+/* Scoped styling for DemoLinksBar within Samples/Data Assignment panels */
+.panel-demo-links {
+    position: relative; /* keep within panel stacking context */
+    z-index: 6; /* just above grid internals (e.g., z-index:5 controls) */
+}
+
+.demo-links-icon {
+    color: #4a2c00;
+    font-weight: bold;
+}
+.demo-links-label {
+    color: black;
+    font-weight: bold;
+    margin-right: 5px;
+}
+.demo-links-anchor:hover {
+    text-decoration: underline;
 }
 
 .protocolLabel

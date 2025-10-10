@@ -34,6 +34,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DemoLinksBar;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
 
 import java.util.*;
@@ -61,6 +62,14 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
     @UiField
     SpanElement notePanel;
 
+    @UiField
+    DemoLinksBar demoLinksBar;
+
+    @UiField
+    DockLayoutPanel dock;
+
+    private static final double DEMO_BAR_HEIGHT_PX = 28.0;
+
     private CustomDataGrid<R> dataGrid;
     private MultiSelectionModel<R> selectionModel;
     private ColumnSortEvent.ListHandler<R> sortHandler;
@@ -74,6 +83,14 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
     public GridView() {
         isRowSelectionEnabled = true;
         initWidget(Binder.BINDER.createAndBindUi(this));
+        if (demoLinksBar != null) {
+            demoLinksBar.setVisible(false);
+        }
+        // Collapse the DemoLinksBar slot by default so no empty space is reserved
+        if (dock != null && demoLinksBar != null) {
+            dock.setWidgetSize(demoLinksBar, 0);
+            dock.forceLayout();
+        }
     }
 
     public void setRowSelectionEnabled(boolean enabled) {
@@ -82,6 +99,28 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
 
     public void addTool(Widget tool) {
         tools.add(tool);
+    }
+
+    public void setDemoLinks(List<DemoLinksBar.LinkItem> items) {
+        if (demoLinksBar == null) {
+            return;
+        }
+        boolean hasItems = items != null && !items.isEmpty();
+        if (hasItems) {
+            demoLinksBar.setLinks(items);
+            demoLinksBar.setVisible(true);
+            if (dock != null) {
+                dock.setWidgetSize(demoLinksBar, DEMO_BAR_HEIGHT_PX);
+                dock.forceLayout();
+            }
+        } else {
+            demoLinksBar.clearLinks();
+            demoLinksBar.setVisible(false);
+            if (dock != null) {
+                dock.setWidgetSize(demoLinksBar, 0);
+                dock.forceLayout();
+            }
+        }
     }
 
     public void setRows(List<R> rows) {

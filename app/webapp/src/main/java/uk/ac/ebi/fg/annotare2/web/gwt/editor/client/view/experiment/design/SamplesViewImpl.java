@@ -39,8 +39,13 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.AsyncOptionProvi
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditSelectionCell;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestOracle;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
-
-import java.util.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DemoLinksBar;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ApplicationDataService;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ApplicationDataServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
+import com.google.gwt.core.client.GWT;
+ 
+ import java.util.*;
 
 /**
  * @author Olga Melnichuk
@@ -50,6 +55,8 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
     private static final int COLUMN_WIDTH = 200;
 
     private final GridView<SampleRow> gridView;
+
+    private final ApplicationDataServiceAsync appDataService = GWT.create(ApplicationDataService.class);
 
     private List<SampleColumn> columns = new ArrayList<>();
     private AsyncOptionProvider materialTypes;
@@ -61,6 +68,29 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
         maxSamplesLimit = 1000;
 
         gridView = new GridView<>();
+        initWidget(gridView);
+        // Load application properties and configure the link for the embedded DemoLinksBar in GridView
+        appDataService.getApplicationProperties(new AsyncCallback<ApplicationProperties>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                // ignore silently; demo bar will remain empty
+            }
+
+            @Override
+            public void onSuccess(ApplicationProperties properties) {
+                List<DemoLinksBar.LinkItem> links = new ArrayList<DemoLinksBar.LinkItem>();
+                if (properties != null && properties.getSamplesTutorialUrls() != null) {
+                    for (Map.Entry<String, String> e : properties.getSamplesTutorialUrls().entrySet()) {
+                        String key = e.getKey();
+                        String url = e.getValue();
+                        String anchor = prettyAnchorForSamples(key);
+                        links.add(new DemoLinksBar.LinkItem("Video Guide:", url, anchor));
+                    }
+                }
+                gridView.setDemoLinks(links);
+            }
+        });
+
         Button button = new Button("Add Sample Attributes and Variables *");
         button.addClickHandler(new ClickHandler() {
             @Override
@@ -120,7 +150,6 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
         button.setTitle("Use this feature to insert/paste a column of values  from your spreadsheet into Annotare (from the selected cell downward)");
         gridView.addTool(button);
 
-        initWidget(gridView);
 
         materialTypes = new AsyncOptionProvider() {
             private List<String> options = new ArrayList<>();
@@ -151,6 +180,31 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
                 }
             }
         };
+    }
+
+    private String prettyAnchorForSamples(String key) {
+        if (null == key) return "Video";
+        if ("addSamples".equalsIgnoreCase(key)) {
+            return "How to add sample attributes";
+        }
+        return prettifyKey(key);
+    }
+
+    private String prettifyKey(String key) {
+        StringBuilder sb = new StringBuilder();
+        char[] arr = key.toCharArray();
+        for (int i = 0; i < arr.length; i++) {
+            char c = arr[i];
+            if (i > 0 && Character.isUpperCase(c) && Character.isLowerCase(arr[i - 1])) {
+                sb.append(' ');
+            }
+            if (i == 0 || arr[i - 1] == ' ') {
+                sb.append(Character.toUpperCase(c));
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 
     @Override

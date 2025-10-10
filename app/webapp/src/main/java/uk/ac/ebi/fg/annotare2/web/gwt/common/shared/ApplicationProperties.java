@@ -18,6 +18,8 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import java.util.Map;
+
 /**
  * @author Olga Melnichuk
  */
@@ -34,6 +36,9 @@ public class ApplicationProperties implements IsSerializable {
     private String globusTransferComponentURL;
     private String globusTransferAPIURL;
     private String contextPath;
+    private Map<String, String> uploadTutorialUrls;
+    private Map<String, String> samplesTutorialUrls;
+    private Map<String, String> assignmentTutorialUrls;
 
     ApplicationProperties() {
     }
@@ -50,6 +55,9 @@ public class ApplicationProperties implements IsSerializable {
         this.globusTransferComponentURL = other.globusTransferComponentURL;
         this.globusTransferAPIURL = other.globusTransferAPIURL;
         this.contextPath = other.contextPath;
+        this.uploadTutorialUrls = other.uploadTutorialUrls == null ? null : new java.util.HashMap<String, String>(other.uploadTutorialUrls);
+        this.samplesTutorialUrls = other.samplesTutorialUrls == null ? null : new java.util.HashMap<String, String>(other.samplesTutorialUrls);
+        this.assignmentTutorialUrls = other.assignmentTutorialUrls == null ? null : new java.util.HashMap<String, String>(other.assignmentTutorialUrls);
     }
 
     public boolean isFtpEnabled() {
@@ -87,6 +95,12 @@ public class ApplicationProperties implements IsSerializable {
     public String getGlobusTransferAPIURL() {return globusTransferAPIURL;}
 
     public String getContextPath() {return contextPath;}
+
+    public Map<String, String> getUploadTutorialUrls() {return uploadTutorialUrls;}
+
+    public Map<String, String> getSamplesTutorialUrls() {return samplesTutorialUrls;}
+
+    public Map<String, String> getAssignmentTutorialUrls() {return assignmentTutorialUrls;}
 
     public static class Builder {
         private final ApplicationProperties properties;
@@ -147,6 +161,21 @@ public class ApplicationProperties implements IsSerializable {
 
         public Builder setContextPath(String contextPath) {
             properties.contextPath = contextPath;
+            return this;
+        }
+
+        public Builder setUploadTutorialUrls(Map<String, String> map) {
+            properties.uploadTutorialUrls = map;
+            return this;
+        }
+
+        public Builder setSamplesTutorialUrls(Map<String, String> map) {
+            properties.samplesTutorialUrls = map;
+            return this;
+        }
+
+        public Builder setAssignmentTutorialUrls(Map<String, String> map) {
+            properties.assignmentTutorialUrls = map;
             return this;
         }
 

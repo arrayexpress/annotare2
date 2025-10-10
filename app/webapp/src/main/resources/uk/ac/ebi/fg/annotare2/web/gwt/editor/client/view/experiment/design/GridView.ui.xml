@@ -18,6 +18,7 @@
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
+        xmlns:c="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.common.client.view"
         >
     <ui:style>
         .padding {
@@ -27,7 +28,10 @@
             border-left: 1px solid #eeeeee;
         }
     </ui:style>
-    <g:DockLayoutPanel addStyleNames="{style.padding}">
+    <g:DockLayoutPanel ui:field="dock" addStyleNames="{style.padding}">
+        <g:north size="28">
+            <c:DemoLinksBar ui:field="demoLinksBar" addStyleNames="panel-demo-links"/>
+        </g:north>
         <g:north size="40">
             <g:HorizontalPanel ui:field="toolBar" width="100%">
                 <g:HorizontalPanel ui:field="tools" spacing="3"/>
