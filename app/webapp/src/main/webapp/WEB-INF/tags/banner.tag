@@ -14,9 +14,9 @@
 
 <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function(event){
-        ebiInjectAnnouncements({ headline: 'We need your help!', message: 'Has Annotare saved you time or effort? ' +
-                'Please take 15 minutes to fill in a survey and help EMBL-EBI make the case for why open data resources are critical to life science research.  ' +
-                '<b><a href="https://www.surveymonkey.com/r/QGFMBH8?channel=[webpage]" target="_blank">Survey Link</a></b>', priority: 'warning' });
+        ebiInjectAnnouncements({ headline: '', message: '<strong>Uploading large files to Annotare? ' +
+                'We recommend using the Globus platform for a faster and more reliable transfer experience.  </strong>' +
+                '<a href="https://www.ebi.ac.uk/fg/annotare/help/globus_upload.html" target="_blank">Learn more</a>', priority: 'warning' });
         
         var notification_dive = document.getElementsByClassName("notifications-js")
         if (notification_dive.length > 0) {
