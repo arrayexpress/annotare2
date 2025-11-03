@@ -29,6 +29,21 @@
         .text ul > li {
             list-style-type: square;
         }
+        .text ul > li > div {
+            min-width: 60px;
+            margin-right: 10px;
+            display: inline-block;
+        }
+        .text ul > li > pre {
+            display: inline;
+            margin: 0;
+        }
+        .text ul > li > pre > code {
+            background-color: #d7d7d7;
+            padding: 2px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
         .text ol > li {
             margin-bottom: 0.5em;
         }
@@ -43,9 +58,9 @@
             <ol>
                 <li>Please calculate <a href="http://en.wikipedia.org/wiki/MD5" target="_blank">MD5 hashes</a> for your files using the following tools:
                     <ul>
-                        <li><code>md5sum file1 file2 ... fileN</code> on Linux</li>
-                        <li><code>md5 file1 file2 ... fileN</code> on Mac</li>
-                        <li><code>certutil -hashfile &lt;file&gt; MD5</code> on Windows</li>
+                        <li><div>Linux:</div> <pre><code>md5sum file1 file2 ... fileN</code></pre></li>
+                        <li><div>Mac:</div> <pre><code>md5 file1 file2 ... fileN</code></pre></li>
+                        <li><div>Windows:</div> <pre><code>certutil -hashfile &lt;file&gt; MD5</code></pre></li>
                     </ul>
                 </li>
                 <li>
