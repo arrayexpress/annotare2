@@ -74,18 +74,6 @@
 
     <repositories>
         <repository>
-            <id>limpopo-repo</id>
-            <name>Limpopo Mini-SF Repository</name>
-            <url>http://limpopo.sourceforge.net/maven/repo</url>
-        </repository>
-        <repository>
-            <id>EBIBioSamples-GH-repo</id>
-            <url>https://raw.githubusercontent.com/EBIBioSamples/EBIBioSamples.github.io/maven-repo</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
             <id>FG-local-repo</id>
             <url>http://45.88.81.166:80/artifactory/maven-local/</url>
             <snapshots>
