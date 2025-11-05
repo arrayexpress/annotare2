@@ -33,6 +33,7 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
     private final static String _10xV1 = "10x 3' v1";
     private final static String _10xV2 = "10x 3' v2";
     private final static String _10xV3 = "10x 3' v3";
+    private final static String _10xV4 = "10x 3' v4";
     private final static String _10xV5 = "10x 5' v1";
     private final static String _10xV5_2 = "10x 5' v2 (dual index)";
     private final static String _10xFB_1 = "10x feature barcode (cell surface protein profiling)";
@@ -291,7 +292,7 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
     private void preFillValueInColumns(SingleCellExtractAttribute attr, String value, SingleCellExtractAttributesRow row) {
         if(LIBRARY_CONSTRUCTION.equals(attr)) {
             removePreFillValues(row);
-            if (value.equalsIgnoreCase(_10xV2) || value.equalsIgnoreCase(_10xV1) || value.equalsIgnoreCase(_10xV3)) {
+            if (value.equalsIgnoreCase(_10xV2) || value.equalsIgnoreCase(_10xV1) || value.equalsIgnoreCase(_10xV3) || value.equalsIgnoreCase(_10xV4)) {
                 preFill10xV3Values(row, value);
             }
             else if(value.equalsIgnoreCase(_10xV5) || value.equalsIgnoreCase(_10xV5_2)){
@@ -348,13 +349,13 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
         row.setValue("3 prime tag", END_BIAS);
         row.setValue(value.equalsIgnoreCase(_10xV1) ? "read2" : "read1" , UMI_BARCODE_READ);
         row.setValue(value.equalsIgnoreCase(_10xV1) ? "0" : "16", UMI_BARCODE_OFFSET);
-        row.setValue(value.equalsIgnoreCase(_10xV3) ? "12" : "10", UMI_BARCODE_SIZE);
+        row.setValue(value.equalsIgnoreCase(_10xV3) || value.equalsIgnoreCase(_10xV4) ? "12" : "10", UMI_BARCODE_SIZE);
         row.setValue(value.equalsIgnoreCase(_10xV1) ? "index1" : "read1", CELL_BARCODE_READ);
         row.setValue("0", CELL_BARCODE_OFFSET);
         row.setValue(value.equalsIgnoreCase(_10xV1) ? "14" : "16", CELL_BARCODE_SIZE);
         row.setValue(value.equalsIgnoreCase(_10xV1) ? "read1" : "read2", cDNA_READ);
         row.setValue("0", cDNA_READ_OFFSET);
-        row.setValue(value.equalsIgnoreCase(_10xV3) ? "91" : "98", cDNA_READ_SIZE);
+        row.setValue(value.equalsIgnoreCase(_10xV3) || value.equalsIgnoreCase(_10xV4) ? "91" : "98", cDNA_READ_SIZE);
         row.setValue(value.equalsIgnoreCase(_10xV1) ? "index 2" : "index1", SAMPLE_BARCODE_READ);
         row.setValue("0", SAMPLE_BARCODE_OFFSET);
         row.setValue("8", SAMPLE_BARCODE_SIZE);
@@ -458,6 +459,7 @@ public class SingleCellExtractAttributesViewImpl extends Composite implements Si
         return _10xV1.equalsIgnoreCase(value) ||
                 _10xV2.equalsIgnoreCase(value) ||
                 _10xV3.equalsIgnoreCase(value) ||
+                _10xV4.equalsIgnoreCase(value) ||
                 DROP_SEQ.equalsIgnoreCase(value) ||
                 "other".equalsIgnoreCase(value);
     }
