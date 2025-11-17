@@ -76,6 +76,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -111,7 +112,7 @@ public class MageTabGenerator {
     private static class UniqueNameValue {
         private static final String TEMPLATE = "____[ORIGINAL_NAME]____[SEQ]____";
         private static final Pattern PATTERN = Pattern.compile(
-                TEMPLATE.replace("____[ORIGINAL_NAME]____", "____(.*)____")
+                TEMPLATE.replace("____[ORIGINAL_NAME]____", "____(.+?)____")
                         .replace("[SEQ]", "\\d+")
         );
 
@@ -443,7 +444,7 @@ public class MageTabGenerator {
 
         for (String leId : labeledExtractLayer.keySet()) {
             LabeledExtract labeledExtract = exp.getLabeledExtract(leId);
-
+            Integer extractId = labeledExtract != null ? labeledExtract.getExtract().getId() : null;
             SDRFNode leNode = labeledExtractLayer.get(leId);
             Collection<Protocol> leProtocols = exp.getProtocols(labeledExtract);
 
@@ -451,7 +452,7 @@ public class MageTabGenerator {
             if (!leIds2assayName.isEmpty()) {
                 assayName = leIds2assayName.containsKey(leId) ? leIds2assayName.get(leId) : null;
             }
-            SDRFNode assayNode = createAssayNode(assayName, leNode, leProtocols, sdrf);
+            SDRFNode assayNode = createAssayNode(assayName, leNode, leProtocols, sdrf, extractId);
             nextLayer.put(leId, assayNode);
 
             boolean isRawDataPresent = false;
@@ -492,7 +493,6 @@ public class MageTabGenerator {
                 //        nextLayer.put(leId, createScanNode(nextLayer.get(leId), Collections.<Protocol>emptyList()));
                 //    }
                 //}
-                Integer extractId = labeledExtract != null ? labeledExtract.getExtract().getId() : null;
                 SDRFNode fileNode = createFileNode(nextLayer.get(leId), fileColumn.getType(), fileRef, protocols, extractId);
                 nextLayer.put(leId, fileNode);
             }
@@ -519,7 +519,7 @@ public class MageTabGenerator {
             Collection<Protocol> eProtocols = exp.getProtocols(extract);
 
             String assayName = extractNode.getNodeName();
-            SDRFNode assayNode = createAssayNode(assayName, extractNode, eProtocols, null);
+            SDRFNode assayNode = createAssayNode(assayName, extractNode, eProtocols, null, extractId);
             nextLayer.put(extractId, assayNode);
 
             for (FileType fileType : fileTypesInOrder) {
@@ -656,20 +656,20 @@ public class MageTabGenerator {
         return labeledExtractNode;
     }
 
-    private AssayNode createAssayNode(String assayName, SDRFNode prevNode, Collection<Protocol> protocols, SDRF sdrf) {
+    private AssayNode createAssayNode(String assayName, SDRFNode prevNode, Collection<Protocol> protocols, SDRF sdrf, Integer extractId) {
         AssayNode assayNode;
         if (!isNullOrEmpty(assayName)) {
-            assayNode = getNode(AssayNode.class, assayName);
+            assayNode = getNode(AssayNode.class, assayName, extractId);
             if (assayNode != null) {
                 addFactorValues(assayNode, prevNode, sdrf);
-                connect(prevNode, assayNode, protocols, null);
+                connect(prevNode, assayNode, protocols, extractId);
                 return assayNode;
             }
             assayNode = createNode(AssayNode.class, assayName);
         } else {
             assayNode = createFakeNode(AssayNode.class);
         }
-
+        assayNode.setExtractId(extractId);
         assayNode.technologyType = createTechnologyTypeAttribute();
 
         ArrayDesignAttribute arrayDesignAttribute = createArrayDesignAttribute();
@@ -678,8 +678,16 @@ public class MageTabGenerator {
         }
 
         addFactorValues(assayNode, prevNode, sdrf);
-        connect(prevNode, assayNode, protocols, null);
+        connect(prevNode, assayNode, protocols, extractId);
         return assayNode;
+    }
+
+    private <T extends SDRFNode> T getNode(Class<T> clazz, String name, Integer extractId) {
+        T node = (T) nodeCache.get(nodeId(clazz, name));
+        if (node == null) {
+            return null;
+        }
+        return Objects.equals(node.getExtractId(), extractId) ? node : null;
     }
 
     private void addFactorValues(AssayNode assayNode, SDRFNode prevNode, SDRF sdrf) {

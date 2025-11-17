@@ -34,6 +34,11 @@ import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.google.common.io.Closeables.close;
 import static uk.ac.ebi.fg.annotare2.core.magetab.MageTabGenerator.restoreAllUnassignedValues;
@@ -102,6 +107,8 @@ public class MageTabFiles {
             sdrf = inv.SDRFs.values().iterator().next();
 
             sanitize(sdrfFile, sanitize);
+
+            cleanupSdrfFile(sdrfFile);
         }
         return this;
     }
@@ -151,4 +158,175 @@ public class MageTabFiles {
             log.error("Unable to sanitize MAGE-TAB file" + file.getAbsolutePath(), e);
         }
     }
+
+    /**
+     * Cleans up the SDRF file by:
+     * 1. Reorganizing Factor Value columns to the end
+     * 2. Removing empty columns (where all values after the header are unassigned or empty)
+     *
+     * @param file the SDRF file to clean up
+     */
+    private static void cleanupSdrfFile(File file) {
+        try {
+            String content = Files.toString(file, Charsets.UTF_8);
+            String[] lines = content.split("\n");
+
+            if (lines.length < 2) {
+                return; // Nothing to clean up
+            }
+
+            // Parse the TSV content
+            List<List<String>> rows = new ArrayList<>();
+            for (String line : lines) {
+                List<String> columns = new ArrayList<>(Arrays.asList(line.split("\t", -1)));
+                rows.add(columns);
+            }
+
+            if (rows.isEmpty()) {
+                return;
+            }
+
+            // Step 1: Reorganize Factor Value columns
+            reorganizeFactorValueColumns(rows);
+
+            // Step 2: Remove empty columns
+            removeEmptyColumns(rows);
+
+            // Write back to file
+            StringBuilder result = new StringBuilder();
+            for (int i = 0; i < rows.size(); i++) {
+                result.append(String.join("\t", rows.get(i)));
+                if (i < rows.size() - 1) {
+                    result.append("\n");
+                }
+            }
+
+            Files.write(result.toString(), file, Charsets.UTF_8);
+        } catch (IOException e) {
+            log.error("Unable to cleanup SDRF file: " + file.getAbsolutePath(), e);
+        }
+    }
+
+    /**
+     * Reorganizes Factor Value columns to the end of the table for consistency.
+     */
+    private static void reorganizeFactorValueColumns(List<List<String>> rows) {
+        if (rows.isEmpty()) {
+            return;
+        }
+
+        List<String> header = rows.get(0);
+        int originalWidth = header.size();
+
+        // Find all Factor Value column indices
+        List<Integer> factorValueIndices = new ArrayList<>();
+        for (int i = 0; i < originalWidth; i++) {
+            if (header.get(i) != null && header.get(i).contains("Factor Value")) {
+                factorValueIndices.add(i);
+            }
+        }
+
+        if (factorValueIndices.isEmpty()) {
+            return;
+        }
+
+        // Create new columns at the end for Factor Values
+        Map<Integer, String> factorValueHeaders = new LinkedHashMap<>();
+        for (int idx : factorValueIndices) {
+            factorValueHeaders.put(idx, header.get(idx));
+        }
+
+        // Add Factor Value column headers at the end
+        for (String factorHeader : factorValueHeaders.values()) {
+            header.add(factorHeader);
+        }
+
+        // Process each data row
+        for (int rowIdx = 1; rowIdx < rows.size(); rowIdx++) {
+            List<String> row = rows.get(rowIdx);
+
+            // Ensure row has enough columns
+            while (row.size() < originalWidth) {
+                row.add("");
+            }
+
+            // For each Factor Value column, move the value to the new location
+            for (int oldIdx : factorValueIndices) {
+                String value = oldIdx < row.size() ? row.get(oldIdx) : "";
+
+                if (!isUnassignedOrEmpty(value)) {
+                    // Find the corresponding new column position
+                    String factorHeader = header.get(oldIdx);
+                    int newIdx = header.size() - factorValueHeaders.size() +
+                            new ArrayList<>(factorValueHeaders.values()).indexOf(factorHeader);
+
+                    // Add value to new position
+                    while (row.size() <= newIdx) {
+                        row.add("");
+                    }
+                    row.set(newIdx, value);
+                }
+
+                // Clear original position
+                if (oldIdx < row.size()) {
+                    row.set(oldIdx, "");
+                }
+            }
+        }
+    }
+
+    /**
+     * Removes columns that are completely empty (all values are unassigned or empty after the header).
+     */
+    private static void removeEmptyColumns(List<List<String>> rows) {
+        if (rows.size() < 2) {
+            return;
+        }
+
+        List<String> header = rows.get(0);
+        int width = header.size();
+
+        // Find columns to remove (iterate backwards to avoid index issues)
+        for (int colIdx = width - 1; colIdx >= 0; colIdx--) {
+            boolean isEmpty = true;
+
+            // Check if column at index 1 (first data row) is unassigned/empty
+            if (rows.size() > 1) {
+                List<String> firstDataRow = rows.get(1);
+                String firstValue = colIdx < firstDataRow.size() ? firstDataRow.get(colIdx) : "";
+
+                if (!isUnassignedOrEmpty(firstValue)) {
+                    continue; // Column is not empty, skip
+                }
+            }
+
+            // Check all data rows (starting from row 2)
+            for (int rowIdx = 2; rowIdx < rows.size(); rowIdx++) {
+                List<String> row = rows.get(rowIdx);
+                String value = colIdx < row.size() ? row.get(colIdx) : "";
+
+                if (!isUnassignedOrEmpty(value)) {
+                    isEmpty = false;
+                    break;
+                }
+            }
+
+            // If column is empty, remove it from all rows
+            if (isEmpty) {
+                for (List<String> row : rows) {
+                    if (colIdx < row.size()) {
+                        row.remove(colIdx);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Checks if a value is considered unassigned or empty.
+     */
+    private static boolean isUnassignedOrEmpty(String value) {
+        return value == null || value.isEmpty() || value.startsWith("____UNASSIGNED____");
+    }
+
 }
