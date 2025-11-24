@@ -10,6 +10,7 @@ ChIP-seq
 CLIP-seq
 comparative genomic hybridization by array
 CUT&RUN
+CUT&Tag
 DNA-seq
 exome sequencing
 FAIRE-seq
