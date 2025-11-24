@@ -112,7 +112,7 @@ public class MageTabGenerator {
     private static class UniqueNameValue {
         private static final String TEMPLATE = "____[ORIGINAL_NAME]____[SEQ]____";
         private static final Pattern PATTERN = Pattern.compile(
-                TEMPLATE.replace("____[ORIGINAL_NAME]____", "____(.+?)____")
+                TEMPLATE.replace("____[ORIGINAL_NAME]____", "____((?:(?!____).)*)____")
                         .replace("[SEQ]", "\\d+")
         );
 
