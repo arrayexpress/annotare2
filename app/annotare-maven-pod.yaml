@@ -5,6 +5,8 @@ metadata:
     app: annotare-maven-agent
 spec:
   restartPolicy: Never
+  nodeSelector:
+    status: healthy
   initContainers:
     - name: install-git
       image: alpine/git
