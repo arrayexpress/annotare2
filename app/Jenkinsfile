@@ -18,7 +18,7 @@ pipeline {
     agent {
         kubernetes {
             cloud 'atlas-admin-2'
-            yamlFile 'annotare-maven-pod.yaml'
+            yamlFile 'app/annotare-maven-pod.yaml'
             defaultContainer 'maven'
         }
     }
