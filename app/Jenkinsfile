@@ -38,7 +38,7 @@ pipeline {
                 // Run the whole Maven lifecycle needed for verification in a single invocation
                 // to avoid redundant work and potential workspace conflicts.
                 configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {
-                    sh 'mvn -U --batch-mode -T 1C -s $MAVEN_SETTINGS_XML -f app/pom.xml clean test'
+                    sh 'mvn -U --batch-mode -T 1C -s $MAVEN_SETTINGS_XML -f app/pom.xml clean test -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
                 }
             }
         }
@@ -51,7 +51,7 @@ pipeline {
                     when { not { branch 'master'}}
                     steps{
                         configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_DEV_SETTINGS_XML')]){
-                            sh 'mvn -U --batch-mode -T 1C -s $MAVEN_DEV_SETTINGS_XML -f app/pom.xml package -DskipTests'
+                            sh 'mvn -U --batch-mode -T 1C -s $MAVEN_DEV_SETTINGS_XML -f app/pom.xml package -DskipTests -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
                         }
                     }
                 }
@@ -59,7 +59,7 @@ pipeline {
                     when { branch 'master'}
                     steps{
                         configFileProvider([configFile(fileId: 'annotare_prod_maven_settings', variable: 'MAVEN_PROD_SETTINGS_XML')]) {
-                            sh 'mvn -U --batch-mode -T 1C -s $MAVEN_PROD_SETTINGS_XML -f app/pom.xml package -DskipTests'
+                            sh 'mvn -U --batch-mode -T 1C -s $MAVEN_PROD_SETTINGS_XML -f app/pom.xml package -DskipTests -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
                         }
                     }
                 }

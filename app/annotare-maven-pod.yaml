@@ -33,7 +33,7 @@ spec:
           memory: "4Gi"
       env:
         - name: MAVEN_OPTS
-          value: "-Dmaven.repo.local=/root/.m2/repository -XX:MaxRAMPercentage=75.0"
+          value: "-Dmaven.repo.local=/root/.m2/repository -XX:MaxRAMPercentage=75.0 -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true"
       volumeMounts:
         - name: maven-repo
           mountPath: /root/.m2
