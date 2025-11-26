@@ -10,8 +10,11 @@ spec:
       # Maven image includes an OpenJDK distribution via Eclipse Temurin (compatible with OpenJDK)
       image: maven:3.8.8-eclipse-temurin-8
       imagePullPolicy: IfNotPresent
-      command: ["cat"]
+      # Use a long-running, lightweight command to ensure the container is always exec-ready
+      command: ["sh", "-c", "sleep 365d"]
       tty: true
+      stdin: true
+      workingDir: /home/jenkins/agent
       resources:
         requests:
           cpu: "1"
@@ -25,6 +28,10 @@ spec:
       volumeMounts:
         - name: maven-repo
           mountPath: /root/.m2
+        - name: workspace-volume
+          mountPath: /home/jenkins/agent
   volumes:
     - name: maven-repo
+      emptyDir: {}
+    - name: workspace-volume
       emptyDir: {}
