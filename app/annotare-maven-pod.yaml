@@ -5,6 +5,13 @@ metadata:
     app: annotare-maven-agent
 spec:
   restartPolicy: Never
+  initContainers:
+    - name: install-git
+      image: alpine/git
+      command: ["apk", "add", "git"]
+      volumeMounts:
+        - name: shared-data
+          mountPath: /data
   containers:
     - name: maven
       # Maven image includes an OpenJDK distribution via Eclipse Temurin (compatible with OpenJDK)
@@ -30,8 +37,12 @@ spec:
           mountPath: /root/.m2
         - name: workspace-volume
           mountPath: /home/jenkins/agent
+        - name: shared-data
+          mountPath: /data
   volumes:
     - name: maven-repo
       emptyDir: {}
     - name: workspace-volume
+      emptyDir: {}
+    - name: shared-data
       emptyDir: {}

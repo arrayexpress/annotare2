@@ -26,17 +26,6 @@ pipeline {
         stage ('Initialize') {
             steps {
                 sh '''
-                    if ! command -v git >/dev/null 2>&1; then
-                      echo "Git not found in container. Installing..."
-                      if command -v apt-get >/dev/null 2>&1; then
-                        apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
-                      elif command -v yum >/dev/null 2>&1; then
-                        yum install -y git
-                      else
-                        echo "Package manager not found. Please ensure Git is present in the agent image." >&2
-                        exit 1
-                      fi
-                    fi
                     echo "PATH = ${PATH}"
                     echo "M2_HOME = ${M2_HOME}"
                     echo "JAVA_HOME = ${JAVA_HOME}"
