@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: annotare-maven-agent
+spec:
+  restartPolicy: Never
+  containers:
+    - name: maven
+      # Maven image includes an OpenJDK distribution via Eclipse Temurin (compatible with OpenJDK)
+      image: maven:3.8.8-eclipse-temurin-8
+      imagePullPolicy: IfNotPresent
+      command: ["cat"]
+      tty: true
+      resources:
+        requests:
+          cpu: "1"
+          memory: "2Gi"
+        limits:
+          cpu: "2"
+          memory: "4Gi"
+      env:
+        - name: MAVEN_OPTS
+          value: "-Dmaven.repo.local=/root/.m2/repository -XX:MaxRAMPercentage=75.0"
+      volumeMounts:
+        - name: maven-repo
+          mountPath: /root/.m2
+  volumes:
+    - name: maven-repo
+      emptyDir: {}
