@@ -32,29 +32,11 @@ pipeline {
         }
 
         stage('Build and Test') {
-            parallel {
-                stage ('Clean') {
-                    steps{
-                       configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {
-                            sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/pom.xml clean'
-                        }
-                    }
-                }
-
-                stage ('Compile') {
-                    steps{
-                       configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {
-                            sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/pom.xml compile'
-                        }
-                    }
-                }
-
-                stage ('Test') {
-                    steps{
-                       configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {
-                            sh 'mvn -U --batch-mode -s $MAVEN_SETTINGS_XML -f app/pom.xml test'
-                        }
-                    }
+            steps {
+                // Run the whole Maven lifecycle needed for verification in a single invocation
+                // to avoid redundant work and potential workspace conflicts.
+                configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {
+                    sh 'mvn -U --batch-mode -T 1C -s $MAVEN_SETTINGS_XML -f app/pom.xml clean test'
                 }
             }
         }
