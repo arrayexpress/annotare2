@@ -80,6 +80,7 @@
                             <execution>
                                 <configuration>
                                     <extraJvmArgs>-Xms512m -Xmx4096m</extraJvmArgs>
+                                    <localWorkers>2</localWorkers>
                                     <failOnError>true</failOnError>
                                     <modules>
                                         <module>uk.ac.ebi.fg.annotare2.web.gwt.user.UserApp</module>
