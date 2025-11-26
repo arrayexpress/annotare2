@@ -79,7 +79,7 @@
                         <executions>
                             <execution>
                                 <configuration>
-                                    <extraJvmArgs>-Xms512m -Xmx1024m</extraJvmArgs>
+                                    <extraJvmArgs>-Xms512m -Xmx4096m</extraJvmArgs>
                                     <failOnError>true</failOnError>
                                     <modules>
                                         <module>uk.ac.ebi.fg.annotare2.web.gwt.user.UserApp</module>
