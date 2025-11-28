@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.common.base.Function;
 import com.google.inject.Inject;
+import com.google.common.util.concurrent.Striped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.core.AccessControlException;
@@ -60,6 +61,7 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -79,6 +81,9 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
     private final AnnotareUploadStorage uploadStorage;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final AnnotareProperties annotareProperties;
+
+    // Per-submission striped locks to serialize concurrent mutations on the same submission
+    private static final Striped<Lock> SUBMISSION_LOCKS = Striped.lazyWeakLock(1024);
 
     @Inject
     public DataFilesServiceImpl(AccountService accountService,
@@ -165,6 +170,9 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
             long userId = getCurrentUser().getId();
 
             File uploadedFile = uploadStorage.getUploadedFile(userId, fileInfo);
+            Lock lock = SUBMISSION_LOCKS.get(submission.getId());
+            lock.lock();
+            try {
                 if (checkFileExists(submission, fileInfo.getFileName())) {
                     throw new OperationFailedException("File " + fileInfo + " already exists");
                 } else if (0L == fileInfo.getFileSize()) {
@@ -174,6 +182,9 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                     uploadStorage.removeUploadedFile(userId, fileInfo, false);
                     logger.info("Uploaded {} for submission {}", fileInfo.getFileName(), submission.getId());
                 }
+            } finally {
+                lock.unlock();
+            }
         } catch (AccessControlException e) {
             throw noPermission(e);
         } catch (RecordNotFoundException e) {
@@ -243,8 +254,14 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
             }
 
             if (0 == errors.length()) {
-                for (Map.Entry<String, DataFileHandle> fileToSave : files.entrySet()) {
-                    saveFile(fileToSave.getValue(), fileToSave.getKey(), submission);
+                Lock lock = SUBMISSION_LOCKS.get(submission.getId());
+                lock.lock();
+                try {
+                    for (Map.Entry<String, DataFileHandle> fileToSave : files.entrySet()) {
+                        saveFile(fileToSave.getValue(), fileToSave.getKey(), submission);
+                    }
+                } finally {
+                    lock.unlock();
                 }
             }
             return errors.toString();
@@ -283,6 +300,9 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
             throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission submission = getSubmission(submissionId, Permission.UPDATE);
+            Lock lock = SUBMISSION_LOCKS.get(submission.getId());
+            lock.lock();
+            try {
             ExperimentSubmission experimentSubmission = submission instanceof ExperimentSubmission ?
                     (ExperimentSubmission)submission : null;
             ExperimentProfile experiment = submission instanceof ExperimentSubmission ?
@@ -302,6 +322,9 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                     dataFileHandle.rename(fileName);
                 }
                 save(submission);
+            }
+            } finally {
+                lock.unlock();
             }
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
@@ -327,6 +350,9 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
             throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission submission = getSubmission(submissionId, Permission.UPDATE);
+            Lock lock = SUBMISSION_LOCKS.get(submission.getId());
+            lock.lock();
+            try {
             ExperimentSubmission experimentSubmission = submission instanceof ExperimentSubmission ?
                     (ExperimentSubmission)submission : null;
             ExperimentProfile experiment = submission instanceof ExperimentSubmission ?
@@ -344,6 +370,9 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                 }
             }
             save(submission);
+            } finally {
+                lock.unlock();
+            }
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
         } catch (AccessControlException e) {
