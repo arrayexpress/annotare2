@@ -38,7 +38,19 @@ pipeline {
                 // Run the whole Maven lifecycle needed for verification in a single invocation
                 // to avoid redundant work and potential workspace conflicts.
                 configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {
-                    sh 'mvn -U --batch-mode -T 1C -s $MAVEN_SETTINGS_XML -f app/pom.xml clean test -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
+                    // Use an ephemeral MySQL sidecar (defined in the pod template) for DB-backed tests.
+                    // Provide JDBC properties to point at the sidecar on localhost and run Liquibase migrations normally.
+                    sh '''
+                        echo "Waiting for MySQL sidecar to start..." && sleep 25
+                        mvn -U --batch-mode -T 1C \
+                          -s $MAVEN_SETTINGS_XML -f app/pom.xml \
+                          clean test \
+                          -Dannotare.db.url=jdbc:mysql://127.0.0.1:3306/annotare?useSSL=false\&allowPublicKeyRetrieval=true\&serverTimezone=UTC \
+                          -Dannotare.db.user=annotare \
+                          -Dannotare.db.password=annotare \
+                          -Dannotare.db.driver=com.mysql.cj.jdbc.Driver \
+                          -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true
+                    '''
                 }
             }
         }

@@ -83,7 +83,12 @@ public class DatabaseDataSource {
 
     @PostConstruct
     public void startUp() {
-        updateDatabase();
+        if (isLiquibaseEnabled()) {
+            logger.info("Liquibase enabled: running database migrations on startup");
+            updateDatabase();
+        } else {
+            logger.info("Liquibase disabled via property/env; skipping database migrations on startup");
+        }
     }
 
     @PreDestroy
@@ -140,6 +145,20 @@ public class DatabaseDataSource {
                 //
             }
         }
+    }
+
+    private boolean isLiquibaseEnabled() {
+        // Two ways to disable Liquibase at runtime (useful for CI in isolated networks):
+        // -Dliquibase.enabled=false (JVM system property)
+        // or environment variable LIQUIBASE_ENABLED=false
+        String sysProp = System.getProperty("liquibase.enabled");
+        String envProp = System.getenv("LIQUIBASE_ENABLED");
+        String value = (sysProp != null) ? sysProp : envProp;
+        if (value == null) {
+            return true; // default: enabled
+        }
+        value = value.trim().toLowerCase();
+        return !("false".equals(value) || "0".equals(value) || "no".equals(value));
     }
 
 }

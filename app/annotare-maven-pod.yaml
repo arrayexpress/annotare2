@@ -16,8 +16,8 @@ spec:
           mountPath: /data
   containers:
     - name: maven
-      # Maven image includes an OpenJDK distribution via Eclipse Temurin (compatible with OpenJDK)
-      image: maven:3.8.8-eclipse-temurin-8
+      # Use Maven 3.6.3 (pre-3.8) to allow HTTP repositories without requiring allowInsecureProtocol
+      image: maven:3.6.3-jdk-8
       imagePullPolicy: IfNotPresent
       # Use a long-running, lightweight command to ensure the container is always exec-ready
       command: ["sh", "-c", "sleep 365d"]
@@ -41,10 +41,30 @@ spec:
           mountPath: /home/jenkins/agent
         - name: shared-data
           mountPath: /data
+    - name: mysql
+      image: mysql:5.7
+      imagePullPolicy: IfNotPresent
+      env:
+        - name: MYSQL_DATABASE
+          value: "annotare"
+        - name: MYSQL_USER
+          value: "annotare"
+        - name: MYSQL_PASSWORD
+          value: "annotare"
+        - name: MYSQL_ROOT_PASSWORD
+          value: "rootpass"
+      ports:
+        - containerPort: 3306
+          name: mysql
+      volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
   volumes:
     - name: maven-repo
       emptyDir: {}
     - name: workspace-volume
       emptyDir: {}
     - name: shared-data
+      emptyDir: {}
+    - name: mysql-data
       emptyDir: {}
