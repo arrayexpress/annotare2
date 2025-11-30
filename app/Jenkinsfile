@@ -45,7 +45,7 @@ pipeline {
                         mvn -U --batch-mode -T 1C \
                           -s $MAVEN_SETTINGS_XML -f app/pom.xml \
                           clean test \
-                          -Dannotare.db.url=jdbc:mysql://127.0.0.1:3306/annotare?useSSL=false\&allowPublicKeyRetrieval=true\&serverTimezone=UTC \
+                          -Dannotare.db.url=jdbc:mysql://127.0.0.1:3306/annotare?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC \
                           -Dannotare.db.user=annotare \
                           -Dannotare.db.password=annotare \
                           -Dannotare.db.driver=com.mysql.cj.jdbc.Driver \
