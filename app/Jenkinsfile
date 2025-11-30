@@ -42,14 +42,7 @@ pipeline {
                     // Provide JDBC properties to point at the sidecar on localhost and run Liquibase migrations normally.
                     sh '''
                         echo "Waiting for MySQL sidecar to start..." && sleep 25
-                        mvn -U --batch-mode -T 1C \
-                          -s $MAVEN_SETTINGS_XML -f app/pom.xml \
-                          clean test \
-                          -Dannotare.db.url=jdbc:mysql://127.0.0.1:3306/annotare?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC \
-                          -Dannotare.db.user=annotare \
-                          -Dannotare.db.password=annotare \
-                          -Dannotare.db.driver=com.mysql.cj.jdbc.Driver \
-                          -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true
+                        mvn -s $MAVEN_SETTINGS_XML -f app/pom.xml clean test -Dannotare.test.db.url=jdbc:mysql://127.0.0.1:3306/annotare -Dannotare.test.db.user=annotare -Dannotare.test.db.password=annotare -Dannotare.test.db.driver=com.mysql.cj.jdbc.Driver -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true
                     '''
                 }
             }
@@ -63,7 +56,7 @@ pipeline {
                     when { not { branch 'master'}}
                     steps{
                         configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_DEV_SETTINGS_XML')]){
-                            sh 'mvn -U --batch-mode -T 1C -s $MAVEN_DEV_SETTINGS_XML -f app/pom.xml package -DskipTests -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
+                            sh 'mvn -s $MAVEN_DEV_SETTINGS_XML -f app/pom.xml package -DskipTests -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
                         }
                     }
                 }
@@ -71,7 +64,7 @@ pipeline {
                     when { branch 'master'}
                     steps{
                         configFileProvider([configFile(fileId: 'annotare_prod_maven_settings', variable: 'MAVEN_PROD_SETTINGS_XML')]) {
-                            sh 'mvn -U --batch-mode -T 1C -s $MAVEN_PROD_SETTINGS_XML -f app/pom.xml package -DskipTests -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
+                            sh 'mvn -s $MAVEN_PROD_SETTINGS_XML -f app/pom.xml package -DskipTests -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
                         }
                     }
                 }
