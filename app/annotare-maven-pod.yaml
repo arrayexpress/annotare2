@@ -44,7 +44,6 @@ spec:
     - name: mysql
       image: mysql:5.7
       imagePullPolicy: IfNotPresent
-      command: ["mysqld"]
       args:
         - "--sql-mode=ONLY_FULL_GROUP_BY,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
       env:
