@@ -35,21 +35,15 @@ pipeline {
 
         stage('Build and Test') {
             steps {
-                // Run the whole Maven lifecycle needed for verification in a single invocation
-                // to avoid redundant work and potential workspace conflicts.
                 configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {
-                    // Use an ephemeral MySQL sidecar (defined in the pod template) for DB-backed tests.
-                    // Provide JDBC properties to point at the sidecar on localhost and run Liquibase migrations normally.
                     sh '''
-                        echo "Waiting for MySQL sidecar to start..." && sleep 25
+                        echo "Waiting for MySQL sidecar to start..." && sleep 10
                         mvn -s $MAVEN_SETTINGS_XML -f app/pom.xml clean test -Dannotare.test.db.url=jdbc:mysql://127.0.0.1:3306/annotare -Dannotare.test.db.user=annotare -Dannotare.test.db.password=annotare -Dannotare.test.db.driver=com.mysql.cj.jdbc.Driver -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true
                     '''
                 }
             }
         }
 
-        //External maven-settings.xml file provided from jenkins through configFileProvider plugin
-        //Since database properties defined in maven-settings.xml, configured two different maven settings for wwwdev and prod
         stage ('Build Artifacts') {
             stages{
                 stage('Build') {

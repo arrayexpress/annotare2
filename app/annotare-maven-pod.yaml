@@ -63,7 +63,8 @@ spec:
           mountPath: /var/lib/mysql
   volumes:
     - name: maven-repo
-      emptyDir: {}
+      persistentVolumeClaim:
+        claimName: annotare-m2-cache
     - name: workspace-volume
       emptyDir: {}
     - name: shared-data
