@@ -24,20 +24,7 @@ pipeline {
             agent {
                 kubernetes {
                     cloud 'atlas-admin-2'
-                    // Minimal pod just to run kubectl; no PVC mounts here
-                    yaml '''
-apiVersion: v1
-kind: Pod
-spec:
-  restartPolicy: Never
-  containers:
-    - name: kubectl
-      image: bitnami/kubectl:latest
-      imagePullPolicy: IfNotPresent
-      command: ["sh", "-c", "sleep 365d"]
-      tty: true
-      stdin: true
-'''
+                    yamlFile 'app/annotare-prepare-pvc-pod.yaml'
                     defaultContainer 'kubectl'
                 }
             }
