@@ -41,6 +41,17 @@ spec:
           mountPath: /home/jenkins/agent
         - name: shared-data
           mountPath: /data
+    - name: kubectl
+      # Lightweight kubectl utility container for cluster operations (e.g., ensuring PVCs exist)
+      image: bitnami/kubectl:latest
+      imagePullPolicy: IfNotPresent
+      command: ["sh", "-c", "sleep 365d"]
+      tty: true
+      stdin: true
+      workingDir: /home/jenkins/agent
+      volumeMounts:
+        - name: workspace-volume
+          mountPath: /home/jenkins/agent
     - name: mysql
       image: mysql:5.7
       imagePullPolicy: IfNotPresent
@@ -70,4 +81,5 @@ spec:
     - name: shared-data
       emptyDir: {}
     - name: mysql-data
-      emptyDir: {}
+      persistentVolumeClaim:
+        claimName: annotare-mysql-cache

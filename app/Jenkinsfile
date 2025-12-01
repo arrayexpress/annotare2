@@ -25,11 +25,33 @@ pipeline {
     stages {
         stage ('Initialize') {
             steps {
-                sh '''
+                container('kubectl') {
+                  sh '''
+                    set -euo pipefail
+                    echo "Ensuring required PVCs exist (annotare-m2-cache, annotare-mysql-cache) before build..."
+                    NS=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
+                    echo "Using namespace: ${NS}"
+
+                    ensure_pvc() {
+                      local pvc_name="$1"
+                      local manifest="$2"
+                      if kubectl -n "${NS}" get pvc "${pvc_name}" >/dev/null 2>&1; then
+                        echo "PVC ${pvc_name} already exists."
+                      else
+                        echo "PVC ${pvc_name} not found. Applying manifest ${manifest}..."
+                        kubectl -n "${NS}" apply -f "${manifest}"
+                        echo "Applied ${manifest}."
+                      fi
+                    }
+
+                    ensure_pvc annotare-m2-cache app/annotare-m2-cache-pvc.yaml
+                    ensure_pvc annotare-mysql-cache app/annotare-mysql-cache-pvc.yaml
+
                     echo "PATH = ${PATH}"
                     echo "M2_HOME = ${M2_HOME}"
                     echo "JAVA_HOME = ${JAVA_HOME}"
-                '''
+                  '''
+                }
             }
         }
 

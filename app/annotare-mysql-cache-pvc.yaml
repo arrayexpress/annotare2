@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: annotare-mysql-cache
+  labels:
+    app: annotare-maven-agent
+spec:
+  storageClassName: fg-nfs
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
