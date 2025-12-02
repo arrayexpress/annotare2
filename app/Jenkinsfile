@@ -15,113 +15,72 @@ pipeline {
         ));
         parallelsAlwaysFailFast();
     }
-    // Do not start the main build pod up-front. We will first ensure
-    // the required PVCs exist, then run the build in a second stage
-    // that uses the pod template mounting those PVCs.
-    agent none
+    agent {
+        kubernetes {
+            cloud 'atlas-admin-2'
+            yamlFile 'app/annotare-maven-pod.yaml'
+            defaultContainer 'maven'
+        }
+    }
     stages {
-        stage('Prepare PVCs') {
-            agent {
-                kubernetes {
-                    cloud 'atlas-admin-2'
-                    yamlFile 'app/annotare-prepare-pvc-pod.yaml'
-                    defaultContainer 'kubectl'
-                }
-            }
+        stage('Initialize') {
             steps {
                 sh '''
-                  set -euo pipefail
-                  echo "Ensuring required PVCs exist (annotare-m2-cache, annotare-mysql-cache) before scheduling build pod..."
-                  NS=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
-                  echo "Using namespace: ${NS}"
-
-                  ensure_pvc() {
-                    local pvc_name="$1"
-                    local manifest="$2"
-                    if kubectl -n "${NS}" get pvc "${pvc_name}" >/dev/null 2>&1; then
-                      echo "PVC ${pvc_name} already exists."
-                    else
-                      echo "PVC ${pvc_name} not found. Applying manifest ${manifest}..."
-                      kubectl -n "${NS}" apply -f "${manifest}"
-                      echo "Applied ${manifest}."
-                    fi
-                  }
-
-                  ensure_pvc annotare-m2-cache app/annotare-m2-cache-pvc.yaml
-                  ensure_pvc annotare-mysql-cache app/annotare-mysql-cache-pvc.yaml
+                  echo "PATH = ${PATH}"
+                  echo "M2_HOME = ${M2_HOME}"
+                  echo "JAVA_HOME = ${JAVA_HOME}"
                 '''
             }
         }
 
-        stage('Build on k8s') {
-            agent {
-                kubernetes {
-                    cloud 'atlas-admin-2'
-                    yamlFile 'app/annotare-maven-pod.yaml'
-                    defaultContainer 'maven'
+        stage('Build and Test') {
+            steps {
+                configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {
+                    sh '''
+                        echo "Waiting for MySQL sidecar to start..." && sleep 10
+                        mvn -s $MAVEN_SETTINGS_XML -f app/pom.xml clean test -Dannotare.test.db.url=jdbc:mysql://127.0.0.1:3306/annotare -Dannotare.test.db.user=annotare -Dannotare.test.db.password=annotare -Dannotare.test.db.driver=com.mysql.cj.jdbc.Driver -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true
+                    '''
                 }
             }
-            stages {
-                stage('Initialize') {
-                    steps {
-                        sh '''
-                          echo "PATH = ${PATH}"
-                          echo "M2_HOME = ${M2_HOME}"
-                          echo "JAVA_HOME = ${JAVA_HOME}"
-                        '''
-                    }
-                }
+        }
 
-                stage('Build and Test') {
-                    steps {
-                        configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {
-                            sh '''
-                                echo "Waiting for MySQL sidecar to start..." && sleep 10
-                                mvn -s $MAVEN_SETTINGS_XML -f app/pom.xml clean test -Dannotare.test.db.url=jdbc:mysql://127.0.0.1:3306/annotare -Dannotare.test.db.user=annotare -Dannotare.test.db.password=annotare -Dannotare.test.db.driver=com.mysql.cj.jdbc.Driver -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true
-                            '''
-                        }
-                    }
-                }
-
-                stage ('Build Artifacts') {
-                    stages{
-                        stage('Build') {
-                            when { not { branch 'master'}}
-                            steps{
-                                configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_DEV_SETTINGS_XML')]){
-                                    sh 'mvn -s $MAVEN_DEV_SETTINGS_XML -f app/pom.xml package -DskipTests -Dannotare.test.db.url=jdbc:mysql://127.0.0.1:3306/annotare -Dannotare.test.db.user=annotare -Dannotare.test.db.password=annotare -Dannotare.test.db.driver=com.mysql.cj.jdbc.Driver -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
-                                }
-                            }
-                        }
-                        stage('Master Build') {
-                            when { branch 'master'}
-                            steps{
-                                configFileProvider([configFile(fileId: 'annotare_prod_maven_settings', variable: 'MAVEN_PROD_SETTINGS_XML')]) {
-                                    sh 'mvn -s $MAVEN_PROD_SETTINGS_XML -f app/pom.xml package -DskipTests -Dannotare.test.db.url=jdbc:mysql://127.0.0.1:3306/annotare -Dannotare.test.db.user=annotare -Dannotare.test.db.password=annotare -Dannotare.test.db.driver=com.mysql.cj.jdbc.Driver -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
-                                }
-                            }
-                        }
-                        stage('Archive artifacts') {
-                            steps{
-                                archiveArtifacts artifacts: 'app/webapp/target/annotare2-web*.war', fingerprint: true
-                            }
-                        }
-                    }
-                }
-
-                stage ('Release') {
+        stage ('Build Artifacts') {
+            stages{
+                stage('Build') {
                     when { not { branch 'master'}}
                     steps{
-                        release job: 'Annotare-web-app-release-wwwdev', parameters: [string(name: 'artifactBuildNumber', value: env.BUILD_NUMBER), string(name: 'branch_name', value: env.BRANCH_NAME)]
+                        configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_DEV_SETTINGS_XML')]){
+                            sh 'mvn -s $MAVEN_DEV_SETTINGS_XML -f app/pom.xml package -DskipTests -Dannotare.test.db.url=jdbc:mysql://127.0.0.1:3306/annotare -Dannotare.test.db.user=annotare -Dannotare.test.db.password=annotare -Dannotare.test.db.driver=com.mysql.cj.jdbc.Driver -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
+                        }
                     }
                 }
-
-                stage ('Production Release') {
+                stage('Master Build') {
                     when { branch 'master'}
                     steps{
-                        release job: 'Annotare-web-app-release-prod', parameters: [string(name: 'artifactBuildNumber', value: env.BUILD_NUMBER), string(name: 'branch_name', value: env.BRANCH_NAME)]
+                        configFileProvider([configFile(fileId: 'annotare_prod_maven_settings', variable: 'MAVEN_PROD_SETTINGS_XML')]) {
+                            sh 'mvn -s $MAVEN_PROD_SETTINGS_XML -f app/pom.xml package -DskipTests -Dannotare.test.db.url=jdbc:mysql://127.0.0.1:3306/annotare -Dannotare.test.db.user=annotare -Dannotare.test.db.password=annotare -Dannotare.test.db.driver=com.mysql.cj.jdbc.Driver -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
+                        }
                     }
                 }
+                stage('Archive artifacts') {
+                    steps{
+                        archiveArtifacts artifacts: 'app/webapp/target/annotare2-web*.war', fingerprint: true
+                    }
+                }
+            }
+        }
+
+        stage ('Release') {
+            when { not { branch 'master'}}
+            steps{
+                release job: 'Annotare-web-app-release-wwwdev', parameters: [string(name: 'artifactBuildNumber', value: env.BUILD_NUMBER), string(name: 'branch_name', value: env.BRANCH_NAME)]
+            }
+        }
+
+        stage ('Production Release') {
+            when { branch 'master'}
+            steps{
+                release job: 'Annotare-web-app-release-prod', parameters: [string(name: 'artifactBuildNumber', value: env.BUILD_NUMBER), string(name: 'branch_name', value: env.BRANCH_NAME)]
             }
         }
     }
