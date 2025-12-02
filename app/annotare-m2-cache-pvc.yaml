@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: annotare-m2-cache
+  labels:
+    app: annotare-maven-agent
+    purpose: maven-local-repo-cache
+spec:
+  storageClassName: fg-nfs
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Gi

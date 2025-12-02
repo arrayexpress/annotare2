@@ -15,41 +15,42 @@ pipeline {
         ));
         parallelsAlwaysFailFast();
     }
-    agent {label 'annotare-job-runner'}
-    tools {
-        maven 'maven-3.8.5'
-        jdk 'jdk-8'
+    agent {
+        kubernetes {
+            cloud 'atlas-admin-2'
+            yamlFile 'app/annotare-maven-pod.yaml'
+            defaultContainer 'maven'
+        }
     }
     stages {
-        stage ('Initialize') {
+        stage('Initialize') {
             steps {
                 sh '''
-                    echo "PATH = ${PATH}"
-                    echo "M2_HOME = ${M2_HOME}"
-                    echo "JAVA_HOME = ${JAVA_HOME}"
+                  echo "PATH = ${PATH}"
+                  echo "M2_HOME = ${M2_HOME}"
+                  echo "JAVA_HOME = ${JAVA_HOME}"
                 '''
             }
         }
 
         stage('Build and Test') {
             steps {
-                // Run the whole Maven lifecycle needed for verification in a single invocation
-                // to avoid redundant work and potential workspace conflicts.
                 configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_SETTINGS_XML')]) {
-                    sh 'mvn -U --batch-mode -T 1C -s $MAVEN_SETTINGS_XML -f app/pom.xml clean test'
+                    sh '''
+                        echo "Waiting for MySQL sidecar to start..." && sleep 10
+                        mvn -s $MAVEN_SETTINGS_XML -f app/pom.xml clean test -Dannotare.test.db.url=jdbc:mysql://127.0.0.1:3306/annotare -Dannotare.test.db.user=annotare -Dannotare.test.db.password=annotare -Dannotare.test.db.driver=com.mysql.cj.jdbc.Driver -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true
+                    '''
                 }
             }
         }
 
-        //External maven-settings.xml file provided from jenkins through configFileProvider plugin
-        //Since database properties defined in maven-settings.xml, configured two different maven settings for wwwdev and prod
         stage ('Build Artifacts') {
             stages{
                 stage('Build') {
                     when { not { branch 'master'}}
                     steps{
                         configFileProvider([configFile(fileId: 'annotare_wwwdev_maven_settings', variable: 'MAVEN_DEV_SETTINGS_XML')]){
-                            sh 'mvn -U --batch-mode -T 1C -s $MAVEN_DEV_SETTINGS_XML -f app/pom.xml package -DskipTests'
+                            sh 'mvn -s $MAVEN_DEV_SETTINGS_XML -f app/pom.xml package -DskipTests -Dannotare.test.db.url=jdbc:mysql://127.0.0.1:3306/annotare -Dannotare.test.db.user=annotare -Dannotare.test.db.password=annotare -Dannotare.test.db.driver=com.mysql.cj.jdbc.Driver -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
                         }
                     }
                 }
@@ -57,7 +58,7 @@ pipeline {
                     when { branch 'master'}
                     steps{
                         configFileProvider([configFile(fileId: 'annotare_prod_maven_settings', variable: 'MAVEN_PROD_SETTINGS_XML')]) {
-                            sh 'mvn -U --batch-mode -T 1C -s $MAVEN_PROD_SETTINGS_XML -f app/pom.xml package -DskipTests'
+                            sh 'mvn -s $MAVEN_PROD_SETTINGS_XML -f app/pom.xml package -DskipTests -Dannotare.test.db.url=jdbc:mysql://127.0.0.1:3306/annotare -Dannotare.test.db.user=annotare -Dannotare.test.db.password=annotare -Dannotare.test.db.driver=com.mysql.cj.jdbc.Driver -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
                         }
                     }
                 }
